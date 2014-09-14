@@ -124,7 +124,7 @@ def tabled(f='data/weather.csv'):
 @demo
 def tableCopied(f='data/weather.csv'):
   t0=table(f)
-  t1=copyTable(t0)
+  t1=clone(t0)
   rprintln([t0.nums,t1.nums]); 
 
 if __name__ == '__main__': eval(cmd())
