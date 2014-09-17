@@ -4,8 +4,6 @@ normalize the numerical rows and leave the symbolic rows intact.
 """
 from __future__ import division
 from table import *
-from counts import *
-from lib import *
 import sys
 sys.dont_write_bytecode = True
 lo=2*[None]; hi=2*[None];
@@ -48,8 +46,10 @@ for x in t0._rows:
     # Obtain the keys and values of a dictionary
     values=y['cells'] 
     Max, Min= minmax(values)
+    print values
     #print Max, Min
 #______________________________________________________________________________
+
 t1=clone(t0);
 ## ** Put the above statements in the minmax function **
 print Max, Min
