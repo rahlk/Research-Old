@@ -7,5 +7,6 @@
 <pydev_property name="org.python.pydev.PYTHON_PROJECT_INTERPRETER">Default</pydev_property>
 <pydev_pathproperty name="org.python.pydev.PROJECT_EXTERNAL_SOURCE_PATH">
 <path>/Users/rkrsn/git/Research/axe/data</path>
+<path>/Users/rkrsn/git/axe/axe</path>
 </pydev_pathproperty>
 </pydev_project>
