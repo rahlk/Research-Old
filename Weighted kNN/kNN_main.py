@@ -9,18 +9,9 @@ import numpy as np
 import scipy as sp
 import sys
 from scipy.spatial.distance import pdist
-
-sys.dont_write_bytecode = True
 squareform=sp.spatial.distance.squareform
 
-class o: 
-  def __init__(self,**d): self.__dict__.update(d)
-  
-class weights(object):  
-  def __init__(self,tbl):
-    self.tbl=tbl
-  def getWeights(self):
-    pass
+sys.dont_write_bytecode = True
 
 class uberschrift: ## German for header
   def __init__(self):
