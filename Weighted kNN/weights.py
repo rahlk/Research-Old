@@ -1,7 +1,6 @@
 from __future__ import division
 import sys
 from _curses import flash
-from dtree import change
 sys.dont_write_bytecode = True
 
 from lib    import *
@@ -82,7 +81,7 @@ class prilims(object):
       return recurse(sorted(lst,key=num1),small,[])
 
 
-class ahadist(object):
+class weights(object):
   def __init__(self):
     self.p=prilims()
     pass

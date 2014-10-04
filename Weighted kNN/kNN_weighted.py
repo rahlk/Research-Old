@@ -3,7 +3,7 @@ German words! It's almost Oktober! :)
 """
 
 from __future__ import division
-from ahadist import *
+from weights import *
 from lib import isa
 import numpy as np
 import scipy as sp
@@ -56,8 +56,8 @@ class haupt: ## Haupt translates roughly to main
   uber=uberschrift(); # Create an alias for Uberschrift class.
   pairs = uber.pairs; # Generate all possible combinations of data, I took the original pairs function and modified it slightly.
   pdistVect=[] # pairwise distance matrix.
-  ad=ahadist()
-  weights=ad.weights(tbl)
+  w=weights()
+  weights=w.weights(tbl)
   weightsEq=len(weights)*[1/len(weights)]
   depen=tbl.depen[0].__dict__['col']
   
