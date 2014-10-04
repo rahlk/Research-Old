@@ -1,6 +1,7 @@
 from __future__ import division
 import sys
 from _curses import flash
+from dtree import change
 sys.dont_write_bytecode = True
 
 from lib    import *
@@ -16,6 +17,12 @@ class prilims(object):
     pass
   
   def unwrap(self,t0):
+    #===========================================================================
+    # This is a cool function, I am quite proud of it's succinctness.
+    # It creates a dictionary with table headers as keys and corresponding 
+    # columns as the values. Example, T={'Header1': [1,2,3,4]; 'Header2':...}, 
+    # you get the point. I used dict comprehensions containing list comprehensions 
+    #===========================================================================
     rows = map(lambda x :x.cells, t0._rows)
     H=[];
     for i in t0.headers:
@@ -24,6 +31,10 @@ class prilims(object):
     return {rows[0][z]:[p[z] for p in rows[1:] if z<=len(rows[1])-1] for z in xrange(0,len(rows[0]))}
   
   def chardiv(self,lst):
+    #===========================================================================
+    # This works by sorting all the variables in the alphabetical order and 
+    # determining cuts based on index locations where the alphabets change.
+    #===========================================================================
     def pairs(xs):
       for p in zip(xs[:-1], xs[1:]): 
         yield p
@@ -76,15 +87,21 @@ class ahadist(object):
     self.p=prilims()
     pass
   def cuts(self,tbl):
+    # Finds the cuts in each column of the table.
     T=self.p.unwrap(tbl)
     depen=[T[i.__dict__['name']] for i in tbl.headers if i==tbl.depen[0]] 
     indep=[T[i.__dict__['name']] for i in tbl.headers if not i==tbl.depen[0]]
-    flatten = lambda x: x if not isinstance(x, list) else x[0]
+    flatten = lambda x: x if not isinstance(x, list) else x[0] # If the list
+    # contains elements such that each element in that list is a list of one 
+    # element like [[1,2,3]], flatten returns [1,2,3]
     def findcuts(lst1,lst2):
+      #--- Determines whether to use sdiv or chardiv  
       return self.p.sdiv(zip(lst1,lst2)) if not isinstance(lst1[1], str) else self.p.chardiv([lst1, lst2])
     cuts1=[findcuts(y, flatten(depen)) for y in indep]
     return cuts1
   def weights(self,t0):
+    # Compute weights based on minimum variance, note also that the weights are
+    # normalized such that they add up to 1.
     a = self.cuts(t0)
     mVar=0
     weights=[]
@@ -93,7 +110,8 @@ class ahadist(object):
         mVar+=l[1]
       weights.append(mVar/len(k))
     weights = (1-weights/np.max(weights))
-    return weights
+    return weights/sum(weights)
+
 """    
 class main:
   source='data/nasa93.csv'
