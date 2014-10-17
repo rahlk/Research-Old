@@ -39,6 +39,15 @@ def normalizit(val,high,low):
 """
 
 t0=table(source)
+rows = map(lambda x :x.cells, t0._rows)
+depenCol=[]
+for h in t0.klass:
+  print h
+print t0.depen[0].__dict__
+for p in t0.depen:
+  depenCol=p.__dict__['col']
+print depenCol
+
 #______________________________________________________________________________
 for x in t0._rows:
     # Obtain the dictionary values of each row
@@ -46,7 +55,7 @@ for x in t0._rows:
     # Obtain the keys and values of a dictionary
     values=y['cells'] 
     #Max, Min= minmax(values)
-    print values
+#    print values
     #print Max, Min
 #______________________________________________________________________________
 
@@ -59,4 +68,3 @@ for x in t0._rows:    # Obtain the dictionary values of each row
     values=y['cells'] 
 #    print normalizit(values,Max,Min)    
     
-        

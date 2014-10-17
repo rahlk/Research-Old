@@ -14,7 +14,7 @@ import scipy as sp
 import sys
 from scipy.spatial.distance import pdist
 sys.dont_write_bytecode = True
-squareform=sp.spatial.distance.squareform;
+squareform=sp.spatial.distance.squareform
 
 class o: 
   def __init__(self,**d): self.__dict__.update(d)
