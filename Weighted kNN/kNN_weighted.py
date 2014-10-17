@@ -7,10 +7,11 @@ from weights import *
 from lib import isa
 import numpy as np
 import scipy as sp
-import sys
+import sys, sk
 from scipy.spatial.distance import pdist
 from scipy.interpolate.interpolate_wrapper import nearest
 squareform=sp.spatial.distance.squareform
+rdivDemo=sk.rdivDemo
 
 sys.dont_write_bytecode = True
 
@@ -47,7 +48,7 @@ class uberschrift: ## German for header
       Get = np.mean([rows[z][depend] for z in neighbours[i]])
       Want = rows[i][depend]
       MRE.append(abs((Want-Get)/(Want)))
-    return np.mean(MRE)
+    return MRE
 
 class haupt: ## Haupt translates roughly to main
   source='data/nasa93.csv'
@@ -56,11 +57,12 @@ class haupt: ## Haupt translates roughly to main
   uber=uberschrift(); # Create an alias for Uberschrift class.
   pairs = uber.pairs; # Generate all possible combinations of data, I took the original pairs function and modified it slightly.
   pdistVect=[] # pairwise distance matrix.
+  pdistVect1=[] # pairwise distance matrix.
   w=weights()
   weights=w.weights(tbl)
   weightsEq=len(weights)*[1/len(weights)]
   depen=tbl.depen[0].__dict__['col']
-  
+  E=[]
   #--------------------------------------------------
   # When in doubt, test the kNN with the following list, CAUTION: Use 1 maybe 2 neighbors at most.
   ##rows=[[1,2],[1,3],[2,1],[3,1],[9,8],[10,9],[8,10]]
@@ -75,13 +77,16 @@ class haupt: ## Haupt translates roughly to main
 
     if one>two: 
       pdistVect.append(uber.dist(one, two, weightsEq))
+      pdistVect1.append(uber.dist(one, two, weights))
   
   #=============================================================================
   # Now get the square pairwise distance matrix. This is a MxM matrix, where M is the number of rows.
   # By the way, the pdistVect above is a M(M-1)/2 sized vector
   #=============================================================================
   v=squareform(pdistVect)
+  v1=squareform(pdistVect1)
   Neighbours=[]; nearestDist=[]
+  Neighbours1=[]; nearestDist1=[]
   ## Do the actual k-NN ALgorithm
   for x in v:
     #===========================================================================
@@ -91,12 +96,29 @@ class haupt: ## Haupt translates roughly to main
     sortedIndex=[i[0] for i in sorted(enumerate(x), key=lambda x:x[1], reverse=True)]
     sortedList=[i[1] for i in sorted(enumerate(x), key=lambda x:x[1], reverse=True)]
     nearestDist.append(sortedList[1:6]), Neighbours.append(sortedIndex[1:6])
+
+  for x in v1:
+    #===========================================================================
+    # The actual KNN is pretty simple, we sort each row and obtain the first k closest indices.
+    # Sorting thanks to http://stackoverflow.com/questions/6422700/how-to-get-indices-of-a-sorted-array-in-python
+    #===========================================================================
+    sortedIndex=[i[0] for i in sorted(enumerate(x), key=lambda x:x[1], reverse=True)]
+    sortedList=[i[1] for i in sorted(enumerate(x), key=lambda x:x[1], reverse=True)]
+    nearestDist1.append(sortedList[1:6]), Neighbours1.append(sortedIndex[1:6])
   
-  print 'MRE', uber.mre(rows, depen, Neighbours)  
+  MRE =  uber.mre(rows, depen, Neighbours)  
+  MRE.insert(0,'Before Weighting')
+  E.append(MRE)
+  MRE1 =  uber.mre(rows, depen, Neighbours1)  
+  MRE1.insert(0,'After Weighting')
+  E.append(MRE1)
+  rdivDemo(E)
     #===========================================================================
     # A quick note is in order-- We'll notice that 2 rows are not mutual neighbor, by that I mean
     # if ROW1 is a neighbor of ROW2, the reverse is not necessarily true. I think this is because 
     # of the variety in each row, we have numbers, years, letters and symbols. Well..
     #===========================================================================
   print '_______________________________________________________________________'
+  
+    
   
