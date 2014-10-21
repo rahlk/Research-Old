@@ -8,7 +8,7 @@ Standard header:
 from __future__ import division,print_function
 import  sys
 sys.dont_write_bytecode = True
-#from lib import *
+from libWhere import *
 """
 
 Data:
@@ -124,7 +124,7 @@ def nasa93():
 Demo code:
 
 """
-def _nasa93(): print(nasa93())
-
+def _nasa93(): print(nasa93.__name__)
+_nasa93()
 #if __name__ == '__main__': eval(todo('_nasa93()'))
 
