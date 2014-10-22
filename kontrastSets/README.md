@@ -14,7 +14,7 @@ def csv2py(self, filename):
                    less=[i.__dict__['name'] for i in tbl.depen],
                    _rows=map(lambda x: [tonum(xx) for xx in x.cells], tbl._rows))
 ```
-- I wrapped thin in the [makeAModel](https://github.com/rahlk/Research/blob/master/kontrastSets/kontrastsets.py#L15) class. 
+- I wrapped this in the [makeAModel](https://github.com/rahlk/Research/blob/master/kontrastSets/kontrastsets.py#L15) class. 
 - I then wrote a  [_tdivdemo()](https://github.com/rahlk/Research/blob/master/kontrastSets/kontrastsets.py#L75) to create the decision tree. It works like a charm, if I may add. Here's what I get for `_tdivdemo(file='data/nasa93dem.csv')`
 ```
 .cat2=2	:400 #3
@@ -33,5 +33,11 @@ def csv2py(self, filename):
 .cat2=103	:472 #2
 |...project=118	:64 #1 100% * 4
 .cat2=147	:848 #1 25% * 4
-
 ```
+
+### Issues
+- The files lib.py, settings.py in the where repo are different and incompatible with the file having the same filename in the axe repo. I had to rename them to get them working.
+
+- In [nasa93.py](https://github.com/ai-se/where/blob/master/nasa93.py#L18) I noticed the variables have numeric values assigned to them, I guess their values are arbitrary given the way AHA distance works. Am I correct in making this assumption?
+
+
