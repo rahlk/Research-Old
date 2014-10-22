@@ -40,4 +40,7 @@ def csv2py(self, filename):
 
 - In [nasa93.py](https://github.com/ai-se/where/blob/master/nasa93.py#L18) I noticed the variables have numeric values assigned to them, I guess their values are arbitrary given the way AHA distance works. Am I correct in making this assumption?
 
-
+### What I hope to accomplish this week
+- Modify the neighbor function in [where2](https://github.com/ai-se/where/blob/master/where2.py#L302) to do a breadth search.
+- Apply the leave-one-out policy and see where the row lands in the decision tree.
+- Endeavor to generate the contrast sets.
