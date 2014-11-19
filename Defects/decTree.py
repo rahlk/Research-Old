@@ -1,5 +1,5 @@
 from __future__ import division
-import sys,pdb
+import sys,pdb, os
 from lib    import *
 import libWhere
 from dtree import tdiv, showTdiv
@@ -170,7 +170,7 @@ def _tdivPrec(dir='camel/'):
  #==============================================================================
  # Recursively clustering the model.
  #==============================================================================
- train=['camel-1.0.csv', 'camel-1.2.csv', 'camel-1.2.csv']
+ train=['camel-1.0.csv', 'camel-1.2.csv', 'camel-1.4.csv']
  test=['camel-1.6.csv']
  rseed(1)
  makeaModel=makeAModel()
@@ -194,7 +194,7 @@ def _tdivPrec(dir='camel/'):
   _rows+=Rows
   tbl2=makeMeATable(tbl, headerLabel, _rows)
  
- # Test case!
+ # Test case
  _rows=[]
  for tt in test:
   file=dir+tt
@@ -212,16 +212,36 @@ def _tdivPrec(dir='camel/'):
      Rows.append(j.cells)
   _rows+=Rows
   tbl3=makeMeATable(tbl, headerLabel, _rows)
+ 
+ def isdefective(case, test=False):
+  if not test:
+   return 'Defect' if case.cells[-2]>0 else 'No Defect' 
+  else:
+   return 'Defect' if not median([r.cells[-2] for r in case.rows])==0 else 'No Defect'
   
  testCase=tbl3._rows
- print testCase 
+ #print testCase 
  t=discreteNums(tbl2, map(lambda x: x.cells, tbl2._rows))
  myTree=tdiv(t) 
- showTdiv(myTree)
- loc = leaveOneOut(testCase[randi(0, len(testCase))], myTree)
+ testDefective=[]
+ defectivClust=[]
+ #showTdiv(myTree)
+ for tC in testCase:
+  loc = leaveOneOut(tC, myTree)
+  if len(loc.kids)==0:
+   testDefective.append(isdefective(tC))
+   defectivClust.append(isdefective(loc, test=True))
  contrastSet = getContrastSet(loc, myTree)
- print 'Contrast Set:', contrastSet
+ #print 'Contrast Set:', contrastSet
+ return [testDefective, defectivClust]
+ 
 
 
 if __name__ == '__main__':
- _tdivPrec(dir='camel/')
+ [test, train]=_tdivPrec(dir='camel/');
+ print test
+ print train
+ sys.path.insert(0, '/Users/rkrsn/git/axe/axe')
+ from abcd import _runAbcd
+ _runAbcd(train=train, test=test)
+ 

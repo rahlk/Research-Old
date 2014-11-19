@@ -33,7 +33,7 @@ def fastmap(m, data):
   one = any(data)  # 1) pick anything
   west = furthest(m, one, data)  # 2) west is as far as you can go from anything
   east = furthest(m, west, data)  # 3) east is as far as you can go from west
-  c = dist(m, west, east)
+  c = dist(m, west, east)+1e-5
   # now find everyone's distance
   lst = []
   for one in data:
@@ -273,7 +273,7 @@ def scores(m, it):
       if m.w[c] < 0: 
         tmp = 1 - tmp
       new += (tmp ** 2) 
-    it.score = (new ** 0.5) / (w ** 0.5)
+    it.score = (new ** 0.5) / (w ** 0.5 + 1e-4)
     it.scored = True
   return it.score
 """
