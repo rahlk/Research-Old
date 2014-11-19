@@ -11,6 +11,7 @@ from settingsWhere import *
 from settings import *
 import random, numpy as np
 randi=random.randint
+rseed=random.seed
 
 def say(text):
  sys.stdout.write(str(text)), sys.stdout.write(' ')
@@ -73,28 +74,7 @@ class makeAModel(object):
   return self.data(indep=[i.name for i in tbl.indep],
                    less=[i.name for i in tbl.depen],
                    _rows=map(lambda x: [tonum(xx) for xx in x.cells], tbl._rows))
-              
- def concat(self,dir, lst):
-  filenames=[dir+file for file in lst]
-  print filenames
-  rows=[];
-  for f in filenames:
-   print f
-   tbl=table(f)
-   self.str2num(tbl)
-   tonum= lambda x: self.translate[x] if isinstance(x,str) else x
-   
-   for indx, k in enumerate(tbl.indep):
-    for l in tbl.depen:
-     if k.name==l.name:
-      tbl.indep.pop(indx)
-      
-   rows += map(lambda x: [tonum(xx) for xx in x.cells], tbl._rows)  
-  
-  return self.data(indep=[i.name for i in tbl.indep],
-                   less=[i.name for i in tbl.depen],
-                   _rows=rows)
-   
+        
   
   
 def makeMeATable(tbl,headerLabel,Rows):
@@ -159,7 +139,7 @@ def _tdivdemo(file='data/nasa93dem.csv'):
  #==============================================================================
  makeaModel=makeAModel()
  m=makeaModel.csv2py(file)
- 
+ rseed(1)
  #alias =  dict (zip(makeaModel.translate.values(),makeaModel.translate.keys()))
  #print alias
  #def num2str(lst):
@@ -188,13 +168,15 @@ def _tdivdemo(file='data/nasa93dem.csv'):
 
 def _tdivPrec(dir='camel/'): 
  #==============================================================================
- # We start by recursively clustering the model.
+ # Recursively clustering the model.
  #==============================================================================
- train=['ant-1.3.csv', 'ant-1.4.csv', 'ant-1.5.csv', 'ant-1.6.csv']
- test=['ant-1.7.csv']
- 
+ train=['camel-1.0.csv', 'camel-1.2.csv', 'camel-1.2.csv']
+ test=['camel-1.6.csv']
+ rseed(1)
  makeaModel=makeAModel()
  _rows=[]
+ 
+ # Concatenate training cases
  for t in train:
   file=dir+t
   m=makeaModel.csv2py(file)
@@ -210,17 +192,36 @@ def _tdivPrec(dir='camel/'):
      j.__dict__.update({'cells': tmp})
      Rows.append(j.cells)
   _rows+=Rows
- print len(_rows)
- tbl2=makeMeATable(tbl, headerLabel, _rows)
- #print 
- #testCase=[tbl2._rows.pop(randi(0, len(tbl2._rows))) for k in xrange(500)]
+  tbl2=makeMeATable(tbl, headerLabel, _rows)
+ 
+ # Test case!
+ _rows=[]
+ for tt in test:
+  file=dir+tt
+  m=makeaModel.csv2py(file)
+  prepare(m) # Initialize all parameters for where2 to run
+  tree=where2(m, m._rows) # Decision tree using where2
+  tbl = table(file)  
+  headerLabel='=klass'
+  Rows=[]
+  for k,_ in leaves(tree):
+   for j in k.val:
+     tmp=(j.cells)
+     tmp.append('_'+str(id(k) % 1000)) 
+     j.__dict__.update({'cells': tmp})
+     Rows.append(j.cells)
+  _rows+=Rows
+  tbl3=makeMeATable(tbl, headerLabel, _rows)
+  
+ testCase=tbl3._rows
+ print testCase 
  t=discreteNums(tbl2, map(lambda x: x.cells, tbl2._rows))
  myTree=tdiv(t) 
  showTdiv(myTree)
- #loc = leaveOneOut(testCase[randi(0, len(testCase))], myTree)
- #contrastSet = getContrastSet(loc, myTree)
- #print 'Contrast Set:', contrastSet
+ loc = leaveOneOut(testCase[randi(0, len(testCase))], myTree)
+ contrastSet = getContrastSet(loc, myTree)
+ print 'Contrast Set:', contrastSet
 
 
 if __name__ == '__main__':
- _tdivPrec(dir='ant/')
+ _tdivPrec(dir='camel/')
