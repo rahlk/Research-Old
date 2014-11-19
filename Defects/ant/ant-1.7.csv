@@ -1,4 +1,4 @@
-name,version,name,wmc,dit,noc,cbo,rfc,lcom,ca,ce,npm,lcom3,loc,dam,moa,mfa,cam,ic,cbm,amc,max_cc,avg_cc,bug
+?.name,?$version,?.Name,$wmc,$dit,$noc,$cbo,$rfc,$lcom,$ca,$ce,$npm,$lcom3,$loc,$dam,$moa,$mfa,$cam,$ic,$cbm,$amc,$max_cc,$avg_cc,$<bug
 ant,1.7,org.apache.tools.ant.taskdefs.rmic.RmicAdapterFactory,3,1,0,10,18,3,1,9,1,1.1,106,0,0,0,0.444444444,0,0,32.66666667,1,0.6667,0
 ant,1.7,org.apache.tools.ant.taskdefs.optional.perforce.FStatP4OutputHandler,5,2,0,4,13,0,1,4,4,0.625,76,1,1,0.7,0.5,0,0,13.4,1,0.6,0
 ant,1.7,org.apache.tools.ant.taskdefs.optional.junit.OutErrSummaryJUnitResultFormatter,1,2,0,1,3,0,0,1,1,2,7,0,0,1,1,0,0,6,0,0,0
