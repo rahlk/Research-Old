@@ -217,7 +217,10 @@ def _tdivPrec(dir='camel/'):
   if not test:
    return 'Defect' if case.cells[-2]>0 else 'No Defect' 
   else:
-   return 'Defect' if not median([r.cells[-2] for r in case.rows])==0 else 'No Defect'
+   from scipy.stats import mode
+   bug=np.median([r.cells[-2] for r in case.rows]); 
+   #print [r.cells[-2] for r in case.rows]
+   return 'Defect' if bug>0.5 else 'No Defect'
   
  testCase=tbl3._rows
  #print testCase 
@@ -225,12 +228,12 @@ def _tdivPrec(dir='camel/'):
  myTree=tdiv(t) 
  testDefective=[]
  defectivClust=[]
- #showTdiv(myTree)
+ showTdiv(myTree)
  for tC in testCase:
   loc = leaveOneOut(tC, myTree)
-  if len(loc.kids)==0:
-   testDefective.append(isdefective(tC))
-   defectivClust.append(isdefective(loc, test=True))
+  #if len(loc.kids)==0:
+  testDefective.append(isdefective(tC))
+  defectivClust.append(isdefective(loc, test=True))
  contrastSet = getContrastSet(loc, myTree)
  #print 'Contrast Set:', contrastSet
  return [testDefective, defectivClust]
@@ -238,10 +241,16 @@ def _tdivPrec(dir='camel/'):
 
 
 if __name__ == '__main__':
- [test, train]=_tdivPrec(dir='camel/');
- print test
- print train
- sys.path.insert(0, '/Users/rkrsn/git/axe/axe')
- from abcd import _runAbcd
- _runAbcd(train=train, test=test)
- 
+ G=[]; reps=10
+ for _ in xrange(reps):
+  [test, train]=_tdivPrec(dir='camel/');
+  #print test
+  #print train
+  sys.path.insert(0, '/Users/rkrsn/git/axe/axe')
+  from abcd import _runAbcd
+  import sk; xtile=sk.xtile
+  g = _runAbcd(train=train, test=test, verbose=True)
+  G.append(g)
+ G.insert(0,'Test1')
+ print G
+ print xtile(G)
