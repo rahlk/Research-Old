@@ -387,10 +387,11 @@ def prepare(m):
     s = scores(m, r)
     told += s
   global The
-  The = defaults().update(verbose=True,
-               minSize=len(m._rows) ** 0.5,
+  The = defaults().update(verbose=False,
+               minSize=2, # len(m._rows) ** 0.5
                prune=False,
                wriggle=0.3 * told.sd())
+  return The
 
 def _where(m=nasa93):
   m = m()

@@ -170,8 +170,10 @@ def _tdivPrec(dir='camel/'):
  #==============================================================================
  # Recursively clustering the model.
  #==============================================================================
- train=['camel-1.0.csv', 'camel-1.2.csv', 'camel-1.4.csv']
+ train=['camel-1.0.csv']#, 'camel-1.2.csv', 'camel-1.4.csv']
  test=['camel-1.6.csv']
+ train=['ant-1.3.csv']#, 'ant-1.4.csv', 'ant-1.5.csv', 'ant-1.6.csv']
+ test=['ant-1.4.csv']
  rseed(1)
  makeaModel=makeAModel()
  _rows=[]
@@ -218,7 +220,8 @@ def _tdivPrec(dir='camel/'):
    return 'Defect' if case.cells[-2]>0 else 'No Defect' 
   else:
    from scipy.stats import mode
-   bug=np.median([r.cells[-2] for r in case.rows]); 
+   tmp=[r.cells[-2] for r in case.rows]; 
+   bug=np.median(tmp); print sorted(tmp), (sorted(tmp)[0]+sorted(tmp)[-1])/2
    #print [r.cells[-2] for r in case.rows]
    return 'Defect' if bug>0.5 else 'No Defect'
   
@@ -241,9 +244,9 @@ def _tdivPrec(dir='camel/'):
 
 
 if __name__ == '__main__':
- G=[]; reps=10
+ G=[]; reps=1
  for _ in xrange(reps):
-  [test, train]=_tdivPrec(dir='camel/');
+  [test, train]=_tdivPrec(dir='ant/');
   #print test
   #print train
   sys.path.insert(0, '/Users/rkrsn/git/axe/axe')
