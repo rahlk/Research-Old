@@ -91,6 +91,7 @@ def getContrastSet(loc, myTree):
   key = node.f.name
   Val = node.val
   contrastSet.update({key: Val})
+  #print contrastSet
  def forget(key):
   del contrastSet[key]
  def objectiveScores(lst):
@@ -99,16 +100,16 @@ def getContrastSet(loc, myTree):
  def compare(node, test):
    leaves = [n for n in test.kids] if len(test.kids)>0 else [test]
    for k in leaves:
-    return objectiveScores(k)<objectiveScores(node)
+    return objectiveScores(k)<objectiveScores(node), [objectiveScores(k), objectiveScores(node)]
  def trackChanges(testing):
   lvl=testing.lvl
-  while not lvl==0:
+  while lvl>0:
+   lvl=testing.lvl
    remember(testing)
    testing=testing.up
  cost=0
  newNode=loc
- #print loc.__dict__
- print loc.lvl
+ print 'Test Case: '
  print 'Variable name: ', newNode.f.name, 'ID: ', newNode.mode, 'Value: ', newNode.val, 'Level: ', newNode.lvl+1
  print 'No. of Kids: ', len(newNode.kids)
  print 'Cost: ', cost
@@ -121,10 +122,10 @@ def getContrastSet(loc, myTree):
   cost+=1
  toScan = [neigh for neigh in newNode.kids if not loc==neigh]
  for testing in toScan:
-  isBetter=compare(loc, testing) 
+  isBetter, obj=compare(loc, testing) 
   if isBetter:
    trackChanges(testing)
-  print contrastSet
+ return contrastSet
 
  
 def leaveOneOut(test, tree):
@@ -137,11 +138,12 @@ def _tdivdemo(file='data/nasa93dem.csv'):
  #==============================================================================
  makeaModel=makeAModel()
  m=makeaModel.csv2py(file)
+ 
  #alias =  dict (zip(makeaModel.translate.values(),makeaModel.translate.keys()))
  #print alias
  #def num2str(lst):
  # return [alias[z] for z in lst]
-   
+ 
  prepare(m) # Initialize all parameters for where2 to run
  tree=where2(m, m._rows) # Decision tree using where2
  tbl = table(file)  
@@ -155,26 +157,12 @@ def _tdivdemo(file='data/nasa93dem.csv'):
     Rows.append(j.cells)
  tbl2=makeMeATable(tbl, headerLabel, Rows)
  print 
- testCase=[tbl2._rows.pop(k) for k in xrange(int(len(tbl2._rows)/6))]
- print testCase 
+ testCase=[tbl2._rows.pop(randi(0, len(tbl2._rows))) for k in xrange(500)]
  t=discreteNums(tbl2, map(lambda x: x.cells, tbl2._rows))
- print t.depen[0].__dict__ 
- #print t.depen[0].__dict__
  myTree=tdiv(t) 
  showTdiv(myTree)
- loc = leaveOneOut(testCase[randi(0,len(testCase))], myTree)
- #[say(z.cells) for z in loc.rows]
- getContrastSet(loc, myTree)
- #==============================================================================
- #for node, lvl in dtnodes(myTree):
-   #rows=map(lambda x:x.cells,node.rows)
-   #pdb.set_trace()
-   #print lvl, len(rows), [ k._id for k in node.rows]
- #============================================================================== 
- headerLabels={}
- [headerLabels.update({k.name:indx}) for indx, k in enumerate(tbl2.headers)]
+ loc = leaveOneOut(testCase[randi(0, len(testCase))], myTree)
+ contrastSet = getContrastSet(loc, myTree)
+ print 'Contrast Set:', contrastSet
  
- #for lvl, node in dtleaves(myTree):
-  #print lvl, len(node.rows), [k.cells for k in node.rows]
-
 _tdivdemo(file='data/ant-1.7.csv')

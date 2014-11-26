@@ -87,7 +87,6 @@ def _tdivdemo(file='data/nasa93dem.csv'):
   for j in k.val:
     tmp=j.cells
     tmp.append(id(k) % 1000) 
-    print tmp
     j.__dict__.update({'cells': tmp})
     Rows.append(j.cells)
   
