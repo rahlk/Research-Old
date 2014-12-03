@@ -180,7 +180,7 @@ def saveAs(x, num_bins):
  # add a 'best fit' line
  plt.xlabel('Bugs')
  plt.ylabel('Frequency')
- plt.title(r'Histogram (Mean Bugs in each class)')
+ plt.title(r'Histogram (Median Bugs in each class)')
 
  # Tweak spacing to prevent clipping of ylabel
  plt.subplots_adjust(left = 0.15)
@@ -196,7 +196,7 @@ def _tdivPrec(dir = 'camel/'):
   train = ['ant-1.3.csv', 'ant-1.4.csv', 'ant-1.5.csv']
   test = ['ant-1.6.csv']
  else:
-  train = ['camel-1.2.csv', 'camel-1.4.csv']  # , 'camel-1.4.csv']
+  train = ['camel-1.2.csv', 'camel-1.0.csv', 'camel-1.4.csv']  # , 'camel-1.4.csv']
   test = ['camel-1.6.csv']
  rseed(1)
  makeaModel = makeAModel()
