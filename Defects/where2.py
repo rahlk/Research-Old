@@ -10,7 +10,7 @@ WHERE2 updated an older where with new Python tricks.
 
 """
 from __future__ import division, print_function
-import  sys  
+import  sys
 sys.dont_write_bytecode = True
 from libWhere import *
 from settingsWhere  import *
@@ -33,7 +33,7 @@ def fastmap(m, data):
   one = any(data)  # 1) pick anything
   west = furthest(m, one, data)  # 2) west is as far as you can go from anything
   east = furthest(m, west, data)  # 3) east is as far as you can go from west
-  c = dist(m, west, east)+1e-5
+  c = dist(m, west, east) + 1e-5
   # now find everyone's distance
   lst = []
   for one in data:
@@ -68,7 +68,7 @@ objectives) using the _what_ parameter:
 
 """
 def dist(m, i, j,
-         what=lambda m: m.decisions):
+         what = lambda m: m.decisions):
   "Euclidean distance 0 <= d <= 1 between decisions"
   n = len(i.cells)
   deltas = 0
@@ -84,9 +84,9 @@ def dist(m, i, j,
 The _Dist_ function normalizes all the raw values zero to one.
 
 """
-def norm(m, c, val) : 
+def norm(m, c, val) :
   "Normalizes val in col c within model m 0..1"
-  
+
   return (atom(val) - atom(m.lo[c])) / (atom(m.hi[c]) - atom(m.lo[c]) + 0.0001)
 """
 
@@ -94,14 +94,14 @@ Now we can define _furthest_:
 
 """
 def furthest(m, i, all,
-             init=0,
-             better=gt):
+             init = 0,
+             better = gt):
   "find which of all is furthest from 'i'"
   out, d = i, init
   for j in all:
     if i == j: continue
     tmp = dist(m, i, j)
-    if better(tmp, d): 
+    if better(tmp, d):
       out, d = j, tmp
   return out
 """
@@ -110,7 +110,7 @@ And of course, _closest_:
 
 """
 def closest(m, i, all):
-  return furthest(m, i, all, init=10 ** 32, better=lt)
+  return furthest(m, i, all, init = 10 ** 32, better = lt)
 """
 
 ## WHERE2 = Recursive Fastmap
@@ -134,7 +134,7 @@ function prints out a little tree showing the
 progress (and to print indents in that tree, we use
 the string _The.b4_).  For example, here's WHERE2
 dividing 93 examples from NASA93.
- 
+
     ---| _where |-----------------
     93
     |.. 46
@@ -173,25 +173,25 @@ WHERE2 returns clusters, where each cluster contains
 multiple solutions.
 
 """
-def where2(m, data, lvl=0, up=None, verbose= False):
-  node = o(val=None, _up=up, _kids=[])
+def where2(m, data, lvl = 0, up = None, verbose = False):
+  node = o(val = None, _up = up, _kids = [])
   def tooDeep(): return lvl > The.what.depthMax
   def tooFew() : return len(data) < The.what.minSize
-  def show(suffix): 
-    if verbose: 
+  def show(suffix):
+    if verbose:
       print(The.what.b4 * lvl, len(data),
-            suffix, ' ; ', id(node) % 1000, sep='')
+            suffix, ' ; ', id(node) % 1000, sep = '')
   if tooDeep() or tooFew():
     show(".")
     node.val = data
   else:
     show("")
     wests, west, easts, east, c = fastmap(m, data)
-    node.update(c=c, east=east, west=west)
+    node.update(c = c, east = east, west = west)
     goLeft, goRight = maybePrune(m, lvl, west, east)
-    if goLeft: 
+    if goLeft:
       node._kids += [where2(m, wests, lvl + 1, node)]
-    if goRight: 
+    if goRight:
       node._kids += [where2(m, easts, lvl + 1, node)]
   return node
 """
@@ -204,7 +204,7 @@ domination between the poles and ignores data in
 halves with a dominated pole. This means that for
 _N_ solutions we only ever have to evaluate
 _2*log(N)_ of them- which is useful if each
-evaluation takes a long time.  
+evaluation takes a long time.
 
 The niches found in this way
 contain non-dominated poles; i.e. they are
@@ -247,7 +247,7 @@ WHERE2 talks to models via the the following model-specific variables:
 + _m.eval(m,eg)_: function for computing variables from _eg_.
 + _m.lo[c]_ : the lowest value in column _c_.
 + _m.hi[c]_ : the highest value in column _c_.
-+ _m.w[c]_: the weight for each column. Usually equal to one. 
++ _m.w[c]_: the weight for each column. Usually equal to one.
   If an objective and if we are minimizing  that objective, then the weight is negative.
 
 
@@ -258,7 +258,7 @@ useful general functions.
 
 """
 def some(m, x) :
-  "with variable x of model m, pick one value at random" 
+  "with variable x of model m, pick one value at random"
   return m.lo[x] + by(m.hi[x] - m.lo[x])
 
 def scores(m, it):
@@ -270,9 +270,9 @@ def scores(m, it):
       val = it.cells[c]
       w += abs(m.w[c])
       tmp = norm(m, c, val)
-      if m.w[c] < 0: 
+      if m.w[c] < 0:
         tmp = 1 - tmp
-      new += (tmp ** 2) 
+      new += (tmp ** 2)
     it.score = (new ** 0.5) / (w ** 0.5 + 1e-4)
     it.scored = True
   return it.score
@@ -285,7 +285,7 @@ Tools for manipulating the tree returned by _where2_.
 ### Primitive: Walk the nodes
 
 """
-def nodes(tree, seen=None, steps=0):
+def nodes(tree, seen = None, steps = 0):
   if seen is None: seen = []
   if tree:
    if not id(tree) in seen:
@@ -299,7 +299,7 @@ def nodes(tree, seen=None, steps=0):
 ### Return nodes that are leaves
 
 """
-def leaves(tree, seen=None, steps=0):
+def leaves(tree, seen = None, steps = 0):
   for node, steps1 in nodes(tree, seen, steps):
     if not node._kids:
       yield node, steps1
@@ -309,7 +309,7 @@ def leaves(tree, seen=None, steps=0):
 
 """
 # walk sideways..
-def neighbors(leaf, seen=None, steps=-1):
+def neighbors(leaf, seen = None, steps = -1):
   """Walk the tree from 'leaf' increasingly
      distant leaves. """
   if seen is None: seen = []
@@ -324,7 +324,7 @@ def neighbors(leaf, seen=None, steps=-1):
 
 
 """
-def around(leaf, f=lambda x: x):
+def around(leaf, f = lambda x: x):
   tmp, last = [], None
   for node, dist in neighbors(leaf):
     if dist > 0:
@@ -347,7 +347,7 @@ def around(leaf, f=lambda x: x):
 def _scores():
   m = nasa93()
   out = []
-  for row in m._rows: 
+  for row in m._rows:
     scores(m, row)
     out += [(row.score, [row.cells[c] for c in m.objectives])]
   for s, x in sorted(out):
@@ -358,7 +358,7 @@ def _scores():
 
 """
 # @go
-def _distances(m=nasa93):
+def _distances(m = nasa93):
    m = m()
    seed(The.seed)
    for i in m._rows:
@@ -383,17 +383,17 @@ def prepare(m):
   # m = m()
   seed(1)
   told = N()
-  for r in m._rows:
-    s = scores(m, r)
-    told += s
+#   for r in m._rows:
+#     s = scores(m, r)
+#     told += s
   global The
-  The = defaults().update(verbose=False,
-               minSize=2, # len(m._rows) ** 0.5
-               prune=False,
-               wriggle=0.3 * told.sd())
+  The = defaults().update(verbose = False,
+               minSize = len(m._rows) ** 0.5,
+               prune = False,
+               wriggle = 0.3 * told.sd())
   return The
 
-def _where(m=nasa93):
+def _where(m = nasa93):
   m = m()
   seed(1)
   told = N()
@@ -401,17 +401,17 @@ def _where(m=nasa93):
     s = scores(m, r)
     told += s
   global The
-  The = defaults().update(verbose=True,
-               minSize=len(m._rows) ** 0.5,
-               prune=False,
-               wriggle=0.3 * told.sd())
+  The = defaults().update(verbose = True,
+               minSize = len(m._rows) ** 0.5,
+               prune = False,
+               wriggle = 0.3 * told.sd())
   tree = where2(m, m._rows)
   n = 0
   for node, _ in leaves(tree):
-   ID=id(node) % 1000
-   
+   ID = id(node) % 1000
+
    print(node.val)
-   
+
    """
     print(m,' ',end="")
     n += m
@@ -420,12 +420,12 @@ def _where(m=nasa93):
      print(dist,id(near) % 1000,' ',end='')
     print("")
   print(n)
-  
+
   filter = lambda z: id(z) % 1000
   for node,_ in leaves(tree):
-    print(filter(node), 
+    print(filter(node),
           [x for x in around(node,filter)])
           """
-         
-          
+
+
 
