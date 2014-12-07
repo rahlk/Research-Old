@@ -172,8 +172,8 @@ def _tdivPrec(dir='camel/'):
  #==============================================================================
  train=['camel-1.0.csv']#, 'camel-1.2.csv', 'camel-1.4.csv']
  test=['camel-1.6.csv']
- train=['ant-1.3.csv']#, 'ant-1.4.csv', 'ant-1.5.csv', 'ant-1.6.csv']
- test=['ant-1.4.csv']
+ train=['ant-1.3.csv', 'ant-1.4.csv', 'ant-1.5.csv', 'ant-1.6.csv']
+ test=['ant-1.7.csv']
  rseed(1)
  makeaModel=makeAModel()
  _rows=[]
@@ -221,7 +221,7 @@ def _tdivPrec(dir='camel/'):
   else:
    from scipy.stats import mode
    tmp=[r.cells[-2] for r in case.rows]; 
-   bug=np.median(tmp); print sorted(tmp), (sorted(tmp)[0]+sorted(tmp)[-1])/2
+   bug=np.mean(tmp); print sorted(tmp), (sorted(tmp)[0]+sorted(tmp)[-1])/2
    #print [r.cells[-2] for r in case.rows]
    return 'Defect' if bug>0.5 else 'No Defect'
   
@@ -231,7 +231,7 @@ def _tdivPrec(dir='camel/'):
  myTree=tdiv(t) 
  testDefective=[]
  defectivClust=[]
- showTdiv(myTree)
+ #showTdiv(myTree)
  for tC in testCase:
   loc = leaveOneOut(tC, myTree)
   #if len(loc.kids)==0:
@@ -244,7 +244,7 @@ def _tdivPrec(dir='camel/'):
 
 
 if __name__ == '__main__':
- G=[]; reps=1
+ G=[]; reps=10
  for _ in xrange(reps):
   [test, train]=_tdivPrec(dir='ant/');
   #print test
@@ -252,8 +252,8 @@ if __name__ == '__main__':
   sys.path.insert(0, '/Users/rkrsn/git/axe/axe')
   from abcd import _runAbcd
   import sk; xtile=sk.xtile
-  g = _runAbcd(train=train, test=test, verbose=True)
+  g = _runAbcd(train=train, test=test, verbose=False)
   G.append(g)
- G.insert(0,'Test1')
+ #G.insert(0,'Test1')
  print G
  print xtile(G)
