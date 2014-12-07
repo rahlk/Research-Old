@@ -142,18 +142,14 @@ def leaveOneOut(test, tree):
  loc = apex(test, tree)
  return loc
 
-def _tdivdemo(file = 'data/nasa93dem.csv'):
+def _tdivdemo(file = 'Data/'):
  #==============================================================================
  # We start by recursively clustering the model.
  #==============================================================================
  makeaModel = makeAModel()
  m = makeaModel.csv2py(file)
  rseed(1)
- # alias =  dict (zip(makeaModel.translate.values(), makeaModel.translate.keys()))
- # print alias
- # def num2str(lst):
- # return [alias[z] for z in lst]
-
+ 
  prepare(m)  # Initialize all parameters for where2 to run
  tree = where2(m, m._rows)  # Decision tree using where2
  tbl = table(file)
@@ -187,32 +183,38 @@ def saveAs(x, num_bins):
  plt.savefig('hist.jpg')
  plt.close()
 
-
+def explore(dir):
+ from os import walk
+ datasets = []
+ for (dirpath, dirnames, filenames) in walk(dir):
+    datasets.append(dirpath)
+ 
+ training=[]
+ testing=[]   
+ for k in datasets[1:]:
+  train=[[dirPath,fname] for dirPath,_,fname in walk(k)]
+  print train[0][1]
+  test=[train[0][0]+train[0][1].pop(-1)]
+  training.append([train[0][0]+'/'+p for p in train[0][1] if not p=='.DS_Store']); 
+  testing.append(test) 
+ 
+ return training, testing
 def _tdivPrec(dir = 'camel/'):
  #==============================================================================
  # Recursively clustering the model.
  #==============================================================================
-<<<<<<< HEAD
- train=['camel-1.0.csv']#, 'camel-1.2.csv', 'camel-1.4.csv']
- test=['camel-1.6.csv']
- train=['ant-1.3.csv', 'ant-1.4.csv', 'ant-1.5.csv', 'ant-1.6.csv']
- test=['ant-1.7.csv']
-=======
- if dir == 'ant/':
-  train = ['ant-1.3.csv', 'ant-1.4.csv', 'ant-1.5.csv']
-  test = ['ant-1.6.csv']
- else:
-  train = ['camel-1.2.csv', 'camel-1.0.csv', 'camel-1.4.csv']  # , 'camel-1.4.csv']
-  test = ['camel-1.6.csv']
->>>>>>> 88820902f27060c37d96140f3171c4d00409b671
+ 
+ train, test = explore(dir)
+ print len(test)
+ 
  rseed(1)
  makeaModel = makeAModel()
  _rows = []
-
+ 
  # Concatenate training cases
  # Concatenate training cases
  for t in train:
-  file = dir + t
+  file = t
   m = makeaModel.csv2py(file)
   # prepare(m)  # Initialize all parameters for where2 to run
   # tree = where2(m, m._rows)  # Decision tree using where2
@@ -253,22 +255,6 @@ def _tdivPrec(dir = 'camel/'):
   if not test:
    return 'Defect' if case.cells[-2] > 0 else 'No Defect'
   else:
-
-   from scipy.stats import mode
-<<<<<<< HEAD
-   tmp=[r.cells[-2] for r in case.rows]; 
-   bug=np.mean(tmp); print sorted(tmp), (sorted(tmp)[0]+sorted(tmp)[-1])/2
-   #print [r.cells[-2] for r in case.rows]
-   return 'Defect' if bug>0.5 else 'No Defect'
-  
- testCase=tbl3._rows
- #print testCase 
- t=discreteNums(tbl2, map(lambda x: x.cells, tbl2._rows))
- myTree=tdiv(t) 
- testDefective=[]
- defectivClust=[]
- #showTdiv(myTree)
-=======
    bugs = [r.cells[-2] for r in case.rows];
    meanBugs = np.mean(bugs);
    medianBugs = np.median(bugs);
@@ -277,6 +263,14 @@ def _tdivPrec(dir = 'camel/'):
    # print [r.cells[-2] for r in case.rows]
    return 'Defect' if meanBugs > 1.5 else 'No Defect'
 
+ testCase=tbl3._rows
+ #print testCase 
+ t=discreteNums(tbl2, map(lambda x: x.cells, tbl2._rows))
+ myTree=tdiv(t) 
+ testDefective=[]
+ defectivClust=[]
+ #showTdiv(myTree)
+
  testCase = tbl3._rows
  # print testCase
  t = discreteNums(tbl2, map(lambda x: x.cells, tbl2._rows))
@@ -284,7 +278,7 @@ def _tdivPrec(dir = 'camel/'):
  testDefective = []
  defectivClust = []
  showTdiv(myTree)
->>>>>>> 88820902f27060c37d96140f3171c4d00409b671
+
  for tC in testCase:
   loc = leaveOneOut(tC, myTree)
   # if len(loc.kids)==0:
@@ -299,10 +293,10 @@ def _tdivPrec(dir = 'camel/'):
 
 
 if __name__ == '__main__':
-<<<<<<< HEAD
+
  G=[]; reps=10
  for _ in xrange(reps):
-  [test, train]=_tdivPrec(dir='ant/');
+  [test, train]=_tdivPrec(dir='Data/');
   #print test
   #print train
   sys.path.insert(0, '/Users/rkrsn/git/axe/axe')
@@ -313,7 +307,7 @@ if __name__ == '__main__':
  #G.insert(0,'Test1')
  print G
  print xtile(G)
-=======
+
  G = []; reps = 1
  for _ in xrange(reps):
   [test, train] = _tdivPrec(dir = 'camel/');
@@ -327,4 +321,4 @@ if __name__ == '__main__':
  # G.insert(0, 'Test1')
  # print G
  # print xtile(G)
->>>>>>> 88820902f27060c37d96140f3171c4d00409b671
+
