@@ -208,12 +208,12 @@ def _tdivPrec(dir = 'camel/'):
    test = [train[0][0] + '/' + train[0][1].pop(-1)]
    training.append([train[0][0] + '/' + p for p in train[0][1] if not p == '.DS_Store']);
    testing.append(test)
-   return training, testing
+  return training, testing
 
  train, test = explore(dir)
  _r = []
- pdb.set_trace()
- for t in train[0]:
+ # pdb.set_trace()
+ for t in train[10]:
   m = makeaModel.csv2py(t)
   _r += m._rows
  m._rows = _r
@@ -232,7 +232,7 @@ def _tdivPrec(dir = 'camel/'):
  tbl2 = makeMeATable(tbl, headerLabel, Rows)
 
  _r = []
- for tt in test:
+ for tt in test[10]:
   mTst = makeaModel.csv2py(tt)
   _r += mTst._rows
 
@@ -318,4 +318,4 @@ if __name__ == '__main__':
   G.append(g)
  # G.insert(0, 'Test1')
  # print G
-  print xtile(G)
+ print xtile(G)
