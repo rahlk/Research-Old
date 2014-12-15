@@ -1,5 +1,6 @@
 from __future__ import division
 import sys, pdb, os
+sys.path.append('/Users/rkrsn/git/axe/axe')
 from lib    import *
 import libWhere
 from dtree import tdiv, showTdiv
@@ -172,7 +173,8 @@ def _tdivdemo(file = 'Data/'):
  # print 'Contrast Set:', contrastSet
 
 def saveAs(x, num_bins):
- n, bins, patches = plt.hist(x, num_bins, normed = False, facecolor = 'blue', alpha = 0.5)
+ n, bins, patches = plt.hist(x, num_bins, normed = False, 
+ 																												facecolor = 'blue', alpha = 0.5)
  # add a 'best fit' line
  plt.xlabel('Bugs')
  plt.ylabel('Frequency')
@@ -206,7 +208,8 @@ def _tdivPrec(dir = 'camel/'):
   for k in datasets[1:]:
    train = [[dirPath, fname] for dirPath, _, fname in walk(k)]
    test = [train[0][0] + '/' + train[0][1].pop(-1)]
-   training.append([train[0][0] + '/' + p for p in train[0][1] if not p == '.DS_Store']);
+   training.append([train[0][0] + '/' + p for p in train[0][1] \
+   																 if not p == '.DS_Store']);
    testing.append(test)
   return training, testing
 
@@ -292,26 +295,9 @@ def _tdivPrec(dir = 'camel/'):
 
 
 if __name__ == '__main__':
-#  G = []; reps = 10
-#  for _ in xrange(reps):
-#   [test, train] = _tdivPrec(dir = 'Data/');
-#   # print test
-#   # print train
-#   sys.path.insert(0, '/Users/rkrsn/git/axe/axe')
-#   from abcd import _runAbcd
-#   import sk; xtile = sk.xtile
-#   g = _runAbcd(train = train, test = test, verbose = False)
-#   G.append(g)
-#  # G.insert(0,'Test1')
-#  print G
-#  print xtile(G)
-#
  G = []; reps = 10
  for _ in xrange(reps):
   [test, train] = _tdivPrec(dir = 'Data/');
-  # print test
-  # print train
-  # sys.path.insert(0, '/Users/rkrsn/git/axe/axe')
   from abcd import _runAbcd  # @UnresolvedImport
   import sk; xtile = sk.xtile
   g = _runAbcd(train = train, test = test, verbose = True)
