@@ -149,7 +149,7 @@ def _tdivdemo(file = 'Data/'):
  makeaModel = makeAModel()
  m = makeaModel.csv2py(file)
  rseed(1)
- 
+
  prepare(m)  # Initialize all parameters for where2 to run
  tree = where2(m, m._rows)  # Decision tree using where2
  tbl = table(file)
@@ -183,73 +183,74 @@ def saveAs(x, num_bins):
  plt.savefig('hist.jpg')
  plt.close()
 
-def explore(dir):
- from os import walk
- datasets = []
- for (dirpath, dirnames, filenames) in walk(dir):
-    datasets.append(dirpath)
- 
- training=[]
- testing=[]   
- for k in datasets[1:]:
-  train=[[dirPath,fname] for dirPath,_,fname in walk(k)]
-  print train[0][1]
-  test=[train[0][0]+train[0][1].pop(-1)]
-  training.append([train[0][0]+'/'+p for p in train[0][1] if not p=='.DS_Store']); 
-  testing.append(test) 
- 
- return training, testing
+
 def _tdivPrec(dir = 'camel/'):
+
  #==============================================================================
  # Recursively clustering the model.
  #==============================================================================
- 
- train, test = explore(dir)
- print len(test)
- 
+
  rseed(1)
  makeaModel = makeAModel()
  _rows = []
- 
- # Concatenate training cases
- # Concatenate training cases
- for t in train:
-  file = t
-  m = makeaModel.csv2py(file)
-  # prepare(m)  # Initialize all parameters for where2 to run
-  # tree = where2(m, m._rows)  # Decision tree using where2
-  tbl = table(file)
-  headerLabel = '=klass'
-  Rows = []
-  # for k, _ in leaves(tree):
-  for j in m._rows:
-    tmp = (j.cells)
-    tmp.append(str(j.cells[tbl.depen[0].col]))
-    j.__dict__.update({'cells': tmp})
-    Rows.append(j.cells)
- _rows += Rows
- tbl2 = makeMeATable(tbl, headerLabel, _rows)
 
 
- # Test case
- _rows = []
+ def explore(dir):
+  from os import walk
+  datasets = []
+  for (dirpath, dirnames, filenames) in walk(dir):
+     datasets.append(dirpath)
+
+  training = []
+  testing = []
+  for k in datasets[1:]:
+   train = [[dirPath, fname] for dirPath, _, fname in walk(k)]
+   test = [train[0][0] + '/' + train[0][1].pop(-1)]
+   training.append([train[0][0] + '/' + p for p in train[0][1] if not p == '.DS_Store']);
+   testing.append(test)
+   return training, testing
+
+ train, test = explore(dir)
+ _r = []
+ pdb.set_trace()
+ for t in train[0]:
+  m = makeaModel.csv2py(t)
+  _r += m._rows
+ m._rows = _r
+ # print len(_r)
+ prepare(m)  # Initialize all parameters for where2 to run
+ tree = where2(m, m._rows)  # Decision tree using where2
+ tbl = table(t)
+ headerLabel = '=klass'
+ Rows = []
+ for k, _ in leaves(tree):  # for k, _ in leaves(tree):
+  for j in k.val:
+   tmp = (j.cells)
+   tmp.append('_' + str(id(k) % 1000))
+   j.__dict__.update({'cells': tmp})
+   Rows.append(j.cells)
+ tbl2 = makeMeATable(tbl, headerLabel, Rows)
+
+ _r = []
  for tt in test:
-  file = dir + tt
-  m = makeaModel.csv2py(file)
-  # prepare(m)  # Initialize all parameters for where2 to run
-  # tree = where2(m, m._rows)  # Decision tree using where2
-  tbl = table(file)
-  headerLabel = '=klass'
-  Rows = []
-  # for k, _ in leaves(tree):
-  for j in m._rows:
-    tmp = (j.cells)
-    tmp.append(str(j.cells[tbl.depen[0].col]))
-    j.__dict__.update({'cells': tmp})
-    Rows.append(j.cells)
- _rows += Rows
- tbl3 = makeMeATable(tbl, headerLabel, _rows)
- tmp = []
+  mTst = makeaModel.csv2py(tt)
+  _r += mTst._rows
+
+  mTst._rows = _r
+ # print len(_r)
+ prepare(mTst)  # Initialize all parameters for where2 to run
+ tree = where2(mTst, mTst._rows)  # Decision tree using where2
+ tbl = table(tt)
+ headerLabel = '=klass'
+ Rows = []
+ for k, _ in leaves(tree):  # for k, _ in leaves(tree):
+  for j in k.val:
+   tmp = (j.cells)
+   tmp.append('_' + str(id(k) % 1000))
+   j.__dict__.update({'cells': tmp})
+   Rows.append(j.cells)
+ tbl3 = makeMeATable(tbl, headerLabel, Rows)
+
 
  def isdefective(case, test = False):
   if not test:
@@ -263,21 +264,18 @@ def _tdivPrec(dir = 'camel/'):
    # print [r.cells[-2] for r in case.rows]
    return 'Defect' if meanBugs > 1.5 else 'No Defect'
 
- testCase=tbl3._rows
- #print testCase 
- t=discreteNums(tbl2, map(lambda x: x.cells, tbl2._rows))
- myTree=tdiv(t) 
- testDefective=[]
- defectivClust=[]
- #showTdiv(myTree)
-
  testCase = tbl3._rows
  # print testCase
- t = discreteNums(tbl2, map(lambda x: x.cells, tbl2._rows))
- myTree = tdiv(t)
+
  testDefective = []
  defectivClust = []
- showTdiv(myTree)
+
+ t = discreteNums(tbl2, map(lambda x: x.cells, tbl2._rows))
+ myTree = tdiv(t)
+ # showTdiv(myTree)
+
+ testCase = tbl3._rows
+#   # print testCase
 
  for tC in testCase:
   loc = leaveOneOut(tC, myTree)
@@ -285,32 +283,32 @@ def _tdivPrec(dir = 'camel/'):
   testDefective.append(isdefective(tC))
   defectivClust.append(isdefective(loc, test = True))
 
- saveAs(tmp, 10)
-
- contrastSet = getContrastSet(loc, myTree)
- # print 'Contrast Set:', contrastSet
+#
+#   saveAs(tmp, 10)
+#
+#   contrastSet = getContrastSet(loc, myTree)
+#   # print 'Contrast Set:', contrastSet
  return [testDefective, defectivClust]
 
 
 if __name__ == '__main__':
-
- G=[]; reps=10
+#  G = []; reps = 10
+#  for _ in xrange(reps):
+#   [test, train] = _tdivPrec(dir = 'Data/');
+#   # print test
+#   # print train
+#   sys.path.insert(0, '/Users/rkrsn/git/axe/axe')
+#   from abcd import _runAbcd
+#   import sk; xtile = sk.xtile
+#   g = _runAbcd(train = train, test = test, verbose = False)
+#   G.append(g)
+#  # G.insert(0,'Test1')
+#  print G
+#  print xtile(G)
+#
+ G = []; reps = 10
  for _ in xrange(reps):
-  [test, train]=_tdivPrec(dir='Data/');
-  #print test
-  #print train
-  sys.path.insert(0, '/Users/rkrsn/git/axe/axe')
-  from abcd import _runAbcd
-  import sk; xtile=sk.xtile
-  g = _runAbcd(train=train, test=test, verbose=False)
-  G.append(g)
- #G.insert(0,'Test1')
- print G
- print xtile(G)
-
- G = []; reps = 1
- for _ in xrange(reps):
-  [test, train] = _tdivPrec(dir = 'camel/');
+  [test, train] = _tdivPrec(dir = 'Data/');
   # print test
   # print train
   # sys.path.insert(0, '/Users/rkrsn/git/axe/axe')
@@ -320,5 +318,4 @@ if __name__ == '__main__':
   G.append(g)
  # G.insert(0, 'Test1')
  # print G
- # print xtile(G)
-
+  print xtile(G)
