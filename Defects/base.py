@@ -1,5 +1,5 @@
-import sys
-sys.path += ['./_imports'];
+import sys, os
+sys.path.append(os.environ['HOME']+'/git/axe/axe')
 from abcd import _runAbcd  # @UnresolvedImport
 import sk;  # @UnresolvedImport
 from dectree import *
@@ -19,5 +19,4 @@ def main(dir = None):
   print xtile(G)
 
 if __name__ == '__main__':
- print sys.path
-#  main(dir = 'Data/')
+ main(dir = 'Data/')

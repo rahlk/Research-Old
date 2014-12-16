@@ -1,7 +1,8 @@
 from __future__ import division
 import sys, pdb, os
 from os import walk
-from lib    import *
+from lib import *
+sys.path.insert(0, os.getcwd() + '/_imports');
 import libWhere
 sys.dont_write_bytecode = True
 from dtree import *
