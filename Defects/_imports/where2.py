@@ -378,19 +378,11 @@ def _distances(m = nasa93):
 """
 
 
-def prepare(m):
+def prepare(wParam):
   "Prepare the 'The' class"
-  # m = m()
   seed(1)
-  told = N()
-#   for r in m._rows:
-#     s = scores(m, r)
-#     told += s
   global The
-  The = defaults().update(verbose = False,
-               minSize = len(m._rows) ** 0.5,
-               prune = False,
-               wriggle = 0.3 * told.sd())
+  The = wParam
   return The
 
 def _where(m = nasa93):

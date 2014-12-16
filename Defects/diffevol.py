@@ -6,6 +6,7 @@ from re import search
 import sk; rdivDemo=sk.rdivDemo
 sys.dont_write_bytecode = True
 exp=math.e
+from base import *
 
 def settings(**d): return o(
   name="Differention Evolution",
@@ -46,15 +47,26 @@ def _say(): sayln(1, 2, 3, 4)
 
 The = settings()
 
+class Close():
+  def __init__(self):
+    self.sum, self.n = [0] * 32, [0] * 32
+  def p(self, x):
+    for j in xrange(len(self.sum)):
+      mu = self.sum[j] / self.n[j] if self.n[j] else 0
+      if x > mu:
+        return self.n[j] / self.n[0]
+    return self.n[-1] / self.n[0]
+  def __iadd__(self, x):
+    for j in xrange(len(self.sum)):
+      self.sum[j] += x
+      self.n[j] += 1
+      mu = self.sum[j] / self.n[j]
+      if x >= mu: return self
+      if self.sum[j] < The.closeEnough: return self
+    return self
+  def close(self, x):
+    return self.p(x) < The.tiny
 
-def cmd(com=The.start):
-  if globals()["__name__"] == "__main__":
-    if len(sys.argv) == 3:
-      if sys.argv[1] == '--cmd':
-        com = sys.argv[2] + '()'
-    if len(sys.argv) == 4:
-        com = sys.argv[2] + '(' + sys.argv[3] + ')'
-    eval(com)
 
 class Col:
   def any(self): return None
@@ -125,6 +137,29 @@ class S(Col):
       w = y if rand() <= f else z 
       return x if rand() <= 0.5 else w
 
+class Bool(Col):
+  "For Booleans"
+  def __init__(self, col=0, items=[], name=None):
+    self.index = frozenset(items)
+    self.items = items
+    self.col = col
+    self.name = name 
+  def any(self):
+    return random.choice(self.items)
+  #def __iadd__(self, x): 
+   # return 
+  def dist(self, x, y): return 0 if x == y else 0
+  def fuse(self, x, w1, y, w2):
+    return x if rand() <= w1 / (w1 + w2) else y
+  def nudge(self, x, y, sampled=True):
+    return x if rand() < 0.33 else y
+  def extrapolate(self, x, y, z):
+    if rand() >= The.de.cf: 
+      return x
+    else:
+      w = y if rand() <= f else z 
+      return x if rand() <= 0.5 else w
+
 class O(Col):
   "for objectives"
   def __init__(self, col=0, f=lambda x: 1, name=None,
@@ -164,10 +199,81 @@ class Meta(Col):
   def __repr__(self):
     return self.of.name
 
+class Cols:
+ def __init__(self, factory, cols=[]):
+   self.cols = [Meta(self)] + cols
+   self.factory, self.name = factory, factory.__name__
+   self.nums = [];  self.syms = []; self.objs = []
+   for pos, header in enumerate(self.cols):
+     header.col = pos 
+     if isinstance(header, N): self.nums += [header]
+     if isinstance(header, S): self.syms += [header]
+     if isinstance(header, O): self.objs += [header]
+   self.indep = self.nums + self.syms
+   self.cl = Close()
+ def any(self): return [z.any() for z in self.cols]
+ def tell(self, lst): 
+   for z in self.indep: z += lst[z.col]
+ def score(self, l): return [z.score(l) for z in self.objs]
+ def nudge(self, lst1, lst2, sampled):
+   return [one.nudge(x, y, sampled) 
+           for x, y, one in vals(lst1, lst2, self.cols)]
+ def extrapolate(self, lst1, lst2, lst3):
+   tmp = [one.extrapolate(x, y, z) for x, y, z, one in 
+           vals3(lst1, lst2, lst3, self.cols)]
+   one = any(self.objs)
+   tmp[one.col] = lst1[one.col]
+   return tmp
+ def fuse(self, lst1, lst2):
+   w1 = lst1[0].weight
+   w2 = lst2[0].weight
+   return [one.fuse(x, w1, y, w2) 
+           for x, y, one in vals(lst1, lst2, self.cols)]
+ def fromHell(self, lst):
+   x, c = 0, len(self.objs)
+   for header in self.objs:
+     val = header.col
+     tmp = header.norm(val)
+     tmp = tmp if header.love else 1 - tmp
+     x += tmp ** 2
+   return x ** 0.5 / c ** 0.5
+ def dominates(self, lst1, lst2):
+   self.score(lst1)
+   self.score(lst2)
+   better = False
+   for x, y, obj in vals(lst1, lst2, self.objs):
+     if obj.worse(x, y) : return False
+     if obj.better(x, y): better = True
+   return better
+ def dist(self, lst1, lst2, peeking=False):
+   total, c = 0, len(self.indep)
+   for x, y, indep in vals(lst1, lst2, self.indep):
+     total += indep.dist(x, y) ** 2 
+   d = total ** 0.5 / c ** 0.5
+   if not peeking: self.cl += d    # Peeking? What's peeking?      
+   return d
+
+def vals(lst1, lst2, cols):
+  for c in cols:
+    yield lst1[c.col], lst2[c.col], c
+
+def vals3(lst1, lst2, lst3, cols):
+  for c in cols:
+    yield lst1[c.col], lst2[c.col], lst3[c.col], c
+
+def fromLine(a, b, c):
+    x = (a ** 2 + c ** 2 - b ** 2) / (2 * c)
+    return max(0, (a ** 2 - x ** 2)) ** 0.5
+
+def neighbors(m, lst1, pop):
+  return sorted([(m.dist(lst1, lst2), lst2) 
+                 for lst2 in pop 
+                 if not lst1[0].id == lst2[0].id])
+
 class diffEvol(object):
   "DE"
   
-  def __init__(self, model=Schaffer):
+  def __init__(self, model=model):
     self.m=model()
     self.pop = {}
     self.frontier=[]
@@ -184,7 +290,7 @@ class diffEvol(object):
     for _ in range(n):
       self.remember(self.m.any())
 
-  def one234(one, pop, f=lambda x:id(x)): 
+  def one234(self, one, pop, f=lambda x:id(x)): 
 	  def oneOther():
 	    x = any(pop)
 	    while f(x) in seen: 
@@ -201,7 +307,7 @@ class diffEvol(object):
       better = False
       for pos, l1 in enumerate(self.frontier):
        lives -= 1
-       l2, l3, l4 = one234(l1, self.frontier)
+       l2, l3, l4 = self.one234(l1, self.frontier)
        new = self.m.extrapolate(l2, l3, l4)
        if  self.m.dominates(new, l1):
         self.frontier.pop(pos)
@@ -215,21 +321,3 @@ class diffEvol(object):
       if better:
        lives += 1
     return self.frontier
-
-class model():
-	def __init__(self):
-		pass
-	def treeTune():
-    
-    def f1():
-    	[test, train] = tdivPrec(trainDat[case], testDat[case]);
-    	g = _runAbcd(train = train, test = test, verbose = False)
-    	return g
-	  return Cols(Schaffer,
-                [N(least=-10, most=10)
-                , O(f=f1) 
-                , O(f=f2)
-                ])
- 
-
-

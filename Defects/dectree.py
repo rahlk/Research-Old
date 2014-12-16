@@ -31,7 +31,7 @@ def explore(dir):
   testing.append(test)
  return training, testing
 
-def tdivPrec(train = None, test = None):
+def tdivPrec(whereParm, treeParam, train = None, test = None):
  rseed(1)
  makeaModel = makeAModel()
 
@@ -45,7 +45,7 @@ def tdivPrec(train = None, test = None):
   m = makeaModel.csv2py(t)
   _r += m._rows
  m._rows = _r
- prepare(m)  # Initialize all parameters for where2 to run
+ prepare(whereParm)  # Initialize all parameters for where2 to run
  tree = where2(m, m._rows)  # Decision tree using where2
  tbl = table(t)
  headerLabel = '=klass'
@@ -67,7 +67,7 @@ def tdivPrec(train = None, test = None):
   mTst = makeaModel.csv2py(tt)
   _r += mTst._rows
  mTst._rows = _r
- prepare(mTst)  # Initialize all parameters for where2 to run
+ prepare(whereParm)  # Initialize all parameters for where2 to run
  tree = where2(mTst, mTst._rows)  # Decision tree using where2
  tbl = table(tt)
  headerLabel = '=klass'
@@ -105,7 +105,7 @@ def tdivPrec(train = None, test = None):
  defectivClust = []
 
  t = discreteNums(tbl2, map(lambda x: x.cells, tbl2._rows))
- myTree = tdiv(t)
+ myTree = tdiv(t, opt = treeParam)
  # showTdiv(myTree)
 
  testCase = tbl3._rows
