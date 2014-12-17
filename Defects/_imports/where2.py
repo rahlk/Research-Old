@@ -378,11 +378,14 @@ def _distances(m = nasa93):
 """
 
 
-def prepare(wParam):
+def prepare(m, settings = None):
   "Prepare the 'The' class"
   seed(1)
   global The
-  The = wParam
+  The = settings if settings else defaults().update(verbose = True,
+               minSize = len(m._rows) ** 0.5,
+               prune = False,
+               wriggle = 0.3)
   return The
 
 def _where(m = nasa93):

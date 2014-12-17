@@ -157,7 +157,7 @@ class Bool(Col):
     if rand() >= The.de.cf: 
       return x
     else:
-      w = y if rand() <= f else z 
+      w = y if rand() <= The.de.f else z 
       return x if rand() <= 0.5 else w
 
 class O(Col):
@@ -273,7 +273,7 @@ def neighbors(m, lst1, pop):
 class diffEvol(object):
   "DE"
   
-  def __init__(self, model=model):
+  def __init__(self, model):
     self.m=model()
     self.pop = {}
     self.frontier=[]

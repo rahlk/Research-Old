@@ -1,8 +1,9 @@
 from __future__ import division
 import sys, pdb, os
 from os import walk
-from lib import *
 sys.path.insert(0, os.getcwd() + '/_imports');
+sys.path.insert(0, '/User/rkrsn/git/axe/axe/');
+from lib import *
 import libWhere
 sys.dont_write_bytecode = True
 from dtree import *
@@ -45,7 +46,7 @@ def tdivPrec(whereParm, treeParam, train = None, test = None):
   m = makeaModel.csv2py(t)
   _r += m._rows
  m._rows = _r
- prepare(whereParm)  # Initialize all parameters for where2 to run
+ prepare(m, settings = whereParm)  # Initialize all parameters for where2 to run
  tree = where2(m, m._rows)  # Decision tree using where2
  tbl = table(t)
  headerLabel = '=klass'
@@ -67,7 +68,7 @@ def tdivPrec(whereParm, treeParam, train = None, test = None):
   mTst = makeaModel.csv2py(tt)
   _r += mTst._rows
  mTst._rows = _r
- prepare(whereParm)  # Initialize all parameters for where2 to run
+ prepare(mTst, settings = whereParm)  # Initialize all parameters for where2 to run
  tree = where2(mTst, mTst._rows)  # Decision tree using where2
  tbl = table(tt)
  headerLabel = '=klass'
