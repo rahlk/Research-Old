@@ -29,19 +29,19 @@ def update(indep):
 
 def model():
  trainDat, testDat = explore(dir = 'Data/')
- 
+#  set_trace()
  def f1(rows):
   indep = rows[1:-1]; case = 0
   #set_trace()
   whereParm, tree = update(indep)
-  [test, train] = tdivPrec(whereParm, tree, train = trainDat[0][0:1], test =  [trainDat[0][2]] );
+  [test, train] = tdivPrec(where = None, dtree = tree, train = trainDat[1], test = testDat[1] );
   g = _runAbcd(train = train, test = test, verbose = False)
   return g
 
  return Cols(model,
-        [N(least = 0, most = 10)
-        , N(least = 2, most = 5)
-        , N(least = 5, most = 10)
+        [N(least = 0, most = 5)
+        , N(least = 2, most = 3)
+        , N(least = 4, most = 6)
         , Bool(items = [True, False])
         , N(least = 0, most = 0.99)
 
@@ -62,16 +62,31 @@ def _de():
  "DE"
  DE = diffEvol(model = model);
  res = sorted([k for k in DE.DE()],
-              key = lambda F: F[-1])
+              key = lambda F: F[-1])[-1]
  return update(res[1:-1])
 
 def main(dir = None):
- for _ in xrange(reps):
-  g = _runAbcd(train = train, test = test, verbose = True)
-  G.append(g)
-  print xtile(G)
+  whereParm, tree = None, None#_de()
+  G=[]; G1 =[]; reps = 1;
+  trainDat, testDat = explore(dir = 'Data/')
+  for _ in xrange(reps):
+    print reps
+    [test, train] = tdivPrec(whereParm, tree, train = trainDat[1], test =  testDat[0] );
+    g = _runAbcd(train = train, test = test, verbose = False)
+    G.append(g)
+  G.insert(0, 'DT  ')
+  
+  for _ in xrange(reps):
+    print reps
+    [test, train] = tdivPrec1(whereParm, tree, train = trainDat[1], test =  testDat[0] );
+    g = _runAbcd(train = train, test = test, verbose = False)
+    G1.append(g)
+  G1.insert(0, 'C4.5')
+  return [G, G1]
 
 if __name__ == '__main__':
- print _de()
+ print main()
+ import sk; xtile=sk.xtile
+ print xtile(G)
 
  # main(dir = 'Data/')
