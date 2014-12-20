@@ -17,6 +17,7 @@ import random, numpy as np
 from makeAmodel import makeAModel
 randi = random.randint
 rseed = random.seed
+# from _imports import *
 
 def explore(dir):
  datasets = []
@@ -139,9 +140,9 @@ def tdivPrec1(where = None , dtree = None, train = None, test = None):
  for t in train:
   m = makeaModel.csv2py(t)
   _r += m._rows
- #m._rows = _r
- #prepare(m, settings = where)  # Initialize all parameters for where2 to run
- #tree = where2(m, m._rows)  # Decision tree using where2
+ # m._rows = _r
+ # prepare(m, settings = where)  # Initialize all parameters for where2 to run
+ # tree = where2(m, m._rows)  # Decision tree using where2
  tbl = table(t)
  headerLabel = '=klass'
  Rows = []
@@ -160,9 +161,9 @@ def tdivPrec1(where = None , dtree = None, train = None, test = None):
  for tt in test:
   mTst = makeaModel.csv2py(tt)
   _r += mTst._rows
- #mTst._rows = _r
- #prepare(mTst, settings = where)  # Initialize all parameters for where2 to run
- #tree = where2(mTst, mTst._rows)  # Decision tree using where2
+ # mTst._rows = _r
+ # prepare(mTst, settings = where)  # Initialize all parameters for where2 to run
+ # tree = where2(mTst, mTst._rows)  # Decision tree using where2
  tbl = table(tt)
  headerLabel = '=klass'
  Rows = []
