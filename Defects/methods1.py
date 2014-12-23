@@ -1,7 +1,9 @@
+from dtree import *
 from table import *
+import makeAmodel as makeAModel
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
-from dtree import *
+
 
 def newTable(tbl, headerLabel, Rows):
  tbl2 = clone(tbl)
@@ -10,6 +12,26 @@ def newTable(tbl, headerLabel, Rows):
  newHead.name = headerLabel
  tbl2.headers = tbl.headers + [newHead]
  return clone(tbl2, rows = Rows)
+
+def createTbl(data):
+ makeaModel = makeAModel()
+ _r = []
+ for t in train:
+  m = makeaModel.csv2py(t)
+  _r += m._rows
+ m._rows = _r
+ prepare(m, settings = where)  # Initialize all parameters for where2 to run
+ tree = where2(m, m._rows)  # Decision tree using where2
+ tbl = table(t)
+ headerLabel = '=klass'
+ Rows = []
+ for k, _ in leaves(tree):  # for k, _ in leaves(tree):
+  for j in k.val:
+   tmp = (j.cells)
+   tmp.append('_' + str(id(k) % 1000))
+   j.__dict__.update({'cells': tmp})
+   Rows.append(j.cells)
+ return newTable(tbl, headerLabel, Rows)
 
 def drop(test, tree):
  loc = apex(test, tree)
