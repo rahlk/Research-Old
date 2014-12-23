@@ -1,6 +1,8 @@
+from _imports.where2 import *
 from dtree import *
 from table import *
-import makeAmodel as makeAModel
+
+from makeAmodel import makeAModel
 import matplotlib.mlab as mlab
 import matplotlib.pyplot as plt
 
@@ -16,11 +18,11 @@ def newTable(tbl, headerLabel, Rows):
 def createTbl(data):
  makeaModel = makeAModel()
  _r = []
- for t in train:
+ for t in data:
   m = makeaModel.csv2py(t)
   _r += m._rows
  m._rows = _r
- prepare(m, settings = where)  # Initialize all parameters for where2 to run
+ prepare(m, settings = None)  # Initialize all parameters for where2 to run
  tree = where2(m, m._rows)  # Decision tree using where2
  tbl = table(t)
  headerLabel = '=klass'
