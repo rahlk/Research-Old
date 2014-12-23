@@ -30,7 +30,7 @@ def _treatments(dir='./Data'):
   newNode = loc;
   branches = [];
   while newNode.lvl >= 0:
-    print();
+    print(newNode.lvl);
     branches.append(newNode);
     newNode = newNode.up;
   print branches
