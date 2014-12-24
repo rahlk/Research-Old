@@ -11,6 +11,7 @@ WHERE2 updated an older where with new Python tricks.
 """
 from __future__ import division, print_function
 
+from pdb import set_trace
 import  sys
 import types
 
@@ -38,19 +39,27 @@ def pairs(lst):
     for i in lst[0:]:
       yield last, i
 
-def allpairs(m, data):
-  west = None; east = None; cmax = -10e32
-  for one, two in pairs(data):
-    c = dist(m, one, east) + 1e-5
+def somepairs(m, data):
+  reps = 1; cmax = -10e32;
+  for _ in xrange(reps):
+    one = any(data);
+    two = furthest(m, one, data)
+    three = furthest(m, two, data)
+    c = dist(m, two, three) + 1e-5
     if c >= cmax:
-      west = one; east = two
+      cmax = c;
+      east, west = two, three
+  return west, east
 
       
 def fastmap(m, data):
   "Divide data into two using distance to two distant items."
+  west, east = somepairs(m, data)
+  """
   one = any(data)  # 1) pick anything
   west = furthest(m, one, data)  # 2) west is as far as you can go from anything
   east = furthest(m, west, data)  # 3) east is as far as you can go from west
+  """
   c = dist(m, west, east) + 1e-5
   # now find everyone's distance
   lst = []
