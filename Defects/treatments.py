@@ -6,7 +6,7 @@ import makeAmodel as mam
 from methods1 import *
 
 
-def _treatments(dir='./Data'):
+def _treatments(dir = './Data', verbose = True):
   train, test = explore(dir)
 
   # Training data ===============================================================
@@ -18,7 +18,7 @@ def _treatments(dir='./Data'):
   # Decision Tree ===============================================================
   t = discreteNums(train_DF, map(lambda x: x.cells, train_DF._rows))
   myTree = tdiv(t)
-  showTdiv(myTree)
+  if verbose: showTdiv(myTree)
 
   # Testing data ===============================================================
   testCase = test_df._rows
@@ -31,12 +31,12 @@ def _treatments(dir='./Data'):
   branches = [];
   while newNode.lvl >= 0:
     print(newNode.lvl);
-    branches.append(newNode);
+    branches.insert(0, newNode);
     newNode = newNode.up;
-  print branches
+  print(branches)
 
 
 if __name__ == '__main__':
-  _treatments(dir = './Data')
+  _treatments(dir = './Data', verbose = False)
 
 

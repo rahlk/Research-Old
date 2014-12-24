@@ -10,13 +10,17 @@ WHERE2 updated an older where with new Python tricks.
 
 """
 from __future__ import division, print_function
+
 import  sys
-sys.dont_write_bytecode = True
-from libWhere import *
-from settingsWhere  import *
-from nasa93 import *
 import types
+
 from demos import *
+from libWhere import *
+from nasa93 import *
+from settingsWhere  import *
+
+
+sys.dont_write_bytecode = True
 
 sys.path.insert(0, '/Users/rkrsn/git/axe/axe/')
 
@@ -28,6 +32,20 @@ Project data in N dimensions down to a single dimension connecting
 twp distant points. Divide that data at the median of those projects.
 
 """
+def pairs(lst):
+  for j in lst[0:]:
+    last = j
+    for i in lst[0:]:
+      yield last, i
+
+def allpairs(m, data):
+  west = None; east = None; cmax = -10e32
+  for one, two in pairs(data):
+    c = dist(m, one, east) + 1e-5
+    if c >= cmax:
+      west = one; east = two
+
+      
 def fastmap(m, data):
   "Divide data into two using distance to two distant items."
   one = any(data)  # 1) pick anything
