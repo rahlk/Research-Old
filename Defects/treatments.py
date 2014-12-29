@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 from pdb import set_trace
+from random import uniform, randint
 
 from _imports import *
 
@@ -13,53 +14,54 @@ from methods1 import *
 def _treatments(dir = './Data', verbose = True):
   train, test = explore(dir)
 
-  # Training data ===============================================================
+  # Training data
   train_DF = createTbl(train[1])
 
-  # Testing data ===============================================================
+  # Testing data
   test_df = createTbl(test[1])
 
-  # Decision Tree ===============================================================
+  # Decision Tree
   t = discreteNums(train_DF, map(lambda x: x.cells, train_DF._rows))
   myTree = tdiv(t)
   if verbose: showTdiv(myTree)
 
-  # Testing data ===============================================================
+  # Testing data
   testCase = test_df._rows
   
+  def remember(node):
+   key = node.f.name
+   Val = node.val
+   contrastSet.update({key: Val})
+   # print contrastSet
+  def forget(key):
+   del contrastSet[key]
+  def objectiveScores(lst):
+   obj = ([k.cells[-2] for k in lst.rows])
+   return np.mean([k for k in obj]), [k for k in obj]
+  def compare(node, test):
+    leaves = [n for n in test.kids] if len(test.kids) > 0 else [test]
+    for k in leaves:
+      return objectiveScores(k) < objectiveScores(node), [objectiveScores(k),
+                                                         objectiveScores(node)]
+  def getKey():
+    keys = {}
+    for i in xrange(len(test_df.headers)): 
+      keys.update({test_df.headers[i].name[1:]:i})
+    return keys
+
+  keys = getKey();
   for tC in testCase:
+    newRow = tC;
     loc = drop(tC, myTree)
-    # Reach the tree top =========================================================
+    # Reach the tree top
     newNode = loc;
     branches = [];
     while newNode.lvl >= 0:
       newNode = newNode.up;
       branches.append(newNode);
-    
+    # A dict of contrast sets
     contrastSet = {};
     # print loc.f.name, loc.lvl+1, loc.val
-    def remember(node):
-     key = node.f.name
-     Val = node.val
-     contrastSet.update({key: Val})
-     # print contrastSet
-    def forget(key):
-     del contrastSet[key]
-    def objectiveScores(lst):
-     obj = ([k.cells[-2] for k in lst.rows])
-     return np.mean([k for k in obj]), [k for k in obj]
-    def compare(node, test):
-      leaves = [n for n in test.kids] if len(test.kids) > 0 else [test]
-      for k in leaves:
-       return objectiveScores(k) < objectiveScores(node), [objectiveScores(k),
-                                                           objectiveScores(node)]
-    #  def trackChanges(testing):
-    #    lvl = testing.lvl
-    #    while lvl > 0:
-    #      lvl = testing.lvl
-    #      remember(testing)
-    #      testing = testing.up
-    
     for nn in branches:
       toScan = nn.kids
     #    set_trace()
@@ -68,8 +70,15 @@ def _treatments(dir = './Data', verbose = True):
         if isBetter:
           remember(testing)
           continue
-    
+
+    for k in contrastSet:
+
+      min, max = contrastSet[k]
+      val = randint(min, max) if isinstance(min, int) else uniform(min, max)
+      test_df.
     print(contrastSet)
+
+    set_trace()
 
 
 if __name__ == '__main__':
