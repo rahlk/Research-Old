@@ -27,7 +27,7 @@ def _treatments(dir = './Data', verbose = True):
 
   # Testing data
   testCase = test_df._rows
-  
+
   def remember(node):
    key = node.f.name
    Val = node.val
@@ -45,7 +45,7 @@ def _treatments(dir = './Data', verbose = True):
                                                          objectiveScores(node)]
   def getKey():
     keys = {}
-    for i in xrange(len(test_df.headers)): 
+    for i in xrange(len(test_df.headers)):
       keys.update({test_df.headers[i].name[1:]:i})
     return keys
 
@@ -75,7 +75,7 @@ def _treatments(dir = './Data', verbose = True):
 
       min, max = contrastSet[k]
       val = randint(min, max) if isinstance(min, int) else uniform(min, max)
-      test_df.
+      test_df._rows
     print(contrastSet)
 
     set_trace()
