@@ -32,9 +32,9 @@ def model():
 #  set_trace()
  def f1(rows):
   indep = rows[1:-1]; case = 0
-  #set_trace()
+  # set_trace()
   whereParm, tree = update(indep)
-  [test, train] = tdivPrec(where = None, dtree = tree, train = trainDat[1], test = testDat[1] );
+  [test, train] = tdivPrec(where = None, dtree = tree, train = trainDat[1], test = testDat[1]);
   g = _runAbcd(train = train, test = test, verbose = False)
   return g
 
@@ -66,19 +66,19 @@ def _de():
  return update(res[1:-1])
 
 def main(dir = None):
-  whereParm, tree = None, None#_de()
-  G=[]; G1 =[]; reps = 1;
+  whereParm, tree = None, None  # _de()
+  G = []; G1 = []; reps = 1;
   trainDat, testDat = explore(dir = 'Data/')
   for _ in xrange(reps):
     print reps
-    [test, train] = tdivPrec(whereParm, tree, train = trainDat[1], test =  testDat[0] );
+    [test, train] = tdivPrec(whereParm, tree, train = trainDat[1], test = testDat[0]);
     g = _runAbcd(train = train, test = test, verbose = False)
     G.append(g)
   G.insert(0, 'DT  ')
-  
+
   for _ in xrange(reps):
     print reps
-    [test, train] = tdivPrec1(whereParm, tree, train = trainDat[1], test =  testDat[0] );
+    [test, train] = tdivPrec1(whereParm, tree, train = trainDat[1], test = testDat[0]);
     g = _runAbcd(train = train, test = test, verbose = False)
     G1.append(g)
   G1.insert(0, 'C4.5')
@@ -86,7 +86,7 @@ def main(dir = None):
 
 if __name__ == '__main__':
  print main()
- import sk; xtile=sk.xtile
+ import sk; xtile = sk.xtile
  print xtile(G)
 
  # main(dir = 'Data/')

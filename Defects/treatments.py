@@ -70,19 +70,20 @@ def _treatments(dir = './Data', verbose = True):
         isBetter, obj = compare(loc, testing)
         if isBetter:
           remember(testing)
-          continue
+          continue  # As soon as the first better node is found, exit..
 
     # Pick a random value in the range suggested by the contrast set and
     # assign it to the row.
     for k in contrastSet:
       min, max = contrastSet[k]
       if isinstance(min, int) and isinstance(max, int):
-        val = randint(min, max) 
+        val = randint(min, max)
       else: val = uniform(min, max)
       newRow.cells[keys[k]] = val
 
-    newTab.append(newRow)
+    newTab.append(newRow.cells)
 
+  updatedTab = clone(test_df, newTab, discrete = True)
   set_trace()
 
 
