@@ -90,3 +90,15 @@ if __name__ == '__main__':
   _treatments(dir = './Data', verbose = False)
 
 
+rint(contrastSet)
+>>>>>>> branch 'master' of https://github.com/rahlk/Research.git
+
+    newTab.append(newRow)
+
+  set_trace()
+
+
+if __name__ == '__main__':
+  _treatments(dir = './Data', verbose = False)
+
+
