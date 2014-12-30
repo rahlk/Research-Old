@@ -50,6 +50,7 @@ def _treatments(dir = './Data', verbose = True):
     return keys
 
   keys = getKey();
+  newTab = []
   for tC in testCase:
     newRow = tC;
     loc = drop(tC, myTree)
@@ -71,14 +72,18 @@ def _treatments(dir = './Data', verbose = True):
           remember(testing)
           continue
 
+    # Pick a random value in the range suggested by the contrast set and
+    # assign it to the row.
     for k in contrastSet:
-
       min, max = contrastSet[k]
-      val = randint(min, max) if isinstance(min, int) else uniform(min, max)
-      test_df.
-    print(contrastSet)
+      if isinstance(min, int) and isinstance(max, int):
+        val = randint(min, max) 
+      else: val = uniform(min, max)
+      newRow.cells[keys[k]] = val
 
-    set_trace()
+    newTab.append(newRow)
+
+  set_trace()
 
 
 if __name__ == '__main__':
