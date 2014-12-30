@@ -9,6 +9,7 @@ from contrastset import *
 from dectree import *
 import makeAmodel as mam
 from methods1 import *
+import numpy as np
 
 
 def _treatments(dir = './Data', verbose = True):
@@ -33,11 +34,14 @@ def _treatments(dir = './Data', verbose = True):
    Val = node.val
    contrastSet.update({key: Val})
    # print contrastSet
+
   def forget(key):
    del contrastSet[key]
+
   def objectiveScores(lst):
    obj = ([k.cells[-2] for k in lst.rows])
    return np.mean([k for k in obj]), [k for k in obj]
+
   def compare(node, test):
     leaves = [n for n in test.kids] if len(test.kids) > 0 else [test]
     for k in leaves:
@@ -48,6 +52,10 @@ def _treatments(dir = './Data', verbose = True):
     for i in xrange(len(test_df.headers)):
       keys.update({test_df.headers[i].name[1:]:i})
     return keys
+
+  def bugs(tbl):
+    cells = [i.cells[-2] for i in tbl._rows]
+    return cells
 
   keys = getKey();
   newTab = []
@@ -84,6 +92,7 @@ def _treatments(dir = './Data', verbose = True):
     newTab.append(newRow.cells)
 
   updatedTab = clone(test_df, newTab, discrete = True)
+  saveImg(bugs(test_df), num_bins = 50, fname = 'bugsBefore', ext = '.jpg')
   set_trace()
 
 

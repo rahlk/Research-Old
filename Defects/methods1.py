@@ -39,7 +39,9 @@ def drop(test, tree):
  loc = apex(test, tree)
  return loc
 
-def saveImg(x, num_bins):
+def saveImg(x, num_bins = 10, fname = None, ext = None):
+ fname = 'Untitled' if not fname else fname
+ ext = '.jpg' if not ext else ext
  n, bins, patches = plt.hist(x, num_bins, normed = False,
                              facecolor = 'blue', alpha = 0.5)
  # add a 'best fit' line
@@ -49,5 +51,5 @@ def saveImg(x, num_bins):
 
  # Tweak spacing to prevent clipping of ylabel
  plt.subplots_adjust(left = 0.15)
- plt.savefig('./_fig/hist.jpg')
+ plt.savefig(fname + ext)
  plt.close()
