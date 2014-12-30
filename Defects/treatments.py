@@ -4,14 +4,19 @@ from pdb import set_trace
 from random import uniform, randint
 
 from _imports import *
+from sklearn.ensemble import RandomForestClassifier
 
 from contrastset import *
 from dectree import *
 import makeAmodel as mam
 from methods1 import *
 import numpy as np
+import pandas as pd
 
 
+def testNewdata(newTbl):
+
+  pass
 def _treatments(dir = './Data', verbose = True):
   train, test = explore(dir)
 
