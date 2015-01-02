@@ -100,7 +100,12 @@ def _treatments(dir = './Data', verbose = True):
   saveImg(bugs(test_df), num_bins = 50, fname = 'bugsBefore', ext = '.jpg')
   set_trace()
 
+def rforest(train, test):
+  import rf_test
+  train_DF = rf_test.createDF(train)
+  test_DF = rf_test.createDF(test)
 
+  return bugs
 if __name__ == '__main__':
   _treatments(dir = './Data', verbose = False)
 

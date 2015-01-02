@@ -40,7 +40,7 @@ def createDF(data):
       Rows.append(j.cells)
   return pd.DataFrame(Rows, columns = get_headers(data)+['klass'])
 
-def haupt(): #main in german
+def haupt():
   train, test = explore('./Data')
   clf = RandomForestClassifier(n_estimators=100, n_jobs = 2)
   """
@@ -77,17 +77,5 @@ def run():
  G.insert(0, 'RF  ')
  #print base.main()+[G]
  sk.rdivDemo(base.main()+[G])
+
 run()
-
-
-
-
-
-
-
-
-
-
-
-
-
