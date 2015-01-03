@@ -14,17 +14,18 @@ import numpy as np
 import pandas as pd
 
 
-def testNewdata(newTbl):
+def _treatments(train_DF = None, test_df = None, verbose = True):
 
-  pass
-def _treatments(dir = './Data', verbose = True):
-  train, test = explore(dir)
+  if not train_DF or test_df:
+    dir = './Data'
 
-  # Training data
-  train_DF = createTbl(train[1])
+    train, test = explore(dir)
 
-  # Testing data
-  test_df = createTbl(test[1])
+    # Training data
+    train_DF = createTbl(train[1])
+
+    # Testing data
+    test_df = createTbl(test[1])
 
   # Decision Tree
   t = discreteNums(train_DF, map(lambda x: x.cells, train_DF._rows))
@@ -57,10 +58,6 @@ def _treatments(dir = './Data', verbose = True):
     for i in xrange(len(test_df.headers)):
       keys.update({test_df.headers[i].name[1:]:i})
     return keys
-
-  def bugs(tbl):
-    cells = [i.cells[-2] for i in tbl._rows]
-    return cells
 
   keys = getKey();
   newTab = []
@@ -97,16 +94,56 @@ def _treatments(dir = './Data', verbose = True):
     newTab.append(newRow.cells)
 
   updatedTab = clone(test_df, newTab, discrete = True)
-  saveImg(bugs(test_df), num_bins = 50, fname = 'bugsBefore', ext = '.jpg')
-  set_trace()
+  return updatedTab
+#  saveImg(bugs(test_df), num_bins = 50, fname = 'bugsBefore', ext = '.jpg')
+#  set_trace()
+
+def Bugs(tbl):
+  cells = [i.cells[-2] for i in tbl._rows]
+  return cells
+
+def formatData(tbl):
+  Rows = [i.cells for i in tbl._rows]
+  headers = [i.name for i in tbl.headers]
+  return pd.DataFrame(Rows, columns = headers)
 
 def rforest(train, test):
-  import rf_test
-  train_DF = rf_test.createDF(train)
-  test_DF = rf_test.createDF(test)
+  # Apply random forest classifier to predict the number of bugs.
+  clf = RandomForestClassifier(n_estimators = 100, n_jobs = 2)
+  train_DF = formatData(train)
+  test_DF = formatData(test)
+  features = train_DF.columns[:-2]
+  klass = train_DF[train_DF.columns[-2]];
+  clf.fit(train_DF[features], klass)
+  preds = clf.predict(test_df[features]).tolist()
+  return preds
 
-  return bugs
+def haupt():
+  dir = './Data'
+  train, test = explore(dir)
+
+  # Training data
+  train_DF = createTbl(train[1])
+
+  # Testing data
+  test_df = createTbl(test[1])
+
+  # Save a histogram of unmodified bugs
+  saveImg(Bugs(test_df), num_bins = 50, fname = 'bugsBefore', ext = '.jpg')
+
+  # Find and apply contrast sets
+  newTab = _treatments(train_DF = train_DF, test_df = test_df, verbose = False)
+
+  # Use the random forest classifier to predict the number of bugs in the new data.
+  bugs = rforest(train_DF, newTab)
+
+  # Save the histogram after applying contrast sets.
+  saveImg(bugs, num_bins = 50, fname = 'bugsAfter', ext = '.jpg')
+
+  # <<DEGUG: Halt Code>>
+  set_trace()
+
 if __name__ == '__main__':
-  _treatments(dir = './Data', verbose = False)
+  haupt()
 
 
