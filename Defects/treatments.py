@@ -115,7 +115,7 @@ def rforest(train, test):
   features = train_DF.columns[:-2]
   klass = train_DF[train_DF.columns[-2]];
   clf.fit(train_DF[features], klass)
-  preds = clf.predict(test_df[features]).tolist()
+  preds = clf.predict(test_DF[features]).tolist()
   return preds
 
 def haupt():
