@@ -1,5 +1,6 @@
 from os import walk
 from pdb import set_trace
+from pdb import set_trace
 
 from abcd import _runAbcd
 from dtree import *
@@ -51,7 +52,7 @@ def haupt():
   
   # Testing data
   test_df = createDF(test[1])
-  
+  set_trace()
   features = train_DF.columns[3:-2]
   klass = train_DF[train_DF.columns[-1]];
   clf.fit(train_DF[features], klass)

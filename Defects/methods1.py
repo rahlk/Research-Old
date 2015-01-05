@@ -53,3 +53,20 @@ def saveImg(x, num_bins = 10, fname = None, ext = None):
  plt.subplots_adjust(left = 0.15)
  plt.savefig(fname + ext)
  plt.close()
+
+def saveImg(x, num_bins = 10, fname = None, ext = None):
+ fname = 'Untitled' if not fname else fname
+ ext = '.jpg' if not ext else ext
+ n, bins, patches = plt.hist(x, num_bins, normed = False,
+                             facecolor = 'blue', alpha = 0.5)
+ # add a 'best fit' line
+ plt.xlabel('Bugs')
+ plt.ylabel('Frequency')
+ plt.title(r'Histogram (Median Bugs in each class)')
+
+ # Tweak spacing to prevent clipping of ylabel
+ plt.subplots_adjust(left = 0.15)
+ plt.savefig(fname + ext)
+ plt.close()
+
+

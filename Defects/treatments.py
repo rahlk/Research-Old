@@ -115,7 +115,7 @@ def rforest(train, test):
   features = train_DF.columns[:-2]
   klass = train_DF[train_DF.columns[-2]];
   clf.fit(train_DF[features], klass)
-  preds = clf.predict(test_DF[features]).tolist()
+  preds = clf.predict(test_DF[test_DF.columns[:-2]]).tolist()
   return preds
 
 def haupt():
@@ -129,7 +129,7 @@ def haupt():
   test_df = createTbl(test[1])
 
   # Save a histogram of unmodified bugs
-  saveImg(Bugs(test_df), num_bins = 50, fname = 'bugsBefore', ext = '.jpg')
+  saveImg(Bugs(test_df), num_bins = 10, fname = 'bugsBefore', ext = '.jpg')
 
   # Find and apply contrast sets
   newTab = _treatments(train_DF = train_DF, test_df = test_df, verbose = False)
@@ -138,7 +138,7 @@ def haupt():
   bugs = rforest(train_DF, newTab)
 
   # Save the histogram after applying contrast sets.
-  saveImg(bugs, num_bins = 50, fname = 'bugsAfter', ext = '.jpg')
+  saveImg(bugs, num_bins = 10, fname = 'bugsAfter', ext = '.jpg')
 
   # <<DEGUG: Halt Code>>
   set_trace()
