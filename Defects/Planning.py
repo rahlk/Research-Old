@@ -13,7 +13,9 @@ from methods1 import *
 import numpy as np
 import pandas as pd
 
-
+#===============================================================================
+# PLANNING PHASE: 1. Decision Trees, 2. Contrast Sets
+#===============================================================================
 def _treatments(train_DF = None, test_df = None, verbose = True):
 
   if not train_DF or test_df:
@@ -107,6 +109,10 @@ def formatData(tbl):
   headers = [i.name for i in tbl.headers]
   return pd.DataFrame(Rows, columns = headers)
 
+#===============================================================================
+# PREDICTION SYSTEMS: 1. RANDOM FORESTS, 2. CART, 3. ADABOOST, 4. LOGISTIC
+#                     REGRESSION
+#===============================================================================
 def rforest(train, test):
   # Apply random forest classifier to predict the number of bugs.
   clf = RandomForestClassifier(n_estimators = 100, n_jobs = 2)
@@ -120,13 +126,20 @@ def rforest(train, test):
 
 def haupt():
   dir = './Data'
+
+  from os import walk
+  datas = [Name for _, Name, __ in walk(dir)][0]
+
   train, test = explore(dir)
 
+  # Number of data
+  numData = len(datas)
+
   # Training data
-  train_DF = createTbl(train[1])
+  train_DF = createTbl(train[2])
 
   # Testing data
-  test_df = createTbl(test[1])
+  test_df = createTbl(test[2])
 
   # Save a histogram of unmodified bugs
   saveImg(Bugs(test_df), num_bins = 10, fname = 'bugsBefore', ext = '.jpg')
