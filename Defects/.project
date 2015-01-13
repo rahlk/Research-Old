@@ -3,6 +3,7 @@
 	<name>Defects</name>
 	<comment></comment>
 	<projects>
+		<project>pystatvis</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

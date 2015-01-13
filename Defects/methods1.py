@@ -54,7 +54,7 @@ def saveImg(x, num_bins = 10, fname = None, ext = None):
  plt.savefig(fname + ext)
  plt.close()
 
-def saveImg(x, num_bins = 10, fname = None, ext = None):
+def creatHist(x, num_bins = 10, fname = None, ext = None):
  fname = 'Untitled' if not fname else fname
  ext = '.jpg' if not ext else ext
  n, bins, patches = plt.hist(x, num_bins, normed = False,
