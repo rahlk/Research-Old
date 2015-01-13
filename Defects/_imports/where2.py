@@ -40,7 +40,7 @@ def pairs(lst):
       yield last, i
 
 def somepairs(m, data):
-  reps = 1; cmax = -10e32;
+  reps = 10; cmax = -10e32;
   for _ in xrange(reps):
     one = any(data);
     two = furthest(m, one, data)
@@ -51,7 +51,7 @@ def somepairs(m, data):
       east, west = two, three
   return west, east
 
-      
+
 def fastmap(m, data):
   "Divide data into two using distance to two distant items."
   west, east = somepairs(m, data)
