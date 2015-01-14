@@ -2,10 +2,11 @@ from __future__ import print_function
 
 from pdb import set_trace
 from random import uniform, randint
-
+from abcd import _runAbcd
 from hist import *
 import sk
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier
 
 from _imports import *
 from contrastset import *
@@ -115,10 +116,11 @@ def formatData(tbl):
   headers = [i.name for i in tbl.headers]
   return pd.DataFrame(Rows, columns = headers)
 
-#===============================================================================
-# PREDICTION SYSTEMS: 1. RANDOM FORESTS, 2. CART, 3. ADABOOST, 4. LOGISTIC
-#                     REGRESSION
-#===============================================================================
+#=====================================================================================
+# PREDICTION SYSTEMS: 1. RANDOM FORESTS, 2. DECISION TREES, 3. ADABOOST, 4. LOGISTIC
+#                                                                           REGRESSION
+#=====================================================================================
+
 def rforest(train, test):
   # Apply random forest classifier to predict the number of bugs.
   clf = RandomForestClassifier(n_estimators = 100, n_jobs = 2)
@@ -131,6 +133,42 @@ def rforest(train, test):
   preds = clf.predict(test_DF[test_DF.columns[:-2]]).tolist()
   return preds
 
+def _RF():
+  "Test RF"
+  dir = './Data'
+  one, two = explore(dir)
+  # Training data
+  train_DF = createTbl(train[0])
+  # Test data
+  test_df = createTbl(test[0])
+  actual = Bugs(test_df)
+  preds = rforest(train_DF, test_df)
+
+def CART(train, test):
+  # Apply random forest classifier to predict the number of bugs.
+  clf = DecisionTreeClassifier()
+  train_DF = formatData(train)
+  test_DF = formatData(test)
+  features = train_DF.columns[:-2]
+  klass = train_DF[train_DF.columns[-2]];
+  # set_trace()
+  clf.fit(train_DF[features], klass)
+  preds = clf.predict(test_DF[test_DF.columns[:-2]]).tolist()
+  return preds
+
+def _CART():
+  "Test CART"
+  dir = './Data'
+  one, two = explore(dir)
+  # Training data
+  train_DF = createTbl(one[0])
+  # Test data
+  test_df = createTbl(two[0])
+  actual = Bugs(test_df)
+  preds = CART(train_DF, test_df)
+  _runAbcd(train = actual, test = preds, verbose = True)
+
+  
 def withinClass(data):
   N = len(data)
   return [(data[:n], [data[n]]) for n in range(1, N)]
@@ -168,16 +206,20 @@ def haupt():
 #     set_trace()
 
     # Use the random forest classifier to predict the number of bugs in the raw data.
-    before = rforest(train_DF, test_df)
-    before = [b for b in before if not b == 0]
-    before.insert(0, 'Before')
+    beforeRF = rforest(train_DF, test_df)
+    beforeRF = [b for b in beforeRF if not b == 0]
+    beforeRF.insert(0, 'BeforeRF')
+
+    beforeCART = CART(train_DF, test_df)
+    beforeCART = [b for b in beforeRF if not b == 0]
+    beforeCART.insert(0, 'BeforeCART')
 
     # Use the random forest classifier to predict the number of bugs in the new data.
     after = rforest(train_DF, newTab)
     after = [a for a in after if not a == 0]
     after.insert(0, 'After ')
 
-    stat = [before, actual, after]
+    stat = [beforeRF, beforeCART, after]
 
     print(dataName[n]); print(20 * '=')
     print('Training: ', train[-1], '\n', 'Test: ', test[-1], '\n')
@@ -190,6 +232,8 @@ def haupt():
     # <<DEGUG: Halt Code>>
     # set_trace()
 
+  
 if __name__ == '__main__':
-  haupt()
+  _CART()
+#  haupt()
 
