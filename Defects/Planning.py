@@ -2,15 +2,17 @@ from __future__ import print_function
 
 from pdb import set_trace
 from random import uniform, randint
+
 from abcd import _runAbcd
-from hist import *
 import sk
+from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 
 from _imports import *
 from contrastset import *
 from dectree import *
+from hist import *
 import makeAmodel as mam
 from methods1 import *
 import numpy as np
@@ -122,8 +124,12 @@ def formatData(tbl):
 #=====================================================================================
 
 def rforest(train, test):
+  """
+  Random Forest
+  """
   # Apply random forest classifier to predict the number of bugs.
-  clf = RandomForestClassifier(n_estimators = 100, n_jobs = 2)
+  clf = RandomForestClassifier(n_estimators = 930, n_jobs = -1,
+                               max_features = 3)
   train_DF = formatData(train)
   test_DF = formatData(test)
   features = train_DF.columns[:-2]
@@ -145,8 +151,11 @@ def _RF():
   preds = rforest(train_DF, test_df)
 
 def CART(train, test):
+  """
+  CART: Classification and Regression Trees
+  """
   # Apply random forest classifier to predict the number of bugs.
-  clf = DecisionTreeClassifier()
+  clf = DecisionTreeClassifier(max_features = 'auto')
   train_DF = formatData(train)
   test_DF = formatData(test)
   features = train_DF.columns[:-2]
@@ -166,9 +175,36 @@ def _CART():
   test_df = createTbl(two[0])
   actual = Bugs(test_df)
   preds = CART(train_DF, test_df)
+  set_trace()
   _runAbcd(train = actual, test = preds, verbose = True)
 
-  
+def adaboost(train, test):
+  """
+  ADABOOST
+  """
+  clf = AdaBoostClassifier()
+  train_DF = formatData(train)
+  test_DF = formatData(test)
+  features = train_DF.columns[:-2]
+  klass = train_DF[train_DF.columns[-2]];
+  # set_trace()
+  clf.fit(train_DF[features], klass)
+  preds = clf.predict(test_DF[test_DF.columns[:-2]]).tolist()
+  return preds
+
+def _adaboost():
+  "Test AdaBoost"
+  dir = './Data'
+  one, two = explore(dir)
+  # Training data
+  train_DF = createTbl(one[0])
+  # Test data
+  test_df = createTbl(two[0])
+  actual = Bugs(test_df)
+  preds = adaboost(train_DF, test_df)
+  set_trace()
+  _runAbcd(train = actual, test = preds, verbose = True)
+
 def withinClass(data):
   N = len(data)
   return [(data[:n], [data[n]]) for n in range(1, N)]
@@ -185,55 +221,57 @@ def haupt():
     train = [dat[0] for dat in withinClass(data[n])]
     test = [dat[1] for dat in withinClass(data[n])]
 
-    # Training data
-    train_DF = createTbl(train[-1])
+    for _n in xrange(len(train)):
+      # Training data
+      train_DF = createTbl(train[_n])
 
-    # Testing data
-    test_df = createTbl(test[-1])
+      # Testing data
+      test_df = createTbl(test[_n])
 
 
-    # Save a histogram of unmodified bugs
-    # saveImg(Bugs(test_df), num_bins = 10, fname = 'bugsBefore', ext = '.jpg')
+      # Save a histogram of unmodified bugs
+      # saveImg(Bugs(test_df), num_bins = 10, fname = 'bugsBefore', ext = '.jpg')
 
-    # Find and apply contrast sets
-    newTab = _treatments(train = train[-1], test = test[-1], verbose = False)
+      # Find and apply contrast sets
+      newTab = _treatments(train = train[_n], test = test[_n], verbose = False)
 
-    # Actual bugs
-    actual = Bugs(test_df)
-    actual = [a for a in actual if not a == 0]
-    actual.insert(0, 'Actual')
+      # Actual bugs
+      actual = Bugs(test_df)
+      actual = [a for a in actual if not a == 0]
+      actual.insert(0, 'Actual')
 
-#     set_trace()
+  #     set_trace()
 
-    # Use the random forest classifier to predict the number of bugs in the raw data.
-    beforeRF = rforest(train_DF, test_df)
-    beforeRF = [b for b in beforeRF if not b == 0]
-    beforeRF.insert(0, 'BeforeRF')
+      # Use the random forest classifier to predict the number of bugs in the raw data.
+      beforeRF = rforest(train_DF, test_df)
+      beforeRF = [b for b in beforeRF if not b == 0]
+      beforeRF.insert(0, 'Before')
 
-    beforeCART = CART(train_DF, test_df)
-    beforeCART = [b for b in beforeRF if not b == 0]
-    beforeCART.insert(0, 'BeforeCART')
+      beforeCART = CART(train_DF, test_df)
+      beforeCART = [b for b in beforeRF if not b == 0]
+      beforeCART.insert(0, 'BeforeCART')
 
-    # Use the random forest classifier to predict the number of bugs in the new data.
-    after = rforest(train_DF, newTab)
-    after = [a for a in after if not a == 0]
-    after.insert(0, 'After ')
+      # Use the random forest classifier to predict the number of bugs in the new data.
+      after = rforest(train_DF, newTab)
+      after = [a for a in after if not a == 0]
+      after.insert(0, 'After ')
 
-    stat = [beforeRF, beforeCART, after]
+      stat = [actual, beforeRF, after]
 
-    print(dataName[n]); print(20 * '=')
-    print('Training: ', train[-1], '\n', 'Test: ', test[-1], '\n')
-    histplot(stat, bins = [1, 5, 10, 20, 50])
-    # sk.rdivDemo(stat)
-    print('\n', '\n')
-    # Save the histogram after applying contrast sets.
-    # saveImg(bugs, num_bins = 10, fname = 'bugsAfter', ext = '.jpg')
+      print(dataName[n]); print(20 * '=')
+      print('Training: ', train[_n], '\n', 'Test: ', test[_n], '\n')
+      histplot(stat, bins = [1, 3, 5, 7, 10, 15, 20, 50])
+      # sk.rdivDemo(stat)
+      print('\n', '\n')
+      # Save the histogram after applying contrast sets.
+      # saveImg(bugs, num_bins = 10, fname = 'bugsAfter', ext = '.jpg')
 
-    # <<DEGUG: Halt Code>>
-    # set_trace()
+      # <<DEGUG: Halt Code>>
+      # set_trace()
 
-  
+
 if __name__ == '__main__':
-  _CART()
-#  haupt()
+# _CART()
+#   _adaboost()
+  haupt()
 
