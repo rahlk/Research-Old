@@ -218,7 +218,7 @@ def haupt():
   from os import walk
   dataName = [Name for _, Name, __ in walk(dir)][0]
   numData = len(dataName)  # Number of data
-
+  print('# CART')
   one, two = explore(dir)
   data = [one[i] + two[i] for i in xrange(len(one))];
   for n in xrange(numData):
@@ -253,14 +253,14 @@ def haupt():
 
       beforeCART = CART(train_DF, test_df)
       beforeCART = [b for b in beforeRF if not b == 0]
-      beforeCART.insert(0, 'BeforeCART')
+      beforeCART.insert(0, 'Before')
 
       # Use the random forest classifier to predict the number of bugs in the new data.
-      after = rforest(train_DF, newTab)
+      after = CART(train_DF, newTab)
       after = [a for a in after if not a == 0]
-      after.insert(0, 'After ')
+      after.insert(0, 'After')
 
-      stat = [actual, beforeRF, after]
+      stat = [actual, beforeCART, after]
 
       write('Training: '); [write(l + ', ') for l in train[_n]]; print('')
       write('Test: '); [write(l) for l in test[_n]], print('\n', '```')
