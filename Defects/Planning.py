@@ -2,6 +2,7 @@ from __future__ import print_function
 
 from pdb import set_trace
 from random import uniform, randint
+import sys
 
 from abcd import _runAbcd
 import sk
@@ -220,7 +221,7 @@ def haupt():
   for n in xrange(numData):
     train = [dat[0] for dat in withinClass(data[n])]
     test = [dat[1] for dat in withinClass(data[n])]
-
+    print('##', dataName[n])
     for _n in xrange(len(train)):
       # Training data
       train_DF = createTbl(train[_n])
@@ -258,11 +259,10 @@ def haupt():
 
       stat = [actual, beforeRF, after]
 
-      print(dataName[n]); print(20 * '=')
-      print('Training: ', train[_n], '\n', 'Test: ', test[_n], '\n')
+      print('Training: ', train[_n], '\n'); print('Test: ', test[_n], '\n', '```')
       histplot(stat, bins = [1, 3, 5, 7, 10, 15, 20, 50])
       # sk.rdivDemo(stat)
-      print('\n', '\n')
+      print('\n', '```')
       # Save the histogram after applying contrast sets.
       # saveImg(bugs, num_bins = 10, fname = 'bugsAfter', ext = '.jpg')
 
