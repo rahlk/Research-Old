@@ -4,13 +4,13 @@ from pdb import set_trace
 from random import uniform, randint
 import sys
 
+from _imports import *
 from abcd import _runAbcd
 import sk
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 
-from _imports import *
 from contrastset import *
 from dectree import *
 from hist import *
@@ -252,8 +252,12 @@ def haupt():
       beforeRF.insert(0, 'Before')
 
       beforeCART = CART(train_DF, test_df)
-      beforeCART = [b for b in beforeRF if not b == 0]
+      beforeCART = [b for b in beforeCART if not b == 0]
       beforeCART.insert(0, 'Before')
+
+      beforeAda = CART(train_DF, test_df)
+      beforeAda = [b for b in beforeAda if not b == 0]
+      beforeAda.insert(0, 'Before')
 
       # Use the random forest classifier to predict the number of bugs in the new data.
       after = CART(train_DF, newTab)
