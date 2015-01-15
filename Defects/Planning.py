@@ -218,7 +218,7 @@ def haupt():
   from os import walk
   dataName = [Name for _, Name, __ in walk(dir)][0]
   numData = len(dataName)  # Number of data
-  print('# CART')
+  print('# Adaboost')
   one, two = explore(dir)
   data = [one[i] + two[i] for i in xrange(len(one))];
   for n in xrange(numData):
