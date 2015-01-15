@@ -20,6 +20,9 @@ import numpy as np
 import pandas as pd
 
 
+def write(str):
+  sys.stdout.write(str)
+
 #===============================================================================
 # PLANNING PHASE: 1. Decision Trees, 2. Contrast Sets
 #===============================================================================
@@ -259,10 +262,12 @@ def haupt():
 
       stat = [actual, beforeRF, after]
 
-      print('Training: ', train[_n], '\n'); print('Test: ', test[_n], '\n', '```')
+      write('Training: '); [write(l + ', ') for l in train[_n]]; print('')
+      write('Test: '); [write(l) for l in test[_n]], print('\n', '```')
       histplot(stat, bins = [1, 3, 5, 7, 10, 15, 20, 50])
+      print('```')
+
       # sk.rdivDemo(stat)
-      print('\n', '```')
       # Save the histogram after applying contrast sets.
       # saveImg(bugs, num_bins = 10, fname = 'bugsAfter', ext = '.jpg')
 
