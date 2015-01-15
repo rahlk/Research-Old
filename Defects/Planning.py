@@ -255,7 +255,7 @@ def haupt():
       beforeCART = [b for b in beforeCART if not b == 0]
       beforeCART.insert(0, 'Before')
 
-      beforeAda = CART(train_DF, test_df)
+      beforeAda = adaboost(train_DF, test_df)
       beforeAda = [b for b in beforeAda if not b == 0]
       beforeAda.insert(0, 'Before')
 
@@ -264,7 +264,7 @@ def haupt():
       after = [a for a in after if not a == 0]
       after.insert(0, 'After')
 
-      stat = [actual, beforeCART, after]
+      stat = [actual, beforeAda, after]
 
       write('Training: '); [write(l + ', ') for l in train[_n]]; print('')
       write('Test: '); [write(l) for l in test[_n]], print('\n', '```')
