@@ -10,7 +10,7 @@ import sk
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
-
+from Prediction import *
 from contrastset import *
 from dectree import *
 from hist import *
@@ -122,11 +122,11 @@ def formatData(tbl):
   headers = [i.name for i in tbl.headers]
   return pd.DataFrame(Rows, columns = headers)
 
+
 #=====================================================================================
 # PREDICTION SYSTEMS: 1. RANDOM FORESTS, 2. DECISION TREES, 3. ADABOOST, 4. LOGISTIC
 #                                                                           REGRESSION
 #=====================================================================================
-
 def rforest(train, test):
   """
   Random Forest
@@ -209,6 +209,35 @@ def _adaboost():
   set_trace()
   _runAbcd(train = actual, test = preds, verbose = True)
 
+def logit(train, test):
+  """
+  Logistic Regression
+  """
+  clf = LogisticRegression(penalty = 'l2', dual = False, tol = 0.0001, C = 1.0,
+                           fit_intercept = True, intercept_scaling = 1,
+                           class_weight = None, random_state = None)
+  train_DF = formatData(train)
+  test_DF = formatData(test)
+  features = train_DF.columns[:-2]
+  klass = train_DF[train_DF.columns[-2]];
+  # set_trace()
+  clf.fit(train_DF[features], klass)
+  preds = clf.predict(test_DF[test_DF.columns[:-2]]).tolist()
+  return preds
+
+def _logit():
+  "Test LOGIT"
+  dir = './Data'
+  one, two = explore(dir)
+  # Training data
+  train_DF = createTbl(one[0])
+  # Test data
+  test_df = createTbl(two[0])
+  actual = Bugs(test_df)
+  preds = logit(train_DF, test_df)
+  set_trace()
+  _runAbcd(train = actual, test = preds, verbose = True)
+
 def withinClass(data):
   N = len(data)
   return [(data[:n], [data[n]]) for n in range(1, N)]
@@ -218,7 +247,7 @@ def haupt():
   from os import walk
   dataName = [Name for _, Name, __ in walk(dir)][0]
   numData = len(dataName)  # Number of data
-  print('# Adaboost')
+  print('# Logistic Regression')
   one, two = explore(dir)
   data = [one[i] + two[i] for i in xrange(len(one))];
   for n in xrange(numData):
@@ -252,22 +281,28 @@ def haupt():
       beforeRF.insert(0, 'Before')
 
       beforeCART = CART(train_DF, test_df)
-      beforeCART = [b for b in beforeCART if not b == 0]
+#      beforeCART = [b for b in beforeCART if not b == 0]
       beforeCART.insert(0, 'Before')
 
       beforeAda = adaboost(train_DF, test_df)
-      beforeAda = [b for b in beforeAda if not b == 0]
+#      beforeAda = [b for b in beforeAda if not b == 0]
       beforeAda.insert(0, 'Before')
+
+      beforeLog = logit(train_DF, test_df)
+#      beforeLog = [b for b in beforeLog if not b == 0]
+      beforeLog.insert(0, 'Before')
 
       # Use the random forest classifier to predict the number of bugs in the new data.
       after = CART(train_DF, newTab)
       after = [a for a in after if not a == 0]
       after.insert(0, 'After')
 
-      stat = [actual, beforeAda, after]
+      stat = sorted([actual, beforeLog, after], key = lambda F:F[0])
 
       write('Training: '); [write(l + ', ') for l in train[_n]]; print('')
       write('Test: '); [write(l) for l in test[_n]], print('\n', '```')
+      #sk.rdivDemo(stat)
+
       histplot(stat, bins = [1, 3, 5, 7, 10, 15, 20, 50])
       print('```')
 
@@ -280,7 +315,8 @@ def haupt():
 
 
 if __name__ == '__main__':
-# _CART()
-#   _adaboost()
+#  _CART()
+#  _logit()
+#  _adaboost()
   haupt()
 
