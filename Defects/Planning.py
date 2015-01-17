@@ -281,15 +281,15 @@ def haupt():
       beforeRF.insert(0, 'Before')
 
       beforeCART = CART(train_DF, test_df)
-      beforeCART = [b for b in beforeCART if not b == 0]
+#      beforeCART = [b for b in beforeCART if not b == 0]
       beforeCART.insert(0, 'Before')
 
       beforeAda = adaboost(train_DF, test_df)
-      beforeAda = [b for b in beforeAda if not b == 0]
+#      beforeAda = [b for b in beforeAda if not b == 0]
       beforeAda.insert(0, 'Before')
 
       beforeLog = logit(train_DF, test_df)
-      beforeLog = [b for b in beforeLog if not b == 0]
+#      beforeLog = [b for b in beforeLog if not b == 0]
       beforeLog.insert(0, 'Before')
 
       # Use the random forest classifier to predict the number of bugs in the new data.
@@ -297,11 +297,12 @@ def haupt():
       after = [a for a in after if not a == 0]
       after.insert(0, 'After')
 
-      stat = [actual, beforeLog, after]
+      stat = sorted([actual, beforeLog, after], key = lambda F:F[0])
 
       write('Training: '); [write(l + ', ') for l in train[_n]]; print('')
       write('Test: '); [write(l) for l in test[_n]], print('\n', '```')
       #sk.rdivDemo(stat)
+
       histplot(stat, bins = [1, 3, 5, 7, 10, 15, 20, 50])
       print('```')
 
@@ -316,6 +317,6 @@ def haupt():
 if __name__ == '__main__':
 #  _CART()
 #  _logit()
-#   _adaboost()
+#  _adaboost()
   haupt()
 
