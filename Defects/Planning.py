@@ -250,7 +250,8 @@ def haupt():
     for n in xrange(numData):
       train = [dat[0] for dat in withinClass(data[n])]
       test = [dat[1] for dat in withinClass(data[n])]
-      print('##', dataName[n])
+      # print('##', dataName[n])
+      print('```')
       for _n in xrange(len(train)):
         # Training data
         train_DF = createTbl(train[_n])
@@ -279,13 +280,13 @@ def haupt():
         stat = [before, after]
 #         set_trace()
         plotCurve(stat, fname = p.__doc__ + '_' + str(_n), ext = '.jpg')
-        write('Training: '); [write(l + ', ') for l in train[_n]]; print('\n')
-        write('Test: '); [write(l) for l in test[_n]], print('\n', '```')
+#         write('Training: '); [write(l + ', ') for l in train[_n]]; print('\n')
+#         write('Test: '); [write(l) for l in test[_n]], print('\n', '```')
         # sk.rdivDemo(stat)
 
         # histplot(stat, bins = [1, 3, 5, 7, 10, 15, 20, 50])
         showoff(dataName[n], before, after)
-        print('```')
+      print('```')
 
         # sk.rdivDemo(stat)
         # Save the histogram after applying contrast sets.
