@@ -55,20 +55,20 @@ def saveImg(x, num_bins = 10, fname = None, ext = None):
 #  plt.savefig(fname + ext)
 #  plt.close()
 
-def creatHist(x, num_bins = 10, fname = None, ext = None):
-  pass
-#  fname = 'Untitled' if not fname else fname
-#  ext = '.jpg' if not ext else ext
-#  n, bins, patches = plt.hist(x, num_bins, normed = False,
-#                              facecolor = 'blue', alpha = 0.5)
-#  # add a 'best fit' line
-#  plt.xlabel('Bugs')
-#  plt.ylabel('Frequency')
-#  plt.title(r'Histogram (Median Bugs in each class)')
-#
-#  # Tweak spacing to prevent clipping of ylabel
-#  plt.subplots_adjust(left = 0.15)
-#  plt.savefig(fname + ext)
-#  plt.close()
+def plotCurve(x, num_bins = 10, fname = None, ext = None):
+
+  fname = 'Untitled' if not fname else fname
+  ext = '.jpg' if not ext else ext
+  xlim = np.linspace(1, len(x[0]), len(x[0]))
+  plt.plot(xlim, x[0], 'r', xlim, x[1], 'b');
+  # add a 'best fit' line
+  plt.xlabel('Rows')
+  plt.ylabel('Bugs')
+  # plt.title(r'Histogram (Median Bugs in each class)')
+
+  # Tweak spacing to prevent clipping of ylabel
+  plt.subplots_adjust(left = 0.15)
+  plt.savefig('./_fig/' + fname + ext)
+  plt.close()
 
 

@@ -4,13 +4,15 @@ from pdb import set_trace
 from random import uniform, randint
 import sys
 
-from _imports import *
 from abcd import _runAbcd
 import sk
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
+
 from Prediction import *
+from _imports import *
+from cliffsDelta import *
 from contrastset import *
 from dectree import *
 from hist import *
@@ -128,9 +130,7 @@ def formatData(tbl):
 #                                                                           REGRESSION
 #=====================================================================================
 def rforest(train, test):
-  """
-  Random Forest
-  """
+  "Random Forest"
   # Apply random forest classifier to predict the number of bugs.
   clf = RandomForestClassifier(n_estimators = 930, n_jobs = -1,
                                max_features = 3)
@@ -155,9 +155,7 @@ def _RF():
   preds = rforest(train_DF, test_df)
 
 def CART(train, test):
-  """
-  CART: Classification and Regression Trees
-  """
+  "CART"
   # Apply random forest classifier to predict the number of bugs.
   clf = DecisionTreeClassifier(max_features = 'auto')
   train_DF = formatData(train)
@@ -183,9 +181,7 @@ def _CART():
   _runAbcd(train = actual, test = preds, verbose = True)
 
 def adaboost(train, test):
-  """
-  ADABOOST
-  """
+  "ADABOOST"
   clf = AdaBoostClassifier()
   train_DF = formatData(train)
   test_DF = formatData(test)
@@ -210,9 +206,7 @@ def _adaboost():
   _runAbcd(train = actual, test = preds, verbose = True)
 
 def logit(train, test):
-  """
-  Logistic Regression
-  """
+  "Logistic Regression"
   clf = LogisticRegression(penalty = 'l2', dual = False, tol = 0.0001, C = 1.0,
                            fit_intercept = True, intercept_scaling = 1,
                            class_weight = None, random_state = None)
@@ -247,71 +241,58 @@ def haupt():
   from os import walk
   dataName = [Name for _, Name, __ in walk(dir)][0]
   numData = len(dataName)  # Number of data
-  print('# Logistic Regression')
-  one, two = explore(dir)
-  data = [one[i] + two[i] for i in xrange(len(one))];
-  for n in xrange(numData):
-    train = [dat[0] for dat in withinClass(data[n])]
-    test = [dat[1] for dat in withinClass(data[n])]
-    print('##', dataName[n])
-    for _n in xrange(len(train)):
-      # Training data
-      train_DF = createTbl(train[_n])
+  Prd = [rforest, CART, adaboost, logit]
 
-      # Testing data
-      test_df = createTbl(test[_n])
+  for p in Prd:
+    print('#', p.__doc__)
+    one, two = explore(dir)
+    data = [one[i] + two[i] for i in xrange(len(one))];
+    for n in xrange(numData):
+      train = [dat[0] for dat in withinClass(data[n])]
+      test = [dat[1] for dat in withinClass(data[n])]
+      print('##', dataName[n])
+      for _n in xrange(len(train)):
+        # Training data
+        train_DF = createTbl(train[_n])
 
+        # Testing data
+        test_df = createTbl(test[_n])
 
-      # Save a histogram of unmodified bugs
-      # saveImg(Bugs(test_df), num_bins = 10, fname = 'bugsBefore', ext = '.jpg')
+        # Save a histogram of unmodified bugs
+        # saveImg(Bugs(test_df), num_bins = 10, fname = 'bugsBefore', ext = '.jpg')
 
-      # Find and apply contrast sets
-      newTab = _treatments(train = train[_n], test = test[_n], verbose = False)
+        # Find and apply contrast sets
+        newTab = _treatments(train = train[_n], test = test[_n], verbose = False)
 
-      # Actual bugs
-      actual = Bugs(test_df)
-      actual = [a for a in actual if not a == 0]
-      actual.insert(0, 'Actual')
+        # Actual bugs
+        actual = Bugs(test_df)
+        # actual.insert(0, 'Actual')
 
-  #     set_trace()
+        # Use the random forest classifier to predict the number of bugs in the raw data.
+        before = sorted(p(train_DF, test_df))
+        # before.insert(0, 'Before')
 
-      # Use the random forest classifier to predict the number of bugs in the raw data.
-      beforeRF = rforest(train_DF, test_df)
-      beforeRF = [b for b in beforeRF if not b == 0]
-      beforeRF.insert(0, 'Before')
+        # Use the random forest classifier to predict the number of bugs in the new data.
+        after = sorted(p(train_DF, newTab))
+        # after.insert(0, 'After')
 
-      beforeCART = CART(train_DF, test_df)
-#      beforeCART = [b for b in beforeCART if not b == 0]
-      beforeCART.insert(0, 'Before')
+        stat = [before, after]
+#         set_trace()
+        plotCurve(stat, fname = p.__doc__ + '_' + str(_n), ext = '.jpg')
+        write('Training: '); [write(l + ', ') for l in train[_n]]; print('\n')
+        write('Test: '); [write(l) for l in test[_n]], print('\n', '```')
+        # sk.rdivDemo(stat)
 
-      beforeAda = adaboost(train_DF, test_df)
-#      beforeAda = [b for b in beforeAda if not b == 0]
-      beforeAda.insert(0, 'Before')
+        # histplot(stat, bins = [1, 3, 5, 7, 10, 15, 20, 50])
+        showoff(dataName[n], before, after)
+        print('```')
 
-      beforeLog = logit(train_DF, test_df)
-#      beforeLog = [b for b in beforeLog if not b == 0]
-      beforeLog.insert(0, 'Before')
+        # sk.rdivDemo(stat)
+        # Save the histogram after applying contrast sets.
+        # saveImg(bugs, num_bins = 10, fname = 'bugsAfter', ext = '.jpg')
 
-      # Use the random forest classifier to predict the number of bugs in the new data.
-      after = CART(train_DF, newTab)
-      after = [a for a in after if not a == 0]
-      after.insert(0, 'After')
-
-      stat = sorted([actual, beforeLog, after], key = lambda F:F[0])
-
-      write('Training: '); [write(l + ', ') for l in train[_n]]; print('')
-      write('Test: '); [write(l) for l in test[_n]], print('\n', '```')
-      #sk.rdivDemo(stat)
-
-      histplot(stat, bins = [1, 3, 5, 7, 10, 15, 20, 50])
-      print('```')
-
-      # sk.rdivDemo(stat)
-      # Save the histogram after applying contrast sets.
-      # saveImg(bugs, num_bins = 10, fname = 'bugsAfter', ext = '.jpg')
-
-      # <<DEGUG: Halt Code>>
-      # set_trace()
+        # <<DEGUG: Halt Code>>
+#       set_trace()
 
 
 if __name__ == '__main__':
