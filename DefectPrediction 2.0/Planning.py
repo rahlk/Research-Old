@@ -131,7 +131,7 @@ def withinClass(data):
   return [(data[:n], [data[n]]) for n in range(1, N)]
 
 def haupt():
-  dir = '../Data'
+  dir = './Data'
   from os import walk
   dataName = [Name for _, Name, __ in walk(dir)][0]
   numData = len(dataName)  # Number of data
