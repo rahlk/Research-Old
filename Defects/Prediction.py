@@ -1,23 +1,9 @@
-from abcd import _runAbcd
-from sklearn.ensemble import AdaBoostClassifier
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-
-from dectree import *
-
-def Bugs(tbl):
-  cells = [i.cells[-2] for i in tbl._rows]
-  return cells
-
 #=====================================================================================
 # PREDICTION SYSTEMS: 1. RANDOM FORESTS, 2. DECISION TREES, 3. ADABOOST, 4. LOGISTIC
 #                                                                           REGRESSION
 #=====================================================================================
 def rforest(train, test):
-  """
-  Random Forest
-  """
+  "Random Forest"
   # Apply random forest classifier to predict the number of bugs.
   clf = RandomForestClassifier(n_estimators = 930, n_jobs = -1,
                                max_features = 3)
@@ -42,9 +28,7 @@ def _RF():
   preds = rforest(train_DF, test_df)
 
 def CART(train, test):
-  """
-  CART: Classification and Regression Trees
-  """
+  "CART"
   # Apply random forest classifier to predict the number of bugs.
   clf = DecisionTreeClassifier(max_features = 'auto')
   train_DF = formatData(train)
@@ -70,9 +54,7 @@ def _CART():
   _runAbcd(train = actual, test = preds, verbose = True)
 
 def adaboost(train, test):
-  """
-  ADABOOST
-  """
+  "ADABOOST"
   clf = AdaBoostClassifier()
   train_DF = formatData(train)
   test_DF = formatData(test)
@@ -97,9 +79,7 @@ def _adaboost():
   _runAbcd(train = actual, test = preds, verbose = True)
 
 def logit(train, test):
-  """
-  Logistic Regression
-  """
+  "Logistic Regression"
   clf = LogisticRegression(penalty = 'l2', dual = False, tol = 0.0001, C = 1.0,
                            fit_intercept = True, intercept_scaling = 1,
                            class_weight = None, random_state = None)
@@ -124,8 +104,15 @@ def _logit():
   preds = logit(train_DF, test_df)
   set_trace()
   _runAbcd(train = actual, test = preds, verbose = True)
-  
-#if __name__ == '__main__':
-#  _logit()
-##   _CART()
-##   _adaboost()
+
+def knn(train, test):
+  "kNN"
+  neigh = KNeighborsClassifier()
+  train_DF = formatData(train)
+  test_DF = formatData(test)
+  features = train_DF.columns[:-2]
+  klass = train_DF[train_DF.columns[-2]];
+  # set_trace()
+  neigh.fit(train_DF[features], klass)
+  preds = neigh.predict(test_DF[test_DF.columns[:-2]]).tolist()
+  return preds
