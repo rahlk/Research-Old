@@ -1,3 +1,25 @@
+from __future__ import print_function
+from os import environ, getcwd
+import sys
+
+# Update PYTHONPATH
+HOME = environ['HOME']
+axe = HOME + '/git/axe/axe/'  # AXE
+pystat = HOME + '/git/pystats/'  # PySTAT
+cwd = getcwd()  # Current Directory
+sys.path.extend([axe, pystat, cwd])
+
+from Prediction import *
+from Planning import _treatments
+from _imports import *
+from abcd import _Abcd
+from cliffsDelta import showoff
+from contrastset import *
+from dectree import *
+from methods1 import *
+import numpy as np
+import pandas as pd
+import sk
 
 def Bugs(tbl):
   cells = [i.cells[-2] for i in tbl._rows]
@@ -7,8 +29,12 @@ def withinClass(data):
   N = len(data)
   return [(data[:n], [data[n]]) for n in range(1, N)]
 
-def haupt():
-  dir = './Data'
+def write(str):
+  sys.stdout.write(str)
+
+
+def main():
+  dir = '../Data'
   from os import walk
   dataName = [Name for _, Name, __ in walk(dir)][0]
   numData = len(dataName)  # Number of data
@@ -39,25 +65,25 @@ def haupt():
         # Actual bugs
         actual = Bugs(test_df)
         # actual.insert(0, 'Actual')
-
+        actual1 = [0 if a == 0 else 1 for a in actual]
         # Use the random forest classifier to predict the number of bugs in the raw data.
-        before = sorted(p(train_DF, test_df))
+        before = p(train_DF, test_df)
         # before.insert(0, 'Before')
-
+        before1 = [0 if b == 0 else 1 for b in before]
         # Use the random forest classifier to predict the number of bugs in the new data.
-        after = sorted(p(train_DF, newTab))
+        after = p(train_DF, newTab)
+        after1 = [0 if a == 0 else 1 for a in after]
         # after.insert(0, 'After')
 
         stat = [before, after]
 #         set_trace()
-        plotCurve(stat, fname = p.__doc__ + '_' + str(_n), ext = '.jpg')
+        # plotCurve(stat, fname = p.__doc__ + '_' + str(_n), ext = '.jpg')
         write('Training: '); [write(l + ', ') for l in train[_n]]; print('\n')
         write('Test: '); [write(l) for l in test[_n]], print('\n', '```')
         # sk.rdivDemo(stat)
-
         # histplot(stat, bins = [1, 3, 5, 7, 10, 15, 20, 50])
-        # _Abcd(before = actual, after = before)
-        print(showoff(dataName[n], before, after))
+        _Abcd(before = actual, after = before)
+#         print(showoff(dataName[n], before1, after1))
         cd.append(showoff(dataName[n], before, after))
       print('```')
 
@@ -66,6 +92,7 @@ def haupt():
         # saveImg(bugs, num_bins = 10, fname = 'bugsAfter', ext = '.jpg')
 
         # <<DEGUG: Halt Code>>
+    cd = sorted(cd)
     set_trace()
 
 
@@ -73,4 +100,4 @@ if __name__ == '__main__':
 #  _CART()
 #  _logit()
 #  _adaboost()
-  haupt()
+  main()

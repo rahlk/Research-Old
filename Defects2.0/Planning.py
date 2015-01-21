@@ -9,7 +9,7 @@ import sys
 HOME = environ['HOME']
 axe = HOME + '/git/axe/axe/'  # AXE
 pystat = HOME + '/git/pystats/'  # PySTAT
-cwd = getcwd() # Current Directory
+cwd = getcwd()  # Current Directory
 sys.path.extend([axe, pystat, cwd])
 
 from sklearn.ensemble import AdaBoostClassifier
@@ -30,8 +30,6 @@ import numpy as np
 import pandas as pd
 import sk
 
-def write(str):
-  sys.stdout.write(str)
 
 def formatData(tbl):
   Rows = [i.cells for i in tbl._rows]
