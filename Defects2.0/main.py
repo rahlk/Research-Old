@@ -1,12 +1,7 @@
+
 def Bugs(tbl):
   cells = [i.cells[-2] for i in tbl._rows]
   return cells
-
-def formatData(tbl):
-  Rows = [i.cells for i in tbl._rows]
-  headers = [i.name for i in tbl.headers]
-  return pd.DataFrame(Rows, columns = headers)
-
 
 def withinClass(data):
   N = len(data)

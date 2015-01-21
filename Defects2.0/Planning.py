@@ -1,8 +1,16 @@
 from __future__ import print_function
 
+from os import environ, getcwd
 from pdb import set_trace
 from random import uniform, randint
 import sys
+
+# Update PYTHONPATH
+HOME = environ['HOME']
+axe = HOME + '/git/axe/axe/'  # AXE
+pystat = HOME + '/git/pystats/'  # PySTAT
+cwd = getcwd() # Current Directory
+sys.path.extend([axe, pystat, cwd])
 
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
@@ -22,13 +30,13 @@ import numpy as np
 import pandas as pd
 import sk
 
-# Update PYTHONPATH
-HOME = os.environ['HOME']
-axe = HOME + '/git/axe/axe'  # AXE
-axe = HOME + '/git/axe/axe'  # PySTAT
-sys.path.append()
 def write(str):
   sys.stdout.write(str)
+
+def formatData(tbl):
+  Rows = [i.cells for i in tbl._rows]
+  headers = [i.name for i in tbl.headers]
+  return pd.DataFrame(Rows, columns = headers)
 
 #===============================================================================
 # PLANNING PHASE: 1. Decision Trees, 2. Contrast Sets

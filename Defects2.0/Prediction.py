@@ -1,6 +1,5 @@
 from pdb import set_trace
-
-from abcd import _Abcd
+from os import environ, getcwd
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
@@ -8,7 +7,16 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 
 from Planning import formatData
+from abcd import _Abcd
 from dectree import *
+
+
+# Update PYTHONPATH
+HOME = environ['HOME']
+axe = HOME + '/git/axe/axe/'  # AXE
+pystat = HOME + '/git/pystats/'  # PySTAT
+cwd = getcwd() # Current Directory
+sys.path.extend([axe, pystat, cwd])
 
 
 def Bugs(tbl):
