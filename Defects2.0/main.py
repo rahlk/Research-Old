@@ -82,7 +82,7 @@ def main():
         write('Test: '); [write(l) for l in test[_n]], print('\n', '```')
         # sk.rdivDemo(stat)
         # histplot(stat, bins = [1, 3, 5, 7, 10, 15, 20, 50])
-        _Abcd(before = actual, after = before)
+        _Abcd(before = actual1, after = before1)
 #         print(showoff(dataName[n], before1, after1))
         cd.append(showoff(dataName[n], before, after))
       print('```')
