@@ -38,9 +38,9 @@ def main():
   from os import walk
   dataName = [Name for _, Name, __ in walk(dir)][0]
   numData = len(dataName)  # Number of data
-  Prd = [rforest, CART, adaboost, logit, knn]
-  cd = []
-  for p in [rforest]:
+  Prd = [CART, adaboost, logit, knn]
+  cd = {}
+  for p in Prd:
     print('#', p.__doc__)
     one, two = explore(dir)
     data = [one[i] + two[i] for i in xrange(len(one))];
@@ -84,7 +84,7 @@ def main():
         # histplot(stat, bins = [1, 3, 5, 7, 10, 15, 20, 50])
         _Abcd(before = actual1, after = before1)
 #         print(showoff(dataName[n], before1, after1))
-        cd.append(showoff(dataName[n], before, after))
+        # cd.append(showoff(dataName[n], before, after))
       print('```')
 
         # sk.rdivDemo(stat)
@@ -92,8 +92,8 @@ def main():
         # saveImg(bugs, num_bins = 10, fname = 'bugsAfter', ext = '.jpg')
 
         # <<DEGUG: Halt Code>>
-    cd = sorted(cd)
-    set_trace()
+   # cd.update({p.__doc__:sorted(cd)})
+    # set_trace()
 
 
 if __name__ == '__main__':

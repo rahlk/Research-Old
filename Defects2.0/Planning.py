@@ -31,11 +31,6 @@ import pandas as pd
 import sk
 
 
-def formatData(tbl):
-  Rows = [i.cells for i in tbl._rows]
-  headers = [i.name for i in tbl.headers]
-  return pd.DataFrame(Rows, columns = headers)
-
 #===============================================================================
 # PLANNING PHASE: 1. Decision Trees, 2. Contrast Sets
 #===============================================================================
