@@ -1,14 +1,14 @@
 from pdb import set_trace
 from os import environ, getcwd
 import sys
-
+from scipy.spatial.distance import euclidean
 # Update PYTHONPATH
 HOME = environ['HOME']
 axe = HOME + '/git/axe/axe/'  # AXE
 pystat = HOME + '/git/pystats/'  # PySTAT
 cwd = getcwd()  # Current Directory
 sys.path.extend([axe, pystat, cwd])
-
+from random import choice, uniform as rand
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
@@ -30,20 +30,64 @@ def Bugs(tbl):
   cells = [i.cells[-2] for i in tbl._rows]
   return cells
 
-def SMOTE(data = None, N = 5, k = 1):
+def SMOTE(data = None, N = 5, k = 1, atleast = 25, atmost = 250):
   def minority(data):
-    unique = set(sorted(Bugs(data)))
-    counts = [];
+    unique = list(set(sorted(Bugs(data))))
+    counts = len(unique) * [0];
+#     set_trace()
     for n in xrange(len(unique)):
       for d in Bugs(data):
         if unique[n] == d: counts[n] += 1
     return unique, counts
-  print minority(data)
+
+  def knn(one, two):
+    pdistVect = []
+    for n in two:
+      if not n == two:
+        pdistVect.append(euclidean(one, n))
+    return sorted(pdistVect)[0:k]
+
+  def extrapolate(one, two):
+    new = one;
+    new.cells[3:-2] = [min(a, b) + rand() * (abs(a - b)) for
+           a, b in zip(one[3:-2], two[3:-2])]
+    return new
+
+  def populate(data):
+    newData = []
+    while len(data) < atleast:
+      for one in data:
+        neigh = knn(one, data.cells);
+        two = choice(neigh)
+        newData.append(extrapolate(one, two))
+      data.extend(newData)
+    return data
+
+  def depopulate(data):
+    return [choice(data) for _ in xrange(atmost)]
+#   print minority(data)
+  newCells = []
+  unique, counts = minority(data)
+  rows = data._rows
+  for u, n in zip(unique, counts):
+    if n < atleast:
+      newCells.append(populate([r for r in rows if r.cells[-2] == u]))
+    elif n > atmost:
+      newCells.append(depopulate([r for r in rows if r.cells[-2] == u]))
+    elif n == 1:
+      newCells.append([r for r in rows if r.cells[-2] == u])
+    else:
+      newCells.append([r for r in rows if r.cells[-2] == u])
+
+  return clone(data, rows = newCells)
 
 def _smote():
   dir = '../Data/camel/camel-1.6.csv'
   Tbl = createTbl([dir])
-  SMOTE(data = Tbl)
+#   set_trace()
+  newTbl = SMOTE(data = Tbl)
+  for r in newTbl._rows:
+    print r.cells
 
 
 #=====================================================================================
