@@ -15,7 +15,7 @@ from dectree import *
 HOME = environ['HOME']
 axe = HOME + '/git/axe/axe/'  # AXE
 pystat = HOME + '/git/pystats/'  # PySTAT
-cwd = getcwd() # Current Directory
+cwd = getcwd()  # Current Directory
 sys.path.extend([axe, pystat, cwd])
 
 
@@ -30,8 +30,8 @@ def Bugs(tbl):
 def rforest(train, test):
   "Random Forest"
   # Apply random forest classifier to predict the number of bugs.
-  clf = RandomForestClassifier(n_estimators = 930, n_jobs = -1,
-                               max_features = 3)
+  clf = RandomForestClassifier(n_estimators = 100, n_jobs = -1,
+                               max_features = 5)
   train_DF = formatData(train)
   test_DF = formatData(test)
   features = train_DF.columns[:-2]
