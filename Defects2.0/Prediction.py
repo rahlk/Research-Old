@@ -30,7 +30,7 @@ def Bugs(tbl):
   cells = [i.cells[-2] for i in tbl._rows]
   return cells
 
-def SMOTE(data = None, N = 5, k = 1, atleast = 25, atmost = 250):
+def SMOTE(data = None, N = 5, k = 3, atleast = 50, atmost = 250):
   def minority(data):
     unique = list(set(sorted(Bugs(data))))
     counts = len(unique) * [0];
@@ -42,22 +42,24 @@ def SMOTE(data = None, N = 5, k = 1, atleast = 25, atmost = 250):
 
   def knn(one, two):
     pdistVect = []
-    for n in two:
-      if not n == two:
-        pdistVect.append(euclidean(one, n))
-    return sorted(pdistVect)[0:k]
+#    set_trace()
+    for ind, n in enumerate(two):
+      pdistVect.append([ind, euclidean(one.cells[:-1], n.cells[:-1])])
+    indices = sorted(pdistVect, key = lambda F:F[1])
+    return [two[n[0]] for n in indices]
 
   def extrapolate(one, two):
     new = one;
-    new.cells[3:-2] = [min(a, b) + rand() * (abs(a - b)) for
-           a, b in zip(one[3:-2], two[3:-2])]
+#    set_trace()
+    new.cells[3:-1] = [min(a, b) + rand() * (abs(a - b)) for
+           a, b in zip(one.cells[3:-1], two.cells[3:-1])]
     return new
 
   def populate(data):
     newData = []
     while len(data) < atleast:
       for one in data:
-        neigh = knn(one, data.cells);
+        neigh = knn(one, data)[1:k + 1];
         two = choice(neigh)
         newData.append(extrapolate(one, two))
       data.extend(newData)
@@ -68,17 +70,17 @@ def SMOTE(data = None, N = 5, k = 1, atleast = 25, atmost = 250):
 #   print minority(data)
   newCells = []
   unique, counts = minority(data)
+#  set_trace()
   rows = data._rows
   for u, n in zip(unique, counts):
-    if n < atleast:
-      newCells.append(populate([r for r in rows if r.cells[-2] == u]))
+    if  1 < n < atleast:
+      newCells.extend(populate([r for r in rows if r.cells[-2] == u]))
     elif n > atmost:
-      newCells.append(depopulate([r for r in rows if r.cells[-2] == u]))
-    elif n == 1:
-      newCells.append([r for r in rows if r.cells[-2] == u])
+      newCells.extend(depopulate([r for r in rows if r.cells[-2] == u]))
     else:
-      newCells.append([r for r in rows if r.cells[-2] == u])
+      newCells.extend([r for r in rows if r.cells[-2] == u])
 
+  set_trace()
   return clone(data, rows = newCells)
 
 def _smote():
