@@ -71,11 +71,11 @@ def main():
           # actual.insert(0, 'Actual')
           actual1 = [0 if a == 0 else 1 for a in actual]
           # Use the random forest classifier to predict the number of bugs in the raw data.
-          before = p(train_DF, test_df)
+          before = p(train_DF, test_df, smoteit = _smote)
           # before.insert(0, 'Before')
           before1 = [0 if b == 0 else 1 for b in before]
           # Use the random forest classifier to predict the number of bugs in the new data.
-          after = p(train_DF, newTab)
+          after = p(train_DF, newTab, smoteit = _smote)
           after1 = [0 if a == 0 else 1 for a in after]
           # after.insert(0, 'After')
 
