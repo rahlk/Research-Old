@@ -13,7 +13,7 @@ import pandas as pd
 from dectree import *
 
 
-def SMOTE(data = None, k = 5, atleast = 150, atmost = 100):
+def SMOTE(data = None, k = 5, atleast = 5, atmost = 100):
 
   def Bugs(tbl):
     cells = [i.cells[-2] for i in tbl._rows]
@@ -41,6 +41,7 @@ def SMOTE(data = None, k = 5, atleast = 150, atmost = 100):
 #    set_trace()
     new.cells[3:-1] = [min(a, b) + rand() * (abs(a - b)) for
            a, b in zip(one.cells[3:-1], two.cells[3:-1])]
+    new.cells[-2] = int(new.cells[-2])
     return new
 
   def populate(data):

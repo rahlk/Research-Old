@@ -38,7 +38,7 @@ def main():
   from os import walk
   dataName = [Name for _, Name, __ in walk(dir)][0]
   numData = len(dataName)  # Number of data
-  Prd = [CART]  # , adaboost, logit, knn]
+  Prd = [rforest]  # , CART, adaboost, logit, knn]
   _smoteit = [True, False]
   cd = {}
   for p in Prd:
