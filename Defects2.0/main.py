@@ -10,7 +10,7 @@ cwd = getcwd()  # Current Directory
 sys.path.extend([axe, pystat, cwd])
 
 from Prediction import *
-from Planning import _treatments
+from Planning import *
 from _imports import *
 from abcd import _Abcd
 from cliffsDelta import showoff
@@ -60,7 +60,7 @@ def main():
         # saveImg(Bugs(test_df), num_bins = 10, fname = 'bugsBefore', ext = '.jpg')
 
         # Find and apply contrast sets
-        newTab = _treatments(train = train[_n], test = test[_n], verbose = False)
+        newTab = treatments(train = train[_n], test = test[_n], verbose = False)
 
         # Actual bugs
         actual = Bugs(test_df)

@@ -14,7 +14,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
-
+from smote import *
 import pandas as pd
 from abcd import _Abcd
 from dectree import *
@@ -25,81 +25,18 @@ def formatData(tbl):
   headers = [i.name for i in tbl.headers]
   return pd.DataFrame(Rows, columns = headers)
 
-
 def Bugs(tbl):
   cells = [i.cells[-2] for i in tbl._rows]
   return cells
-
-def SMOTE(data = None, N = 5, k = 3, atleast = 50, atmost = 250):
-  def minority(data):
-    unique = list(set(sorted(Bugs(data))))
-    counts = len(unique) * [0];
-#     set_trace()
-    for n in xrange(len(unique)):
-      for d in Bugs(data):
-        if unique[n] == d: counts[n] += 1
-    return unique, counts
-
-  def knn(one, two):
-    pdistVect = []
-#    set_trace()
-    for ind, n in enumerate(two):
-      pdistVect.append([ind, euclidean(one.cells[:-1], n.cells[:-1])])
-    indices = sorted(pdistVect, key = lambda F:F[1])
-    return [two[n[0]] for n in indices]
-
-  def extrapolate(one, two):
-    new = one;
-#    set_trace()
-    new.cells[3:-1] = [min(a, b) + rand() * (abs(a - b)) for
-           a, b in zip(one.cells[3:-1], two.cells[3:-1])]
-    return new
-
-  def populate(data):
-    newData = []
-    while len(data) < atleast:
-      for one in data:
-        neigh = knn(one, data)[1:k + 1];
-        two = choice(neigh)
-        newData.append(extrapolate(one, two))
-      data.extend(newData)
-    return data
-
-  def depopulate(data):
-    return [choice(data) for _ in xrange(atmost)]
-#   print minority(data)
-  newCells = []
-  unique, counts = minority(data)
-#  set_trace()
-  rows = data._rows
-  for u, n in zip(unique, counts):
-    if  1 < n < atleast:
-      newCells.extend(populate([r for r in rows if r.cells[-2] == u]))
-    elif n > atmost:
-      newCells.extend(depopulate([r for r in rows if r.cells[-2] == u]))
-    else:
-      newCells.extend([r for r in rows if r.cells[-2] == u])
-
-  return newCells
-
-def _smote():
-  dir = '../Data/camel/camel-1.6.csv'
-  Tbl = createTbl([dir])
-#   set_trace()
-  newCells = SMOTE(data = Tbl)
-#   set_trace()
-  newTbl = clone(Tbl, rows = [k.cells for k in newCells])
-  for r in newTbl._rows:
-    print r.cells
-
 
 #=====================================================================================
 # PREDICTION SYSTEMS: 1. RANDOM FORESTS, 2. DECISION TREES, 3. ADABOOST, 4. LOGISTIC
 #                                                                           REGRESSION
 #=====================================================================================
-def rforest(train, test):
+def rforest(train, test, smoteit = True):
   "Random Forest"
   # Apply random forest classifier to predict the number of bugs.
+  if smoteit: train = SMOTE(train)
   clf = RandomForestClassifier(n_estimators = 100, n_jobs = -1,
                                max_features = 5)
   train_DF = formatData(train)
@@ -116,15 +53,16 @@ def _RF():
   dir = './Data'
   one, two = explore(dir)
   # Training data
-  train_DF = createTbl(train[0])
+  train_DF = createTbl(one[0])
   # Test data
-  test_df = createTbl(test[0])
+  test_df = createTbl(two[0])
   actual = Bugs(test_df)
   preds = rforest(train_DF, test_df)
 
-def CART(train, test):
+def CART(train, test, smoteit = True):
   "CART"
   # Apply random forest classifier to predict the number of bugs.
+  if smoteit: train = SMOTE(train)
   clf = DecisionTreeClassifier(max_features = 'auto')
   train_DF = formatData(train)
   test_DF = formatData(test)
@@ -148,8 +86,9 @@ def _CART():
   set_trace()
   _Abcd(train = actual, test = preds, verbose = True)
 
-def adaboost(train, test):
+def adaboost(train, test, smoteit = True):
   "ADABOOST"
+  if smoteit: train = SMOTE(train)
   clf = AdaBoostClassifier()
   train_DF = formatData(train)
   test_DF = formatData(test)
@@ -173,8 +112,9 @@ def _adaboost():
   set_trace()
   _Abcd(train = actual, test = preds, verbose = True)
 
-def logit(train, test):
+def logit(train, test, smoteit = True):
   "Logistic Regression"
+  if smoteit: train = SMOTE(train)
   clf = LogisticRegression(penalty = 'l2', dual = False, tol = 0.0001, C = 1.0,
                            fit_intercept = True, intercept_scaling = 1,
                            class_weight = None, random_state = None)
@@ -200,8 +140,9 @@ def _logit():
   set_trace()
   _Abcd(train = actual, test = preds, verbose = True)
 
-def knn(train, test):
+def knn(train, test, smoteit = True):
   "kNN"
+  if smoteit: train = SMOTE(train)
   neigh = KNeighborsClassifier()
   train_DF = formatData(train)
   test_DF = formatData(test)
@@ -213,4 +154,4 @@ def knn(train, test):
   return preds
 
 if __name__ == '__main__':
-  _smote()
+  test_smote()
