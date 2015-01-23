@@ -13,7 +13,7 @@ import pandas as pd
 from dectree import *
 
 
-def SMOTE(data = None, k = 5, atleast = 5, atmost = 100):
+def SMOTE(data = None, k = 5, atleast = 200, atmost = 250):
 
   def Bugs(tbl):
     cells = [i.cells[-2] for i in tbl._rows]
