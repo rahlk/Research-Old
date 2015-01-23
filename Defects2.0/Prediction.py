@@ -80,14 +80,15 @@ def SMOTE(data = None, N = 5, k = 3, atleast = 50, atmost = 250):
     else:
       newCells.extend([r for r in rows if r.cells[-2] == u])
 
-  set_trace()
-  return clone(data, rows = newCells)
+  return newCells
 
 def _smote():
   dir = '../Data/camel/camel-1.6.csv'
   Tbl = createTbl([dir])
 #   set_trace()
-  newTbl = SMOTE(data = Tbl)
+  newCells = SMOTE(data = Tbl)
+#   set_trace()
+  newTbl = clone(Tbl, rows = [k.cells for k in newCells])
   for r in newTbl._rows:
     print r.cells
 
