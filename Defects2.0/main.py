@@ -32,12 +32,12 @@ def withinClass(data):
 def write(str):
   sys.stdout.write(str)
 
-def printsk(a, b):
+def printsk(dat1, dat2):
   "Now printing only g"
   set_trace()
-  dat1 = a[0][0] + [k[-1] for k in a]
-  dat2 = b[0][0] + [k[-1] for k in b]
-  rdivDemo[[dat1, dat2]]
+  dat1_1 = dat1[0][0] + [k[-1] for k in a]
+  dat2_1 = dat2[0][0] + [k[-1] for k in b]
+  rdivDemo[[dat1_1, dat2_1]]
 
 
 def main():
@@ -57,13 +57,13 @@ def main():
       train = [dat[0] for dat in withinClass(data[n])]
       test = [dat[1] for dat in withinClass(data[n])]
       print('##', dataName[n])
+      reps = 1
+      abcd = [];
       for _smote in _smoteit:
         print('### SMOTE-ing') if _smote else print('### No SMOTE-ing')
   #       print('```')
         for _n in [-1]:  # xrange(len(train)):
           # Training data
-          reps = 10
-          abcd = [];
           for _ in xrange(reps):
             train_DF = createTbl(train[_n])
 
@@ -89,7 +89,7 @@ def main():
             out = _Abcd(before = actual1, after = before1)
             out.insert(0, 'SMOTE') if _smote else out.insert(0, 'No SMOTE')
             abcd.append(out)
-      printsk(abcd[1:reps], abcd[reps + 1:])
+      printsk(abcd[0:reps], abcd[reps:])
 #             cd.append(showoff(dataName[n], before, after))
 
       print('```')
