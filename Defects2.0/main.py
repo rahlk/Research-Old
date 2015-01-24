@@ -56,7 +56,7 @@ def main():
       train = [dat[0] for dat in withinClass(data[n])]
       test = [dat[1] for dat in withinClass(data[n])]
       print('##', dataName[n])
-      reps = 1
+      reps = 10
       abcd = [];
       for _smote in _smoteit:
         print('### SMOTE-ing') if _smote else print('### No SMOTE-ing')
