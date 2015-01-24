@@ -84,13 +84,12 @@ def main():
 
             stat = [before, after]
             write('Training: '); [write(l + ', ') for l in train[_n]]; print('\n')
-            write('Test: '); [write(l) for l in test[_n]], print('\n', '```')
+            write('Test: '); [write(l) for l in test[_n]],
             out = _Abcd(before = actual1, after = before1)
             out.insert(0, 'SMOTE') if _smote else out.insert(0, 'No SMOTE')
             abcd.append(out)
+      print('\n', '```')
       printsk(abcd[0:reps], abcd[reps:])
-#             cd.append(showoff(dataName[n], before, after))
-
       print('```')
 
           # sk.rdivDemo(stat)
