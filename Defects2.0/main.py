@@ -34,10 +34,9 @@ def write(str):
 
 def printsk(dat1, dat2):
   "Now printing only g"
-  set_trace()
-  dat1_1 = dat1[0][0] + [k[-1] for k in a]
-  dat2_1 = dat2[0][0] + [k[-1] for k in b]
-  rdivDemo[[dat1_1, dat2_1]]
+  dat1_1 = [dat1[0][0]] + [k[-1] for k in dat1]
+  dat2_1 = [dat2[0][0]] + [k[-1] for k in dat2]
+  rdivDemo([dat1_1, dat2_1], isLatex = False)
 
 
 def main():
