@@ -13,7 +13,7 @@ import pandas as pd
 from dectree import *
 
 
-def SMOTE(data = None, k = 5, atleast = 200, atmost = 250):
+def SMOTE(data = None, k = 5, atleast = 50, atmost = 100):
 
   def Bugs(tbl):
     cells = [i.cells[-2] for i in tbl._rows]
@@ -46,12 +46,13 @@ def SMOTE(data = None, k = 5, atleast = 200, atmost = 250):
 
   def populate(data):
     newData = []
-    while len(data) < atleast:
+    reps = len(data) - atleast
+    for _ in xrange(reps):
       for one in data:
         neigh = knn(one, data)[1:k + 1];
         two = choice(neigh)
         newData.append(extrapolate(one, two))
-      data.extend(newData)
+    data.extend(newData)
     return data
 
   def depopulate(data):

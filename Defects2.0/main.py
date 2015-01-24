@@ -19,8 +19,8 @@ from dectree import *
 from methods1 import *
 import numpy as np
 import pandas as pd
-import sk
-
+from sk import rdivDemo
+from pdb import set_trace
 def Bugs(tbl):
   cells = [i.cells[-2] for i in tbl._rows]
   return cells
@@ -32,6 +32,13 @@ def withinClass(data):
 def write(str):
   sys.stdout.write(str)
 
+def printsk(a, b):
+  "Now printing only g"
+  set_trace()
+  dat1 = a[0][0] + [k[-1] for k in a]
+  dat2 = b[0][0] + [k[-1] for k in b]
+  rdivDemo[[dat1, dat2]]
+
 
 def main():
   dir = '../Data'
@@ -40,6 +47,7 @@ def main():
   numData = len(dataName)  # Number of data
   Prd = [rforest]  # , CART, adaboost, logit, knn]
   _smoteit = [True, False]
+  abcd = []
   cd = {}
   for p in Prd:
     print('#', p.__doc__)
@@ -50,46 +58,41 @@ def main():
       test = [dat[1] for dat in withinClass(data[n])]
       print('##', dataName[n])
       for _smote in _smoteit:
-        if _smote: print('### SMOTE-ing')
-        else: print('### No SMOTE-ing')
+        print('### SMOTE-ing') if _smote else print('### No SMOTE-ing')
   #       print('```')
         for _n in [-1]:  # xrange(len(train)):
           # Training data
-          train_DF = createTbl(train[_n])
+          reps = 10
+          abcd = [];
+          for _ in xrange(reps):
+            train_DF = createTbl(train[_n])
 
-          # Testing data
-          test_df = createTbl(test[_n])
+            # Testing data
+            test_df = createTbl(test[_n])
 
-          # Save a histogram of unmodified bugs
-          # saveImg(Bugs(test_df), num_bins = 10, fname = 'bugsBefore', ext = '.jpg')
+            # Find and apply contrast sets
+            newTab = treatments(train = train[_n], test = test[_n], verbose = False)
 
-          # Find and apply contrast sets
-          newTab = treatments(train = train[_n], test = test[_n], verbose = False)
+            # Actual bugs
+            actual = Bugs(test_df)
+            actual1 = [0 if a == 0 else 1 for a in actual]
+            # Use the classifier to predict the number of bugs in the raw data.
+            before = p(train_DF, test_df, smoteit = _smote)
+            before1 = [0 if b == 0 else 1 for b in before]
+            # Use the classifier to predict the number of bugs in the new data.
+            after = p(train_DF, newTab, smoteit = _smote)
+            after1 = [0 if a == 0 else 1 for a in after]
 
-          # Actual bugs
-          actual = Bugs(test_df)
-          # actual.insert(0, 'Actual')
-          actual1 = [0 if a == 0 else 1 for a in actual]
-          # Use the random forest classifier to predict the number of bugs in the raw data.
-          before = p(train_DF, test_df, smoteit = _smote)
-          # before.insert(0, 'Before')
-          before1 = [0 if b == 0 else 1 for b in before]
-          # Use the random forest classifier to predict the number of bugs in the new data.
-          after = p(train_DF, newTab, smoteit = _smote)
-          after1 = [0 if a == 0 else 1 for a in after]
-          # after.insert(0, 'After')
+            stat = [before, after]
+            write('Training: '); [write(l + ', ') for l in train[_n]]; print('\n')
+            write('Test: '); [write(l) for l in test[_n]], print('\n', '```')
+            out = _Abcd(before = actual1, after = before1)
+            out.insert(0, 'SMOTE') if _smote else out.insert(0, 'No SMOTE')
+            abcd.append(out)
+      printsk(abcd[1:reps], abcd[reps + 1:])
+#             cd.append(showoff(dataName[n], before, after))
 
-          stat = [before, after]
-  #         set_trace()
-          # plotCurve(stat, fname = p.__doc__ + '_' + str(_n), ext = '.jpg')
-          write('Training: '); [write(l + ', ') for l in train[_n]]; print('\n')
-          write('Test: '); [write(l) for l in test[_n]], print('\n', '```')
-          # sk.rdivDemo(stat)
-          # histplot(stat, bins = [1, 3, 5, 7, 10, 15, 20, 50])
-          _Abcd(before = actual1, after = before1)
-  #         print(showoff(dataName[n], before1, after1))
-          # cd.append(showoff(dataName[n], before, after))
-        print('```')
+      print('```')
 
           # sk.rdivDemo(stat)
           # Save the histogram after applying contrast sets.
