@@ -59,7 +59,7 @@ def _where2pred():
   test_df = createTbl(two[0])
   actual = Bugs(test_df)
   preds = where2prd(train_DF, test_df)
-  _Abcd(train = actual, test = preds, verbose = True)
+  _Abcd(before = actual, after = preds, show = True)
 
 
 def rforest(train, test, smoteit = True):
