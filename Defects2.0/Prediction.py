@@ -46,7 +46,7 @@ def where2prd(train, test, smoteit = True):
     loc = drop(tC, myTree) # Drop a test case in the tree and see where it lands.
     for k in loc.kids: rows.extend(k.rows)
     vals = [r.cells[-2] for r in rows]
-    preds.extend(int(mean(vals))) if mean(vals) > 2 else preds.extend([0])
+    preds.extend(int(mean(vals))) if mean(vals) > 1 else preds.extend([0])
   return preds
 
 def _where2pred():
@@ -59,7 +59,8 @@ def _where2pred():
   test_df = createTbl(two[0])
   actual = Bugs(test_df)
   preds = where2prd(train_DF, test_df)
-  _Abcd(before = actual, after = preds, show = True)
+  set_trace()
+  print _Abcd(before = actual, after = preds, show = False)
 
 
 def rforest(train, test, smoteit = True):
