@@ -38,27 +38,6 @@ import sk
 
 def treatments(train = None, test = None, verbose = True):
 
-#   if not train_DF or test_df:
-#     dir = './Data'
-#
-#     train, test = explore(dir)
-#
-#     # set_trace()
-#     # Training data
-  train_DF = createTbl(train)
-#
-#     # Testing data
-  test_DF = createTbl(test)
-
-  # Decision Tree
-
-  t = discreteNums(train_DF, map(lambda x: x.cells, train_DF._rows))
-  myTree = tdiv(t)
-  if verbose: showTdiv(myTree)
-
-  # Testing data
-  testCase = test_DF._rows
-
   def remember(node):
    key = node.f.name
    Val = node.val
@@ -82,6 +61,20 @@ def treatments(train = None, test = None, verbose = True):
     for i in xrange(len(test_DF.headers)):
       keys.update({test_DF.headers[i].name[1:]:i})
     return keys
+
+  # Training data
+  train_DF = createTbl(train)
+  # Testing data
+  test_DF = createTbl(test)
+
+  # Decision Tree
+
+  t = discreteNums(train_DF, map(lambda x: x.cells, train_DF._rows))
+  myTree = tdiv(t)
+  if verbose: showTdiv(myTree)
+
+  # Testing data
+  testCase = test_DF._rows
 
   keys = getKey();
   newTab = []

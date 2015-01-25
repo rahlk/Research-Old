@@ -38,6 +38,10 @@ def where2prd(train, test, smoteit = True):
 
   t = discreteNums(train_DF, map(lambda x: x.cells, train_DF._rows))
   myTree = tdiv(t)
+  testCase = test_DF._rows
+  for tC in testCase:
+    newRow = tC;
+    loc = drop(tC, myTree) # Drop a test case in the tree and see where it lands.
 
 def rforest(train, test, smoteit = True):
   "  RF"
