@@ -30,8 +30,8 @@ def Bugs(tbl):
   return cells
 
 #=====================================================================================
-# PREDICTION SYSTEMS: 1. RANDOM FORESTS, 2. DECISION TREES, 3. ADABOOST, 4. LOGISTIC
-#                                                                           REGRESSION
+# PREDICTION SYSTEMS:
+# 1. WHERE2 2. RANDOM FORESTS, 3. DECISION TREES, 4. ADABOOST, 5. LOGISTIC REGRESSION
 #=====================================================================================
 def rforest(train, test, smoteit = True):
   "  RF"
@@ -153,8 +153,6 @@ def knn(train, test, smoteit = True):
   preds = neigh.predict(test_DF[test_DF.columns[:-2]]).tolist()
   return preds
 
-def where2prd(train, test, smoteit= True):
-  
 
 if __name__ == '__main__':
   test_smote()
