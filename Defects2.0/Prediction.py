@@ -51,7 +51,8 @@ def where2prd(train, test, smoteit = True):
     else:
       for k in loc.kids: rows.extend(k.rows)
     vals = [r.cells[-2] for r in rows]
-    preds.extend([int((mean(vals)))]) if mean(vals) > 0 else preds.extend([0])
+    preds.extend([median(k) for k in vals if k != 0 ]) \
+                  if median(vals) > 0 else preds.extend([0])
   return preds
 
 def _where2pred():
