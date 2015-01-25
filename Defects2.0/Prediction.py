@@ -1,6 +1,7 @@
 from pdb import set_trace
 from os import environ, getcwd
 import sys
+from scipy.stats.mstats import mode
 from scipy.spatial.distance import euclidean
 from numpy import mean
 # Update PYTHONPATH
@@ -51,8 +52,8 @@ def where2prd(train, test, smoteit = True):
     else:
       for k in loc.kids: rows.extend(k.rows)
     vals = [r.cells[-2] for r in rows]
-    preds.extend([median(k) for k in vals if k != 0 ]) \
-                  if median(vals) > 0 else preds.extend([0])
+    preds.append([mode([k for k in vals])[0].tolist()])  # \
+                 # if median(vals) > 0 else preds.extend([0])
   return preds
 
 def _where2pred():
@@ -65,6 +66,7 @@ def _where2pred():
   test_df = createTbl(two[0])
   actual = Bugs(test_df)
   preds = where2prd(train_DF, test_df)
+  for a, b in zip(actual, preds): print a, b
   set_trace()
   print _Abcd(before = actual, after = preds, show = False)
 
