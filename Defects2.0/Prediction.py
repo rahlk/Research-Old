@@ -2,6 +2,7 @@ from pdb import set_trace
 from os import environ, getcwd
 import sys
 from scipy.spatial.distance import euclidean
+from numpy import mean
 # Update PYTHONPATH
 HOME = environ['HOME']
 axe = HOME + '/git/axe/axe/'  # AXE
@@ -35,16 +36,34 @@ def Bugs(tbl):
 #=====================================================================================
 
 def where2prd(train, test, smoteit = True):
-
-  t = discreteNums(train_DF, map(lambda x: x.cells, train_DF._rows))
+  "WHERE2"
+  t = discreteNums(train, map(lambda x: x.cells, train._rows))
   myTree = tdiv(t)
-  testCase = test_DF._rows
+  testCase = test._rows
+  rows, preds = [], []
   for tC in testCase:
     newRow = tC;
     loc = drop(tC, myTree) # Drop a test case in the tree and see where it lands.
+    for k in loc.kids: rows.extend(k.rows)
+    vals = [r.cells[-2] for r in rows]
+    preds.extend(int(mean(vals))) if mean(vals) > 2 else preds.extend([0])
+  return preds
+
+def _where2pred():
+  "Test where2"
+  dir = '../Data'
+  one, two = explore(dir)
+  # Training data
+  train_DF = createTbl(one[0])
+  # Test data
+  test_df = createTbl(two[0])
+  actual = Bugs(test_df)
+  preds = where2prd(train_DF, test_df)
+  _Abcd(train = actual, test = preds, verbose = True)
+
 
 def rforest(train, test, smoteit = True):
-  "  RF"
+  "    RF"
   # Apply random forest classifier to predict the number of bugs.
   if smoteit: train = SMOTE(train)
   clf = RandomForestClassifier(n_estimators = 100, n_jobs = -1,
@@ -70,7 +89,7 @@ def _RF():
   preds = rforest(train_DF, test_df)
 
 def CART(train, test, smoteit = True):
-  "CART"
+  "  CART"
   # Apply random forest classifier to predict the number of bugs.
   if smoteit: train = SMOTE(train)
   clf = DecisionTreeClassifier(max_features = 'auto')
@@ -164,4 +183,4 @@ def knn(train, test, smoteit = True):
   return preds
 
 if __name__ == '__main__':
-  test_smote()
+  _where2pred()
