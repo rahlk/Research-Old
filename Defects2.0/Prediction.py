@@ -51,7 +51,7 @@ def where2prd(train, test, smoteit = True):
     else:
       for k in loc.kids: rows.extend(k.rows)
     vals = [r.cells[-2] for r in rows]
-    preds.extend(int(mean(vals))) if mean(vals) > 1 else preds.extend([0])
+    preds.extend([int((mean(vals)))]) if mean(vals) > 0 else preds.extend([0])
   return preds
 
 def _where2pred():
@@ -72,7 +72,8 @@ def rforest(train, test, smoteit = True):
   "    RF"
   # Apply random forest classifier to predict the number of bugs.
   if smoteit: train = SMOTE(train)
-  clf = RandomForestClassifier(n_estimators = 100, n_jobs = -1,
+  clf = RandomForestClassifier(n_estimators = 100,
+                               n_jobs = -1,
                                max_features = 5)
   train_DF = formatData(train)
   test_DF = formatData(test)
