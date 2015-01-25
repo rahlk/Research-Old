@@ -32,34 +32,35 @@ def withinClass(data):
 def write(str):
   sys.stdout.write(str)
 
-def printsk(dat1, dat2):
+def printsk(res):
   "Now printing only g"
-  dat1_1 = [dat1[0][0]] + [k[-1] for k in dat1]
-  dat2_1 = [dat2[0][0]] + [k[-1] for k in dat2]
-  rdivDemo([dat1_1, dat2_1], isLatex = False)
-
+  tosh = []
+  for p in res:
+    dat1, dat2 = res[p]
+    tosh.append([dat1[0][0]] + [k[-1] for k in dat1])
+    tosh.append([dat2[0][0]] + [k[-1] for k in dat2])
+  rdivDemo(tosh, isLatex = False)
 
 def main():
   dir = '../Data'
   from os import walk
   dataName = [Name for _, Name, __ in walk(dir)][0]
   numData = len(dataName)  # Number of data
-  Prd = [rforest]  # , CART, adaboost, logit, knn]
+  Prd = [rforest, CART]  # , adaboost, logit, knn]
   _smoteit = [True, False]
   abcd = []
-  cd = {}
-  for p in Prd:
-    print('#', p.__doc__)
+  res = {}
+  for n in xrange(numData):
     one, two = explore(dir)
     data = [one[i] + two[i] for i in xrange(len(one))];
-    for n in xrange(numData):
+    print('##', dataName[n])
+    for p in Prd:
       train = [dat[0] for dat in withinClass(data[n])]
       test = [dat[1] for dat in withinClass(data[n])]
-      print('##', dataName[n])
       reps = 10
       abcd = [];
       for _smote in _smoteit:
-        print('### SMOTE-ing') if _smote else print('### No SMOTE-ing')
+#         print('### SMOTE-ing') if _smote else print('### No SMOTE-ing')
   #       print('```')
         for _n in [-1]:  # xrange(len(train)):
           # Training data
@@ -83,14 +84,17 @@ def main():
             after1 = [0 if a == 0 else 1 for a in after]
 
             stat = [before, after]
-            write('Training: '); [write(l + ', ') for l in train[_n]]; print('\n')
-            write('Test: '); [write(l) for l in test[_n]],
+#             write('.')
+#             write('Training: '); [write(l + ', ') for l in train[_n]]; print('\n')
+#             write('Test: '); [write(l) for l in test[_n]],
             out = _Abcd(before = actual1, after = before1)
-            out.insert(0, 'SMOTE') if _smote else out.insert(0, 'No SMOTE')
+            out.insert(0, p.__doc__ + '-s') if _smote else out.insert(0, p.__doc__ + '-ns')
             abcd.append(out)
-      print('\n', '```')
-      printsk(abcd[0:reps], abcd[reps:])
-      print('```')
+      print()
+      res.update({p.__doc__:(abcd[0:reps], abcd[reps:])})
+    print('\n', '```')
+    printsk(res)
+    print('```')
 
           # sk.rdivDemo(stat)
           # Save the histogram after applying contrast sets.

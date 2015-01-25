@@ -34,7 +34,7 @@ def Bugs(tbl):
 #                                                                           REGRESSION
 #=====================================================================================
 def rforest(train, test, smoteit = True):
-  "Random Forest"
+  "  RF"
   # Apply random forest classifier to predict the number of bugs.
   if smoteit: train = SMOTE(train)
   clf = RandomForestClassifier(n_estimators = 100, n_jobs = -1,
