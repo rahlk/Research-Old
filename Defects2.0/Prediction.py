@@ -30,10 +30,12 @@ def Bugs(tbl):
   cells = [i.cells[-2] for i in tbl._rows]
   return cells
 
-#=====================================================================================
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # PREDICTION SYSTEMS:
-# 1. WHERE2 2. RANDOM FORESTS, 3. DECISION TREES, 4. ADABOOST, 5. LOGISTIC REGRESSION
-#=====================================================================================
+# ```````````````````
+# 1. WHERE2 2. RANDOM FORESTS, 3. DECISION TREES, 4. ADABOOST,
+# 5. LOGISTIC REGRESSION
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 def where2prd(train, test, smoteit = True):
   "WHERE2"
@@ -43,7 +45,8 @@ def where2prd(train, test, smoteit = True):
   rows, preds = [], []
   for tC in testCase:
     newRow = tC;
-    loc = drop(tC, myTree) # Drop a test case in the tree and see where it lands.
+    loc = drop(tC, myTree)  # Drop a test case in the tree and see where it lands
+
     for k in loc.kids: rows.extend(k.rows)
     vals = [r.cells[-2] for r in rows]
     preds.extend(int(mean(vals))) if mean(vals) > 1 else preds.extend([0])
