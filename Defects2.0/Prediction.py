@@ -45,9 +45,11 @@ def where2prd(train, test, smoteit = True):
   rows, preds = [], []
   for tC in testCase:
     newRow = tC;
-    loc = drop(tC, myTree)  # Drop a test case in the tree and see where it lands
-
-    for k in loc.kids: rows.extend(k.rows)
+    loc = drop(tC, myTree)  # Drop a test case in the tree & see where it lands
+    if not loc.kids:
+      rows.extend(loc.rows)
+    else:
+      for k in loc.kids: rows.extend(k.rows)
     vals = [r.cells[-2] for r in rows]
     preds.extend(int(mean(vals))) if mean(vals) > 1 else preds.extend([0])
   return preds
