@@ -53,7 +53,6 @@ def treatments(train = None, test = None, verbose = True):
   # Decision Tree
 
   t = discreteNums(train_DF, map(lambda x: x.cells, train_DF._rows))
-#   set_trace()
   myTree = tdiv(t)
   if verbose: showTdiv(myTree)
 

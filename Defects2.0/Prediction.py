@@ -153,5 +153,8 @@ def knn(train, test, smoteit = True):
   preds = neigh.predict(test_DF[test_DF.columns[:-2]]).tolist()
   return preds
 
+def where2prd(train, test, smoteit= True):
+  
+
 if __name__ == '__main__':
   test_smote()
