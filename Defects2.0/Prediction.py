@@ -33,6 +33,12 @@ def Bugs(tbl):
 # PREDICTION SYSTEMS:
 # 1. WHERE2 2. RANDOM FORESTS, 3. DECISION TREES, 4. ADABOOST, 5. LOGISTIC REGRESSION
 #=====================================================================================
+
+def where2prd(train, test, smoteit = True):
+
+  t = discreteNums(train_DF, map(lambda x: x.cells, train_DF._rows))
+  myTree = tdiv(t)
+
 def rforest(train, test, smoteit = True):
   "  RF"
   # Apply random forest classifier to predict the number of bugs.
@@ -152,7 +158,6 @@ def knn(train, test, smoteit = True):
   neigh.fit(train_DF[features], klass)
   preds = neigh.predict(test_DF[test_DF.columns[:-2]]).tolist()
   return preds
-
 
 if __name__ == '__main__':
   test_smote()
