@@ -41,9 +41,9 @@ def tuneRF():
     return g
 
   return Cols(tuneRF,
-        [N(least = 1, most = 10)
-        , N(least = 1, most = 10)
-        , N(least = 10, most = 1e6)
+        [N(least = 1, most = 100)
+        , N(least = 1, most = 100)
+        , N(least = 10, most = 1e4)
         , N(least = 1, most = 17)
         , O(f = f1)])
 
