@@ -71,11 +71,13 @@ def _where2pred():
   print _Abcd(before = actual, after = preds, show = False)
 
 
-def rforest(train, test, smoteit = True):
+def rforest(train, test, mss = 2, msl = 2,
+            max_feat = "auto", n_est = 10,
+            smoteit = True):
   "    RF"
   # Apply random forest classifier to predict the number of bugs.
   if smoteit: train = SMOTE(train)
-  clf = RandomForestClassifier(n_estimators = 100,
+  clf = RandomForestClassifier(n_estimators = n_est,
                                n_jobs = -1,
                                max_features = 5)
   train_DF = formatData(train)

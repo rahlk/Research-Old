@@ -9,7 +9,7 @@ from diffevol import *
 from settings import *
 from settingsWhere  import *
 from pdb import set_trace
-
+from abcd import _Abcd
 tree = treeings()
 # set_trace()
 def update(indep):
@@ -31,8 +31,9 @@ def model():
   # Train RF
  trainDat = explore(dir = '../Data/')[0]  # Only training data to tune.
  def f1(rows):
-  [mss, msl, n_gen, maxFeat] = rows[1:-1]; case = 0
-  g = _Abcd(train = train, test = test, show = False)[]
+  [mss, msl, n_est, max_feat] = rows[1:-1];
+
+  g = _Abcd(before = train, after = mod, show = False)[0]
   return g
 
  return Cols(model,
