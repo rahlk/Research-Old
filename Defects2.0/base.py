@@ -2,7 +2,6 @@ import sys, os
 sys.path.append(os.environ['HOME'] + '/git/axe/axe')
 sys.path.insert(0, os.getcwd() + '/_imports');
 from demos import *
-from abcd import _runAbcd  # @UnresolvedImport
 import sk;  # @UnresolvedImport
 from dectree import *
 from diffevol import *
@@ -29,38 +28,38 @@ def update(indep):
   prune = int(indep[8])
   return whereParm, tree
 
-def model():
-  # Train RF
- trainDat = explore(dir = '../Data/')[0]  # Only training data to tune.
- train = createTbl(trainDat[0]); test = createTbl(trainDat[1])
- def f1(rows):
-  [mss, msl, n_est, max_feat] = rows[1:-1];
-  mod = rforest(train, test, mss = int(mss), msl = int(msl),
-                max_feat = int(max_feat), n_est = int(n_est),
-                smoteit = True)
-  g = _Abcd(before = train, after = mod, show = False)[0]
-  return g
+def tuneRF():
+  # Tune RF
+  trainDat = explore(dir = '../Data/')[0]  # Only training data to tune.
+  train = createTbl(trainDat[0]); test = createTbl(trainDat[1])
+  def f1(rows):
+    [mss, msl, n_est, max_feat] = rows[1:-1];
+    mod = rforest(train, test, mss = int(mss), msl = int(msl),
+                  max_feat = int(max_feat), n_est = int(n_est),
+                  smoteit = True)
+    g = _Abcd(before = Bugs(train), after = mod, show = False)[0]
+    return g
 
- return Cols(model,
+  return Cols(tuneRF,
         [N(least = 1, most = 10)
         , N(least = 1, most = 10)
-        , N(least = 10, most = 1e4)
+        , N(least = 10, most = 1e6)
         , N(least = 1, most = 17)
         , O(f = f1)])
 
 def _test():
-  m = model()
+  m = tuneRF()
   for _ in range(10):
     one = m.any()
     m.score(one)
-    print(one)
+  print(one)
 
 def _de():
- "DE"
- DE = diffEvol(model = model);
- res = sorted([k for k in DE.DE()],
-              key = lambda F: F[-1])[-1]
- return update(res[1:-1])
+  "DE"
+  DE = diffEvol(model = tuneRF);
+  res = sorted([k for k in DE.DE()],
+               key = lambda F: F[-1])[-1]
+  return res
 
 def main(dir = None):
   whereParm, tree = None, None  # _de()
@@ -82,7 +81,10 @@ def main(dir = None):
   return [G, G1]
 
 if __name__ == '__main__':
-  _test()
+  from timeit import timeit
+  s = _test()
+  timeit(stmt = s, number = 1)
+#   print _de()
 #  print main()
 #  import sk; xtile = sk.xtile
 #  print xtile(G)
