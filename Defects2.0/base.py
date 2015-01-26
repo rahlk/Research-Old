@@ -28,8 +28,8 @@ def update(indep):
   return whereParm, tree
 
 def model():
- trainDat, testDat = explore(dir = '../Data/')
-#  set_trace()
+  # Train RF
+ trainDat = explore(dir = '../Data/')[0]  # Only training data to tune.
  def f1(rows):
   indep = rows[1:-1]; case = 0
   # set_trace()
