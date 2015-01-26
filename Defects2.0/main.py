@@ -62,7 +62,7 @@ def main():
       for _smote in _smoteit:
 #         print('### SMOTE-ing') if _smote else print('### No SMOTE-ing')
   #       print('```')
-        for _n in [-1]:  # xrange(len(train)):
+        for _n in [0]:  # xrange(len(train)):
           # Training data
           for _ in xrange(reps):
             train_DF = createTbl(train[_n])
@@ -71,7 +71,8 @@ def main():
             test_df = createTbl(test[_n])
 
             # Find and apply contrast sets
-            newTab = treatments(train = train[_n], test = test[_n], verbose = False)
+            newTab = treatments(train = train[_n],
+                                test = test[_n], verbose = False)
 
             # Actual bugs
             actual = Bugs(test_df)
@@ -84,15 +85,16 @@ def main():
             after1 = [0 if a == 0 else 1 for a in after]
 
             stat = [before, after]
-#             write('.')
+            write('.')
 #             write('Training: '); [write(l + ', ') for l in train[_n]]; print('\n')
 #             write('Test: '); [write(l) for l in test[_n]],
             out = _Abcd(before = actual1, after = before1)
-            out.insert(0, p.__doc__ + '-s') if _smote else out.insert(0, p.__doc__ + '-ns')
+            out.insert(0, p.__doc__ + '-s') if _smote \
+            else out.insert(0, p.__doc__ + '-ns')
             abcd.append(out)
       print()
       res.update({p.__doc__:(abcd[0:reps], abcd[reps:])})
-    print('\n', '```')
+    print('```')
     printsk(res)
     print('```')
 
