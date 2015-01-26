@@ -62,7 +62,7 @@ def main():
       for _smote in _smoteit:
 #         print('### SMOTE-ing') if _smote else print('### No SMOTE-ing')
   #       print('```')
-        for _n in [0]:  # xrange(len(train)):
+        for _n in xrange(1, len(train) - 1):
           # Training data
           for _ in xrange(reps):
             train_DF = createTbl(train[_n])
