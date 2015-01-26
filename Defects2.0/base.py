@@ -10,6 +10,8 @@ from settings import *
 from settingsWhere  import *
 from pdb import set_trace
 from abcd import _Abcd
+from Prediction import rforest, Bugs
+from methods1 import createTbl
 tree = treeings()
 # set_trace()
 def update(indep):
@@ -30,23 +32,20 @@ def update(indep):
 def model():
   # Train RF
  trainDat = explore(dir = '../Data/')[0]  # Only training data to tune.
+ train = createTbl(trainDat[0]); test = createTbl(trainDat[1])
  def f1(rows):
   [mss, msl, n_est, max_feat] = rows[1:-1];
-
+  mod = rforest(train, test, mss = int(mss), msl = int(msl),
+                max_feat = int(max_feat), n_est = int(n_est),
+                smoteit = True)
   g = _Abcd(before = train, after = mod, show = False)[0]
   return g
 
  return Cols(model,
-        [N(least = 0, most = 5)
-        , N(least = 2, most = 3)
-        , N(least = 4, most = 6)
-        , Bool(items = [True, False])
-        , N(least = 0, most = 0.99)
-
+        [N(least = 1, most = 10)
         , N(least = 1, most = 10)
-        , N(least = 1, most = 25)
-        , N(least = 1, most = 10)
-        , N(least = 1, most = 10)
+        , N(least = 10, most = 1e4)
+        , N(least = 1, most = 17)
         , O(f = f1)])
 
 def _test():
@@ -83,8 +82,9 @@ def main(dir = None):
   return [G, G1]
 
 if __name__ == '__main__':
- print main()
- import sk; xtile = sk.xtile
- print xtile(G)
+  _test()
+#  print main()
+#  import sk; xtile = sk.xtile
+#  print xtile(G)
 
  # main(dir = 'Data/')
