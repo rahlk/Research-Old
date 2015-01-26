@@ -79,7 +79,10 @@ def rforest(train, test, mss = 2, msl = 2,
   if smoteit: train = SMOTE(train)
   clf = RandomForestClassifier(n_estimators = n_est,
                                n_jobs = -1,
-                               max_features = 5)
+                               max_features = max_feat,
+                               max_samples_leaf = msl,
+                               max_samples_split = mss
+                               )
   train_DF = formatData(train)
   test_DF = formatData(test)
   features = train_DF.columns[:-2]
