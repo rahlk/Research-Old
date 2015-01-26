@@ -28,7 +28,7 @@ def update(indep):
   return whereParm, tree
 
 def model():
- trainDat, testDat = explore(dir = 'Data/')
+ trainDat, testDat = explore(dir = '../Data/')
 #  set_trace()
  def f1(rows):
   indep = rows[1:-1]; case = 0
