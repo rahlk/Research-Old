@@ -31,11 +31,8 @@ def model():
   # Train RF
  trainDat = explore(dir = '../Data/')[0]  # Only training data to tune.
  def f1(rows):
-  indep = rows[1:-1]; case = 0
-  # set_trace()
-  whereParm, tree = update(indep)
-  [test, train] = tdivPrec(where = None, dtree = tree, train = trainDat[1], test = testDat[1]);
-  g = _runAbcd(train = train, test = test, verbose = False)
+  [mss, msl, n_gen, maxFeat] = rows[1:-1]; case = 0
+  g = _Abcd(train = train, test = test, show = False)[]
   return g
 
  return Cols(model,
