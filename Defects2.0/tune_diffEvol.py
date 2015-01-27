@@ -4,7 +4,6 @@ sys.path.insert(0, os.getcwd() + '/_imports');
 from demos import *
 import sk;  # @UnresolvedImport
 from dectree import *
-from diffevol import *
 from settings import *
 from settingsWhere  import *
 from pdb import set_trace
@@ -27,24 +26,26 @@ def settings(**d): return o(
   tiny = 0.01,
   de = o(np = 5,
        epsilon = 1.01,
+       N = 20,
        f = 0.3,
        cf = 0.4,
        lives = 100)
   ).update(**d)
 
 The = settings()
-class DE(object):
-  def __init__(self, depen, indep, data):
+class diffEvol(object):
+  "Differential Evolution"
+  def __init__(self, model, data):
     self.frontier = []
-    self.depen = depen
-    self.indep = indep
-  def any(self, min, max):
-    return [randi(min, max) for __ in len(self.depen)]
+    self.model = model(data)
+
+  def new(self):
+    return [randi(d) for d in self.model.indep()]
   def initFront(self, N):
     for _ in xrange(N):
-      self.frontier.append([])
-  def extrapolate(self, a, b, c):
-    return int(a + The.de.f * (b - c))
+      self.frontier.append(self.new())
+  def extrapolate(self, l2, l3, l4):
+    return [int(a + The.de.f * (b - c)) for a, b, c in zip(l2, l3, l4)]
   def one234(self, one, pop, f = lambda x:id(x)):
     def oneOther():
       x = any(pop)
@@ -55,74 +56,72 @@ class DE(object):
     seen = [ f(one) ]
     return oneOther(), oneOther(), oneOther()
   def dominates(self, a, b):
-    return self.gscore(a) > self.gscore(b)
-  def gscore(self, lst):
-    
+    return self.model.depen(a) > self.model.depen(b)
+
   def DE(self):
-    self.initFront(The.np * self.indep)
+    self.initFront(The.de.N)
     lives = The.de.lives
     while lives > 0:
       better = False
       for pos, l1 in enumerate(self.frontier):
        l2, l3, l4 = self.one234(l1, self.frontier)
-       new = self.m.extrapolate(l2, l3, l4)
-       if  self.m.dominates(new, l1):
+       new = self.extrapolate(l2, l3, l4)
+       if  self.dominates(new, l1):
         self.frontier.pop(pos)
-        self.remember(new)
+        self.frontier.insert(pos, new)
         better = True
-       elif self.m.dominates(l1, new):
+       elif self.dominates(l1, new):
         better = False
        else:
-        self.remember(new)
+        self.frontier.append(new)
         better = True
        if not better:
           lives -= 1
     return self.frontier
 
 
-ca tuneRF(data):
+class tuneRF(object):
   # Tune RF
-  if not data:
-    # In no training data, use Ant
-    data = explore(dir = '../Data/')[0][0]  # Only training data to tune.
-  train = createTbl([data[0]]); test = createTbl([data[1]])
+  def __init__(self, data):
+    self.data = data
+    self.train = createTbl([data[0]])
+    self.test = createTbl([data[1]])
 #   set_trace()
-  def f1(rows):
-    mod = rforest(train, test
+  def depen(self, rows):
+    mod = rforest(self.train, self.test
                 , tunings = rows[1:-1]  # n_est, max_feat, mss, msl
                 , smoteit = True)
     g = _Abcd(before = Bugs(test), after = mod, show = False)[-1]
     return g
 
-  return Cols(tuneRF
-        , [N(least = 10, most = 5e3)  # n_estimators
-        , N(least = 1, most = 17)  # max_features
-        , N(least = 1, most = 20)  # min_samples_leaf
-        , N(least = 2, most = 20)  # min_samples_split
-        , O(f = f1)])
+  def indep(self):
+    return [(10, 5e3)  # n_estimators
+          , (1, 17)  # max_features
+          , (1, 20)  # min_samples_leaf
+          , (2, 20)  # min_samples_split
+          ]
 
-def tuneCART(data):
+class tuneCART(data):
   # Tune CART
-  if not data:
-    # In no training data, use Ant
-    data = explore(dir = '../Data/')[0][0]  # Only training data to tune.
-  train = createTbl([data[0]]); test = createTbl([data[1]])
-#   set_trace()
-  def f1(rows):
+  def __init__(self, data):
+    self.data = data
+    self.train = createTbl([data[0]])
+    self.test = createTbl([data[1]])
+
+  def depen(self, rows):
     [mss, msl, max_depth, max_feat, max_leaf_nodes] = rows[1:-1];
-    mod = CART(train, test
+    mod = CART(self.train, self.test
                , tunings = rows[-1:1]
                , smoteit = True)
     g = _Abcd(before = Bugs(test), after = mod, show = False)[-1]
     return g
 
-  return Cols(tuneCART
-        , [N(least = 1, most = 50)  # max_depth
-        , N(least = 2, most = 20)  # min_samples_split
-        , N(least = 1, most = 20)  # min_samples_leaf
-        , N(least = 1, most = 17)  # max features
-        , N(least = 2, most = 1e3)  # max_leaf_nodes
-        , O(f = f1)])
+  def indep(self):
+    return [(1, 50)  # max_depth
+          , (2, 20)  # min_samples_split
+          , (1, 20)  # min_samples_leaf
+          , (1, 17)  # max features
+          , (2, 1e3)]  # max_leaf_nodes
 
 def _test(data):
   m = tuneRF(data)

@@ -5,7 +5,6 @@ _pwd = os.getcwd()
 from re import search
 sys.dont_write_bytecode = True
 exp = math.e
-from tune_diffEvol import *
 
 def settings(**d): return o(
   name = "Differention Evolution",
