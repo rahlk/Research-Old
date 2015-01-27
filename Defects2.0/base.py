@@ -9,7 +9,7 @@ from settings import *
 from settingsWhere  import *
 from pdb import set_trace
 from abcd import _Abcd
-from Prediction import rforest, Bugs
+from Prediction import rforest, CART, Bugs
 from methods1 import createTbl
 tree = treeings()
 # set_trace()
@@ -36,17 +36,39 @@ def tuneRF(data):
   train = createTbl([data[0]]); test = createTbl([data[1]])
 #   set_trace()
   def f1(rows):
-    [mss, msl, n_est, max_feat] = rows[1:-1];
-    mod = rforest(train, test, mss = int(mss), msl = int(msl),
-                  max_feat = int(max_feat), n_est = int(n_est),
-                  smoteit = True)
+    mod = rforest(train, test
+                , tunings = rows[1:-1]  # n_est, max_feat, mss, msl
+                , smoteit = True)
     g = _Abcd(before = Bugs(test), after = mod, show = False)[-1]
     return g
 
   return Cols(tuneRF
-        , [N(least = 1, most = 10)
-        , N(least = 1, most = 10)
-        , N(least = 10, most = 1e3)
+        , [N(least = 10, most = 5e3)
+        , N(least = 1, most = 17)
+        , N(least = 1, most = 20)
+        , N(least = 1, most = 20)
+        , O(f = f1)])
+
+def tuneCART(data):
+  # Tune CART
+  if not data:
+    # In no training data, use Ant
+    data = explore(dir = '../Data/')[0][0]  # Only training data to tune.
+  train = createTbl([data[0]]); test = createTbl([data[1]])
+#   set_trace()
+  def f1(rows):
+    [mss, msl, max_depth, max_feat, max_leaf_nodes] = rows[1:-1];
+    mod = CART(train, test
+               , tunings = rows[-1:1]
+               , smoteit = True)
+    g = _Abcd(before = Bugs(test), after = mod, show = False)[-1]
+    return g
+
+  return Cols(tuneRF
+        , [N(least = 1, most = 50)  # max_depth
+        , N(least = 1, most = 50)  # max_depth
+        , N(least = 1, most = 20)
+        , N(least = 10, most = 2e3)
         , N(least = 1, most = 17)
         , O(f = f1)])
 

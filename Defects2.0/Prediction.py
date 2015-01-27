@@ -71,18 +71,18 @@ def _where2pred():
   print _Abcd(before = actual, after = preds, show = False)
 
 
-def rforest(train, test, mss = 2, msl = 2,
-            max_feat = "auto", n_est = 10,
-            smoteit = True):
+def rforest(train, test, tunings = None, smoteit = True):
   "    RF"
   # Apply random forest classifier to predict the number of bugs.
   if smoteit: train = SMOTE(train)
-  clf = RandomForestClassifier(n_estimators = n_est,
-                               n_jobs = -1,
-                               max_features = max_feat,
-                               min_samples_leaf = msl,
-                               min_samples_split = mss
-                               )
+  if not tunings:
+    clf = RandomForestClassifier()
+  else:
+    clf = RandomForestClassifier(n_estimators = tunings[0],
+                                 max_features = tunings[1],
+                                 min_samples_leaf = tunings[2],
+                                 min_samples_split = tunings[3]
+                                 )
   train_DF = formatData(train)
   test_DF = formatData(test)
   features = train_DF.columns[:-2]
@@ -106,11 +106,18 @@ def _RF():
             smoteit = False)
   print _Abcd(before = actual, after = preds, show = False)[-1]
 
-def CART(train, test, smoteit = True):
+def CART(train, test, tunings = None, smoteit = True):
   "  CART"
   # Apply random forest classifier to predict the number of bugs.
   if smoteit: train = SMOTE(train)
-  clf = DecisionTreeClassifier(max_features = 'auto')
+  if not tunings: clf = DecisionTreeClassifier()
+  else:
+    clf = DecisionTreeClassifier(max_depth = tunings[0],
+                                 min_samples_split = tunings[1],
+                                 min_samples_leaf = tunings[2],
+                                 max_features = tunings[3],
+                                 min_density = tunings[4],
+                                 max_leaf_nodes = tunings[5])
   train_DF = formatData(train)
   test_DF = formatData(test)
   features = train_DF.columns[:-2]
