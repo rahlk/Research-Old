@@ -62,7 +62,7 @@ def main():
     for p in Prd:
       train = [dat[0] for dat in withinClass(data[n])]
       test = [dat[1] for dat in withinClass(data[n])]
-      reps = 1
+      reps = 10
       abcd = [[], []];
       for t in _tuneit:
         for _smote in _smoteit:
