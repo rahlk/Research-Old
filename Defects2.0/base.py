@@ -44,25 +44,24 @@ def tuneRF(data):
     return g
 
   return Cols(tuneRF
-        , [N(least = 1, most = 100)
-        , N(least = 1, most = 100)
-        , N(least = 10, most = 1e4)
+        , [N(least = 1, most = 10)
+        , N(least = 1, most = 10)
+        , N(least = 10, most = 1e3)
         , N(least = 1, most = 17)
         , O(f = f1)])
 
 def _test(data):
-  m = tuneRF(data)[0]
-  for _ in range(10):
-    one = m.any()
-    m.score(one)
-  print(one)
+  m = tuneRF(data)
+  vals = [(m.any()) for _ in range(10)]
+  vals1 = [m.score(v) for v in vals]
+  print(vals, vals1)
 
 def _de(data):
   "DE"
   DE = diffEvol(tuneRF, data);
 #   set_trace()
   res = sorted([k for k in DE.DE()],
-               key = lambda F: F[-1])[0]
+               key = lambda F: F[-1])[-1]
   return res
 
 # def main(dir = None):

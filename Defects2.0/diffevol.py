@@ -85,11 +85,10 @@ class N(Col):
     self.lo, self.hi = 10 ** 32, -1 * 10 ** 32
   def extrapolate(self, x, y, z):
     f = The.de.f
-    return x + f * (y - z)
+    return int(x + f * (y - z))
   def any(self):
-   return max(self.least,
-               min(self.most,
-                   self.least + rand() * (self.most - self.least)))
+   return int(max(self.least,
+              self.least + rand() * abs(self.most - self.least)))
   def __iadd__(self, x):
     # print("x",x,"least",self.least,"most",self.most)
     # x = x if not x >= self.least else self.most if x >
@@ -106,7 +105,7 @@ class N(Col):
   def nudge(self, x, y, sampled):
    if sampled:
     tmp = sorted([x + rand() * 1.5 * (y - x)
-                  for _ in xrange(100)],
+                  for _ in xrange(10)],
                  key = lambda F: abs(F - x))[-1]
    else:
     tmp = x + rand() * 1.5 * (y - x)
@@ -165,6 +164,7 @@ class O(Col):
   def __init__(self, col = 0, f = lambda x: 1, name = None,
     love = True  # for objectives to maximize, set love to True
     ):
+    self.col = col
     self.f = f
     self.love = love
     self.name = name or f.__name__
