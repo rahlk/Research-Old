@@ -86,9 +86,11 @@ def _de(model, data):
                key = lambda F: F[-1])[-1]
   return res
 
-def tune(data, pred):
+def tune(model, data):
   if pred == rforest:
-    return _de
+    return _de(tuneRF, data)[1:-1]
+  elif pred == CART:
+    return _de(tuneCART, data)[1:-1]
 
 if __name__ == '__main__':
   from timeit import time
