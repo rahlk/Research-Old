@@ -21,6 +21,8 @@ import numpy as np
 import pandas as pd
 from sk import rdivDemo
 from pdb import set_trace
+from tune_diffEvol import tune
+
 def Bugs(tbl):
   cells = [i.cells[-2] for i in tbl._rows]
   return cells
