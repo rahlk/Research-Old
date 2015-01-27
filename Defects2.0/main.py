@@ -21,7 +21,7 @@ import numpy as np
 import pandas as pd
 from sk import rdivDemo
 from pdb import set_trace
-from tune_diffEvol import tune
+from tune_diffEvol import tuner
 
 def Bugs(tbl):
   cells = [i.cells[-2] for i in tbl._rows]
@@ -52,6 +52,7 @@ def main():
   numData = len(dataName)  # Number of data
   Prd = [rforest, CART]  # , adaboost, logit, knn]
   _smoteit = [True, False]
+  _tuneit = [True, False]
   abcd = []
   res = {}
   for n in xrange(numData):
@@ -62,55 +63,57 @@ def main():
       train = [dat[0] for dat in withinClass(data[n])]
       test = [dat[1] for dat in withinClass(data[n])]
       reps = 1
-      abcd = [];
-      for _smote in _smoteit:
-#         print('### SMOTE-ing') if _smote else print('### No SMOTE-ing')
-  #       print('```')
-        for _n in xrange(0):
+      abcd = 2 * [None];
+      for t in _tuneit:
+        for _smote in _smoteit:
+          print('### SMOTE-ing') if _smote else print('### No SMOTE-ing')
+    #       print('```')
+#          for _n in xrange(0):
+#          set_trace()
+          _n = 0
           # Training data
-          for tune in [True, False]:
-            for _ in xrange(reps):
-              train_DF = createTbl(train[_n])
+          for _ in xrange(reps):
+            train_DF = createTbl(train[_n])
 
-              # Testing data
-              test_df = createTbl(test[_n])
+            # Testing data
+            test_df = createTbl(test[_n])
 
-              # Tune?
-              tuneParams = None if not tune else tune(p, train[_n])
-              # Find and apply contrast sets
-              newTab = treatments(train = train[_n],
-                                  test = test[_n], verbose = False)
+            # Tune?
+            tuneParams = None if not t else tuner(p, train[_n])
+            # Find and apply contrast sets
+            newTab = treatments(train = train[_n],
+                                test = test[_n], verbose = False)
 
-              # Actual bugs
-              actual = Bugs(test_df)
-              actual1 = [0 if a == 0 else 1 for a in actual]
-              # Use the classifier to predict the number of bugs in the raw data.
-              before = p(train_DF, test_df, 
-                         tuning = tunedParam,
-                         smoteit = _smote)
-              before1 = ['No Defect' if b == 0 else '   Defect' for b in before]
-              # Use the classifier to predict the number of bugs in the new data.
-              after = p(train_DF, newTab, 
-                        tuning = tunedParam,
-                        smoteit = _smote)
-              after1 = ['No Defect' if a == 0 else '   Defect' for a in after]
+            # Actual bugs
+            actual = Bugs(test_df)
+            actual1 = [0 if a == 0 else 1 for a in actual]
+            # Use the classifier to predict the number of bugs in the raw data.
+            before = p(train_DF, test_df,
+                       tunings = tunedParam,
+                       smoteit = _smote)
+            before1 = ['No Defect' if b == 0 else '   Defect' for b in before]
+            # Use the classifier to predict the number of bugs in the new data.
+            after = p(train_DF, newTab,
+                      tunings = tunedParam,
+                      smoteit = _smote)
+            after1 = ['No Defect' if a == 0 else '   Defect' for a in after]
 
-              write('.')
-  #             write('Training: '); [write(l + ', ') for l in train[_n]]; print('\n')
-  #             write('Test: '); [write(l) for l in test[_n]],
-              out = _Abcd(before = actual1, after = before1)
-              if _smote:
-                out.insert(0, p.__doc__ + '(s, ' + 'Tuned)  ' if tune else 'Naive)  ')
-                abcd[0].append(out)
-              else:
-                out.insert(0, p.__doc__ + '(raw, ' + 'Tuned)' if tune else 'Naive)')
-                abcd[1].append(out)
+            write('.')
+#             write('Training: '); [write(l + ', ') for l in train[_n]]; print('\n')
+#             write('Test: '); [write(l) for l in test[_n]],
+            out = _Abcd(before = actual1, after = before1)
+            if _smote:
+              out.insert(0, p.__doc__ + '(s, ' + 'Tuned)  ' if t else 'Naive)  ')
+              abcd[0].append(out)
+            else:
+              out.insert(0, p.__doc__ + '(raw, ' + 'Tuned)' if t else 'Naive)')
+              abcd[1].append(out)
       print()
       res.update({p.__doc__:(abcd[0][0:reps],
-                             abcd[0][reps:] ,
-                             abcd[1][0:reps],
-                             abcd[1][reps:] ,
-                             )})
+                           abcd[0][reps:] ,
+                           abcd[1][0:reps],
+                           abcd[1][reps:] ,
+                           )})
     print('```')
     printsk(res)
     print('```')

@@ -3,10 +3,9 @@ import sys, random, time; import os, pdb, math, numpy as np
 from math import sin
 _pwd = os.getcwd()
 from re import search
-import sk; rdivDemo = sk.rdivDemo
 sys.dont_write_bytecode = True
 exp = math.e
-from base import *
+from tune_diffEvol import *
 
 def settings(**d): return o(
   name = "Differention Evolution",
