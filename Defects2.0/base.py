@@ -40,19 +40,18 @@ def tuneRF(data):
     mod = rforest(train, test, mss = int(mss), msl = int(msl),
                   max_feat = int(max_feat), n_est = int(n_est),
                   smoteit = True)
-    g = _Abcd(before = Bugs(train), after = mod, show = False)[0]
+    g = _Abcd(before = Bugs(test), after = mod, show = False)[-1]
     return g
 
-  return Cols(tuneRF,
-        [N(least = 1, most = 100)
-        , N(least = 1, most = 10)
+  return Cols(tuneRF
+        , [N(least = 1, most = 100)
+        , N(least = 1, most = 100)
         , N(least = 10, most = 1e4)
         , N(least = 1, most = 17)
-        , O(f = f1)]), tuneRF
+        , O(f = f1)])
 
 def _test(data):
-  m = tuneRF(data)[1]
-  set_trace()
+  m = tuneRF(data)[0]
   for _ in range(10):
     one = m.any()
     m.score(one)
@@ -60,30 +59,30 @@ def _test(data):
 
 def _de(data):
   "DE"
-  DE = diffEvol(tuneRF(data)[1], data);
+  DE = diffEvol(tuneRF, data);
 #   set_trace()
   res = sorted([k for k in DE.DE()],
-               key = lambda F: F[-1])[-1]
+               key = lambda F: F[-1])[0]
   return res
 
-def main(dir = None):
-  whereParm, tree = None, None  # _de()
-  G = []; G1 = []; reps = 1;
-  trainDat, testDat = explore(dir = 'Data/')
-  for _ in xrange(reps):
-    print reps
-    [test, train] = tdivPrec(whereParm, tree, train = trainDat[1], test = testDat[0]);
-    g = _runAbcd(train = train, test = test, verbose = False)
-    G.append(g)
-  G.insert(0, 'DT  ')
-
-  for _ in xrange(reps):
-    print reps
-    [test, train] = tdivPrec1(whereParm, tree, train = trainDat[1], test = testDat[0]);
-    g = _runAbcd(train = train, test = test, verbose = False)
-    G1.append(g)
-  G1.insert(0, 'C4.5')
-  return [G, G1]
+# def main(dir = None):
+#   whereParm, tree = None, None  # _de()
+#   G = []; G1 = []; reps = 1;
+#   trainDat, testDat = explore(dir = 'Data/')
+#   for _ in xrange(reps):
+#     print reps
+#     [test, train] = tdivPrec(whereParm, tree, train = trainDat[1], test = testDat[0]);
+#     g = _runAbcd(train = train, test = test, verbose = False)
+#     G.append(g)
+#   G.insert(0, 'DT  ')
+#
+#   for _ in xrange(reps):
+#     print reps
+#     [test, train] = tdivPrec1(whereParm, tree, train = trainDat[1], test = testDat[0]);
+#     g = _runAbcd(train = train, test = test, verbose = False)
+#     G1.append(g)
+#   G1.insert(0, 'C4.5')
+#   return [G, G1]
 
 if __name__ == '__main__':
   from timeit import time

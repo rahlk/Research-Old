@@ -163,7 +163,7 @@ class Bool(Col):
 class O(Col):
   "for objectives"
   def __init__(self, col = 0, f = lambda x: 1, name = None,
-    love = False  # for objectives to maximize, set love to True
+    love = True  # for objectives to maximize, set love to True
     ):
     self.f = f
     self.love = love
@@ -274,7 +274,7 @@ class diffEvol(object):
   "DE"
 
   def __init__(self, model, data):
-    self.m = model(data)[0]
+    self.m = model(data)
     self.pop = {}
     self.frontier = []
     self.evals = 0
@@ -304,6 +304,7 @@ class diffEvol(object):
     self.initFront(The.np * len(self.m.indep))
     lives = The.de.lives
     while lives > 0:
+      say('.')
       better = False
       for pos, l1 in enumerate(self.frontier):
        lives -= 1

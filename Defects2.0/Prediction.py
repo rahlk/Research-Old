@@ -97,13 +97,13 @@ def _RF():
   dir = '../Data'
   one, two = explore(dir)
   # Training data
-  train_DF = createTbl(one[0])
+  train_DF = createTbl([one[0][0]])
   # Test data
-  test_df = createTbl(two[0])
+  test_df = createTbl([one[0][1]])
   actual = Bugs(test_df)
-  preds = rforest(train_DF, test_df, mss = 96, msl = 76,
-            max_feat = 3, n_est = 9756,
-            smoteit = True)
+  preds = rforest(train_DF, test_df, mss = 6, msl = 8,
+            max_feat = 4, n_est = 5756,
+            smoteit = False)
   print _Abcd(before = actual, after = preds, show = False)[-1]
 
 def CART(train, test, smoteit = True):
