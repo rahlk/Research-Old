@@ -303,7 +303,6 @@ class diffEvol(object):
     self.initFront(The.np * len(self.m.indep))
     lives = The.de.lives
     while lives > 0:
-      say('.')
       better = False
       for pos, l1 in enumerate(self.frontier):
        l2, l3, l4 = self.one234(l1, self.frontier)

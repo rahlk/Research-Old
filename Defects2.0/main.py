@@ -63,10 +63,10 @@ def main():
       train = [dat[0] for dat in withinClass(data[n])]
       test = [dat[1] for dat in withinClass(data[n])]
       reps = 1
-      abcd = 2 * [None];
+      abcd = [[], []];
       for t in _tuneit:
         for _smote in _smoteit:
-          print('### SMOTE-ing') if _smote else print('### No SMOTE-ing')
+#          print('### SMOTE-ing') if _smote else print('### No SMOTE-ing')
     #       print('```')
 #          for _n in xrange(0):
 #          set_trace()
@@ -74,12 +74,12 @@ def main():
           # Training data
           for _ in xrange(reps):
             train_DF = createTbl(train[_n])
-
+#            set_trace()
             # Testing data
             test_df = createTbl(test[_n])
 
             # Tune?
-            tuneParams = None if not t else tuner(p, train[_n])
+            tunedParams = None if not t else tuner(p, data[_n])
             # Find and apply contrast sets
             newTab = treatments(train = train[_n],
                                 test = test[_n], verbose = False)
@@ -89,12 +89,12 @@ def main():
             actual1 = [0 if a == 0 else 1 for a in actual]
             # Use the classifier to predict the number of bugs in the raw data.
             before = p(train_DF, test_df,
-                       tunings = tunedParam,
+                       tunings = tunedParams,
                        smoteit = _smote)
             before1 = ['No Defect' if b == 0 else '   Defect' for b in before]
             # Use the classifier to predict the number of bugs in the new data.
             after = p(train_DF, newTab,
-                      tunings = tunedParam,
+                      tunings = tunedParams,
                       smoteit = _smote)
             after1 = ['No Defect' if a == 0 else '   Defect' for a in after]
 
