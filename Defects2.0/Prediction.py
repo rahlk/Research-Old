@@ -94,14 +94,17 @@ def rforest(train, test, mss = 2, msl = 2,
 
 def _RF():
   "Test RF"
-  dir = './Data'
+  dir = '../Data'
   one, two = explore(dir)
   # Training data
   train_DF = createTbl(one[0])
   # Test data
   test_df = createTbl(two[0])
   actual = Bugs(test_df)
-  preds = rforest(train_DF, test_df)
+  preds = rforest(train_DF, test_df, mss = 96, msl = 76,
+            max_feat = 3, n_est = 9756,
+            smoteit = True)
+  print _Abcd(before = actual, after = preds, show = False)[-1]
 
 def CART(train, test, smoteit = True):
   "  CART"
@@ -198,4 +201,5 @@ def knn(train, test, smoteit = True):
   return preds
 
 if __name__ == '__main__':
-  _where2pred()
+  random.seed(0)
+  for _ in xrange(10): _RF()

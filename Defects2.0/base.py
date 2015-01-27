@@ -28,10 +28,13 @@ def update(indep):
   prune = int(indep[8])
   return whereParm, tree
 
-def tuneRF():
+def tuneRF(data):
   # Tune RF
-  trainDat = explore(dir = '../Data/')[0]  # Only training data to tune.
-  train = createTbl(trainDat[0]); test = createTbl(trainDat[1])
+  if not data:
+    # In no training data, use Ant
+    data = explore(dir = '../Data/')[0][0]  # Only training data to tune.
+  train = createTbl([data[0]]); test = createTbl([data[1]])
+#   set_trace()
   def f1(rows):
     [mss, msl, n_est, max_feat] = rows[1:-1];
     mod = rforest(train, test, mss = int(mss), msl = int(msl),
@@ -42,21 +45,23 @@ def tuneRF():
 
   return Cols(tuneRF,
         [N(least = 1, most = 100)
-        , N(least = 1, most = 100)
+        , N(least = 1, most = 10)
         , N(least = 10, most = 1e4)
         , N(least = 1, most = 17)
-        , O(f = f1)])
+        , O(f = f1)]), tuneRF
 
-def _test():
-  m = tuneRF()
+def _test(data):
+  m = tuneRF(data)[1]
+  set_trace()
   for _ in range(10):
     one = m.any()
     m.score(one)
   print(one)
 
-def _de():
+def _de(data):
   "DE"
-  DE = diffEvol(model = tuneRF);
+  DE = diffEvol(tuneRF(data)[1], data);
+#   set_trace()
   res = sorted([k for k in DE.DE()],
                key = lambda F: F[-1])[-1]
   return res
@@ -81,9 +86,12 @@ def main(dir = None):
   return [G, G1]
 
 if __name__ == '__main__':
-  from timeit import timeit
-  s = _test()
-  timeit(stmt = s, number = 1)
+  from timeit import time
+  data = explore(dir = '../Data/')[0][0]  # Only training data to tune.
+  t = time.time()
+#   _test(data)
+  print _de(data)
+  print time.time() - t
 #   print _de()
 #  print main()
 #  import sk; xtile = sk.xtile

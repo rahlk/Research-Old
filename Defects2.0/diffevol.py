@@ -273,8 +273,8 @@ def neighbors(m, lst1, pop):
 class diffEvol(object):
   "DE"
 
-  def __init__(self, model):
-    self.m = model()
+  def __init__(self, model, data):
+    self.m = model(data)[0]
     self.pop = {}
     self.frontier = []
     self.evals = 0
