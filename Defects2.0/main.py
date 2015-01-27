@@ -38,9 +38,11 @@ def printsk(res):
   "Now printing only g"
   tosh = []
   for p in res:
-    dat1, dat2 = res[p]
+    dat1, dat2, dat3, dat4 = res[p]
     tosh.append([dat1[0][0]] + [k[-1] for k in dat1])
     tosh.append([dat2[0][0]] + [k[-1] for k in dat2])
+    tosh.append([dat3[0][0]] + [k[-1] for k in dat3])
+    tosh.append([dat4[0][0]] + [k[-1] for k in dat4])
   rdivDemo(tosh, isLatex = False)
 
 def main():
@@ -59,43 +61,56 @@ def main():
     for p in Prd:
       train = [dat[0] for dat in withinClass(data[n])]
       test = [dat[1] for dat in withinClass(data[n])]
-      reps = 10
+      reps = 1
       abcd = [];
       for _smote in _smoteit:
 #         print('### SMOTE-ing') if _smote else print('### No SMOTE-ing')
   #       print('```')
-        for _n in xrange(1):
+        for _n in xrange(0):
           # Training data
-          for _ in xrange(reps):
-            train_DF = createTbl(train[_n])
+          for tune in [True, False]:
+            for _ in xrange(reps):
+              train_DF = createTbl(train[_n])
 
-            # Testing data
-            test_df = createTbl(test[_n])
+              # Testing data
+              test_df = createTbl(test[_n])
 
-            # Find and apply contrast sets
-            newTab = treatments(train = train[_n],
-                                test = test[_n], verbose = False)
+              # Tune?
+              tuneParams = None if not tune else tune(p, train[_n])
+              # Find and apply contrast sets
+              newTab = treatments(train = train[_n],
+                                  test = test[_n], verbose = False)
 
-            # Actual bugs
-            actual = Bugs(test_df)
-            actual1 = [0 if a == 0 else 1 for a in actual]
-            # Use the classifier to predict the number of bugs in the raw data.
-            before = p(train_DF, test_df, smoteit = _smote)
-            before1 = [0 if b == 0 else 1 for b in before]
-            # Use the classifier to predict the number of bugs in the new data.
-            after = p(train_DF, newTab, smoteit = _smote)
-            after1 = [0 if a == 0 else 1 for a in after]
+              # Actual bugs
+              actual = Bugs(test_df)
+              actual1 = [0 if a == 0 else 1 for a in actual]
+              # Use the classifier to predict the number of bugs in the raw data.
+              before = p(train_DF, test_df, 
+                         tuning = tunedParam,
+                         smoteit = _smote)
+              before1 = ['No Defect' if b == 0 else '   Defect' for b in before]
+              # Use the classifier to predict the number of bugs in the new data.
+              after = p(train_DF, newTab, 
+                        tuning = tunedParam,
+                        smoteit = _smote)
+              after1 = ['No Defect' if a == 0 else '   Defect' for a in after]
 
-            stat = [before, after]
-            write('.')
-#             write('Training: '); [write(l + ', ') for l in train[_n]]; print('\n')
-#             write('Test: '); [write(l) for l in test[_n]],
-            out = _Abcd(before = actual1, after = before1)
-            out.insert(0, p.__doc__ + '-s') if _smote \
-            else out.insert(0, p.__doc__ + '-ns')
-            abcd.append(out)
+              write('.')
+  #             write('Training: '); [write(l + ', ') for l in train[_n]]; print('\n')
+  #             write('Test: '); [write(l) for l in test[_n]],
+              out = _Abcd(before = actual1, after = before1)
+              if _smote:
+                out.insert(0, p.__doc__ + '(s, ' + 'Tuned)  ' if tune else 'Naive)  ')
+                abcd[0].append(out)
+              else:
+                out.insert(0, p.__doc__ + '(raw, ' + 'Tuned)' if tune else 'Naive)')
+                abcd[1].append(out)
       print()
-      res.update({p.__doc__:(abcd[0:reps], abcd[reps:])})
+      res.update({p.__doc__:(abcd[0][0:reps],
+                             abcd[0][reps:] ,
+                             abcd[1][0:reps],
+                             abcd[1][reps:] ,
+                             )})
     print('```')
     printsk(res)
     print('```')
