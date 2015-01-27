@@ -43,10 +43,10 @@ def tuneRF(data):
     return g
 
   return Cols(tuneRF
-        , [N(least = 10, most = 5e3)
-        , N(least = 1, most = 17)
-        , N(least = 1, most = 20)
-        , N(least = 1, most = 20)
+        , [N(least = 10, most = 5e3)  # n_estimators
+        , N(least = 1, most = 17)  # max_features
+        , N(least = 1, most = 20)  # min_samples_leaf
+        , N(least = 2, most = 20)  # min_samples_split
         , O(f = f1)])
 
 def tuneCART(data):
@@ -64,12 +64,12 @@ def tuneCART(data):
     g = _Abcd(before = Bugs(test), after = mod, show = False)[-1]
     return g
 
-  return Cols(tuneRF
+  return Cols(tuneCART
         , [N(least = 1, most = 50)  # max_depth
-        , N(least = 1, most = 50)  # min_samples_split
+        , N(least = 2, most = 20)  # min_samples_split
         , N(least = 1, most = 20)  # min_samples_leaf
-        , N(least = 10, most = 2e3)  # max features
-        , N(least = 1, most = 17)
+        , N(least = 1, most = 17)  # max features
+        , N(least = 2, most = 1e3)  # max_leaf_nodes
         , O(f = f1)])
 
 def _test(data):
@@ -78,9 +78,9 @@ def _test(data):
   vals1 = [m.score(v) for v in vals]
   print(vals, vals1)
 
-def _de(data):
+def _de(model, data):
   "DE"
-  DE = diffEvol(tuneRF, data);
+  DE = diffEvol(model, data);
 #   set_trace()
   res = sorted([k for k in DE.DE()],
                key = lambda F: F[-1])[-1]
@@ -108,10 +108,11 @@ def _de(data):
 if __name__ == '__main__':
   from timeit import time
   data = explore(dir = '../Data/')[0][0]  # Only training data to tune.
-  t = time.time()
+  for m in [tuneRF, tuneCART]:
+    t = time.time()
 #   _test(data)
-  print _de(data)
-  print time.time() - t
+    print _de(m, data)
+    print time.time() - t
 #   print _de()
 #  print main()
 #  import sk; xtile = sk.xtile
