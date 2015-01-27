@@ -66,9 +66,9 @@ def tuneCART(data):
 
   return Cols(tuneRF
         , [N(least = 1, most = 50)  # max_depth
-        , N(least = 1, most = 50)  # max_depth
-        , N(least = 1, most = 20)
-        , N(least = 10, most = 2e3)
+        , N(least = 1, most = 50)  # min_samples_split
+        , N(least = 1, most = 20)  # min_samples_leaf
+        , N(least = 10, most = 2e3)  # max features
         , N(least = 1, most = 17)
         , O(f = f1)])
 
