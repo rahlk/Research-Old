@@ -11,24 +11,76 @@ from pdb import set_trace
 from abcd import _Abcd
 from Prediction import rforest, CART, Bugs
 from methods1 import createTbl
+from random import uniform as rand, randint as randi, choice as any
 tree = treeings()
 # set_trace()
-def update(indep):
-  whereParm = defaults().update(verbose = True,
-                                minSize = int(indep[0]),
-                                depthMin = int(indep[1]),
-                                depthMax = int(indep[2]),
-                                prune = int(indep[3]),
-                                wriggle = int(indep[4]))
-  tree.min = int(indep[5])
-  tree.infoPrune = int(indep[6])
-  tree.variancePrune = int(indep[7])
-  tree.m = int(indep[6])
-  tree.n = int(indep[7])
-  prune = int(indep[8])
-  return whereParm, tree
 
-def tuneRF(data):
+def settings(**d): return o(
+  name = "Differention Evolution",
+  what = "DE tuner. Tune the predictor parameters parameters",
+  author = "Rahul Krishna",
+  adaptation = "https://github.com/ai-se/Rahul/blob/master/DEADANT/deadant.py",
+  copyleft = "(c) 2014, MIT license, http://goo.gl/3UYBp",
+  seed = 1,
+  np = 10,
+  k = 100,
+  tiny = 0.01,
+  de = o(np = 5,
+       epsilon = 1.01,
+       f = 0.3,
+       cf = 0.4,
+       lives = 100)
+  ).update(**d)
+
+The = settings()
+class DE(object):
+  def __init__(self, depen, indep, data):
+    self.frontier = []
+    self.depen = depen
+    self.indep = indep
+  def any(self, min, max):
+    return [randi(min, max) for __ in len(self.depen)]
+  def initFront(self, N):
+    for _ in xrange(N):
+      self.frontier.append([])
+  def extrapolate(self, a, b, c):
+    return int(a + The.de.f * (b - c))
+  def one234(self, one, pop, f = lambda x:id(x)):
+    def oneOther():
+      x = any(pop)
+      while f(x) in seen:
+        x = any(pop)
+      seen.append(f(x))
+      return x
+    seen = [ f(one) ]
+    return oneOther(), oneOther(), oneOther()
+  def dominates(self, a, b):
+    return self.gscore(a) > self.gscore(b)
+  def gscore(self, lst):
+    
+  def DE(self):
+    self.initFront(The.np * self.indep)
+    lives = The.de.lives
+    while lives > 0:
+      better = False
+      for pos, l1 in enumerate(self.frontier):
+       l2, l3, l4 = self.one234(l1, self.frontier)
+       new = self.m.extrapolate(l2, l3, l4)
+       if  self.m.dominates(new, l1):
+        self.frontier.pop(pos)
+        self.remember(new)
+        better = True
+       elif self.m.dominates(l1, new):
+        better = False
+       else:
+        self.remember(new)
+        better = True
+       if not better:
+          lives -= 1
+    return self.frontier
+
+
+ca tuneRF(data):
   # Tune RF
   if not data:
     # In no training data, use Ant
