@@ -50,9 +50,9 @@ def main():
   from os import walk
   dataName = [Name for _, Name, __ in walk(dir)][0]
   numData = len(dataName)  # Number of data
-  Prd = [rforest, CART]  # , adaboost, logit, knn]
+  Prd = [CART, rforest]  # , adaboost, logit, knn]
   _smoteit = [True, False]
-  _tuneit = [True, False]
+  _tuneit = [False]
   abcd = []
   res = {}
   for n in xrange(numData):
@@ -60,13 +60,17 @@ def main():
     data = [one[i] + two[i] for i in xrange(len(one))];
     print('##', dataName[n])
     for p in Prd:
+      print(p.__doc__)
+      params = tuner(p, data[0])
+      print(params)
       train = [dat[0] for dat in withinClass(data[n])]
       test = [dat[1] for dat in withinClass(data[n])]
-      reps = 10
+      reps = 5
       abcd = [[], []];
       for t in _tuneit:
+        print('### Tuning') if t else print('### No Tuning')
         for _smote in _smoteit:
-#          print('### SMOTE-ing') if _smote else print('### No SMOTE-ing')
+          print('### SMOTE-ing') if _smote else print('### No SMOTE-ing')
     #       print('```')
 #          for _n in xrange(0):
 #          set_trace()
@@ -79,7 +83,7 @@ def main():
             test_df = createTbl(test[_n])
 
             # Tune?
-            tunedParams = None if not t else tuner(p, data[_n])
+            tunedParams = None if not t else params
             # Find and apply contrast sets
             newTab = treatments(train = train[_n],
                                 test = test[_n], verbose = False)
@@ -91,22 +95,25 @@ def main():
             before = p(train_DF, test_df,
                        tunings = tunedParams,
                        smoteit = _smote)
-            before1 = ['No Defect' if b == 0 else '   Defect' for b in before]
+            before1 = [0 if b == 0 else 1 for b in before]
             # Use the classifier to predict the number of bugs in the new data.
             after = p(train_DF, newTab,
                       tunings = tunedParams,
                       smoteit = _smote)
-            after1 = ['No Defect' if a == 0 else '   Defect' for a in after]
+            after1 = [0 if a == 0 else 1 for a in after]
 
             write('.')
 #             write('Training: '); [write(l + ', ') for l in train[_n]]; print('\n')
 #             write('Test: '); [write(l) for l in test[_n]],
             out = _Abcd(before = actual1, after = before1)
+            print (out[-1])
             if _smote:
-              out.insert(0, p.__doc__ + '(s, ' + 'Tuned)  ' if t else 'Naive)  ')
+              out.insert(0, p.__doc__ + '(s, Tuned)  ') if t \
+              else out.insert(0, p.__doc__ + '(s, Naive)  ')
               abcd[0].append(out)
             else:
-              out.insert(0, p.__doc__ + '(raw, ' + 'Tuned)' if t else 'Naive)')
+              out.insert(0, p.__doc__ + '(raw, Tuned)') if t \
+              else out.insert(0, p.__doc__ + '(raw, Naive)')
               abcd[1].append(out)
       print()
       res.update({p.__doc__:(abcd[0][0:reps],
@@ -128,7 +135,13 @@ def main():
 
 
 if __name__ == '__main__':
-#  _CART()
-#  _logit()
-#  _adaboost()
+#  dir = '../Data'
+#  one, two = explore(dir)
+#  data = [one[i] + two[i] for i in xrange(len(one))];
+#  for p in [CART, rforest]:
+#    params = tuner(p, data[0])
+#    print (params)
+##  _CART()
+##  _logit()
+##  _adaboost()
   main()
