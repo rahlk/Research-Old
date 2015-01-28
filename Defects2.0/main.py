@@ -50,7 +50,7 @@ def main():
   from os import walk
   dataName = [Name for _, Name, __ in walk(dir)][0]
   numData = len(dataName)  # Number of data
-  Prd = [CART]  # , rforest]  # , adaboost, logit, knn]
+  Prd = [CART, rforest]  # , adaboost, logit, knn]
   _smoteit = [True, False]
   _tuneit = [True, False]
   abcd = []
@@ -60,17 +60,17 @@ def main():
     data = [one[i] + two[i] for i in xrange(len(one))];
     print('##', dataName[n])
     for p in Prd:
-      print(p.__doc__)
+#       print(p.__doc__)
       params = tuner(p, data[0])
-      print(params)
+#       print(params)
       train = [dat[0] for dat in withinClass(data[n])]
       test = [dat[1] for dat in withinClass(data[n])]
-      reps = 5
+      reps = 10
       abcd = [[], []];
       for t in _tuneit:
-        print('### Tuning') if t else print('### No Tuning')
+#         print('### Tuning') if t else print('### No Tuning')
         for _smote in _smoteit:
-          print('### SMOTE-ing') if _smote else print('### No SMOTE-ing')
+#           print('### SMOTE-ing') if _smote else print('### No SMOTE-ing')
     #       print('```')
 #          for _n in xrange(0):
 #          set_trace()
@@ -102,11 +102,11 @@ def main():
                       smoteit = _smote)
             after1 = [0 if a == 0 else 1 for a in after]
 
-            write('.')
+#             write('.')
 #             write('Training: '); [write(l + ', ') for l in train[_n]]; print('\n')
 #             write('Test: '); [write(l) for l in test[_n]],
             out = _Abcd(before = actual1, after = before1)
-            print (out[-1])
+#             print (out[-1])
             if _smote:
               out.insert(0, p.__doc__ + '(s, Tuned)  ') if t \
               else out.insert(0, p.__doc__ + '(s, Naive)  ')

@@ -79,10 +79,10 @@ def rforest(train, test, tunings = None, smoteit = True):
   if not tunings:
     clf = RandomForestClassifier()
   else:
-    clf = RandomForestClassifier(n_estimators = tunings[0],
-                                 max_features = tunings[1],
-                                 min_samples_leaf = tunings[2],
-                                 min_samples_split = tunings[3]
+    clf = RandomForestClassifier(n_estimators = int(tunings[0]),
+                                 max_features = tunings[1] / 100,
+                                 min_samples_leaf = int(tunings[2]),
+                                 min_samples_split = int(tunings[3])
                                  )
   train_DF = formatData(train)
   test_DF = formatData(test)

@@ -113,10 +113,10 @@ class tuneRF(object):
     return g
 
   def indep(self):
-    return [(10, 5e3)  # n_estimators
-          , (1, 17)  # max_features
-          , (1, 20)  # min_samples_leaf
-          , (2, 20)  # min_samples_split
+    return [(10, 1e3)  # n_estimators
+          , (1, 100)  # max_features
+          , (1, 10)  # min_samples_leaf
+          , (2, 10)  # min_samples_split
           ]
 
 class tuneCART(object):
@@ -162,7 +162,7 @@ def tuner(model, data):
 
 if __name__ == '__main__':
   from timeit import time
-  data = explore(dir = '../Data/')[0][0]  # Only training data to tune.
+  data = explore(dir = '../Data/')[0][4]  # Only training data to tune.
   for m in [tuneRF, tuneCART]:
     t = time.time()
     mdl = m(data)
