@@ -82,7 +82,6 @@ class diffEvol(object):
       better = False
       for pos, l1 in enumerate(self.frontier):
         lives -= 1
-        say(lives)
         l2, l3, l4 = self.one234(l1, self.frontier)
         new = self.extrapolate(l2, l3, l4)
         if  self.dominates(new, l1):
@@ -95,7 +94,7 @@ class diffEvol(object):
           self.frontier.append(new)
           better = True
       if better:
-        print(better); lives += 1
+        lives += 1
     return self.frontier
 
 
