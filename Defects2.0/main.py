@@ -88,6 +88,7 @@ def main():
             newTab = treatments(train = train[_n],
                                 test = test[_n], verbose = False)
 
+
             # Actual bugs
             actual = Bugs(test_df)
             actual1 = [0 if a == 0 else 1 for a in actual]
