@@ -21,7 +21,7 @@ import numpy as np
 import pandas as pd
 from sk import rdivDemo
 from pdb import set_trace
-from tune_diffEvol import tuner
+from deTuner import tuner
 
 def Bugs(tbl):
   cells = [i.cells[-2] for i in tbl._rows]
@@ -52,7 +52,7 @@ def main():
   numData = len(dataName)  # Number of data
   Prd = [CART, rforest]  # , adaboost, logit, knn]
   _smoteit = [True, False]
-  _tuneit = [False]
+  _tuneit = [True, False]
   abcd = []
   res = {}
   for n in xrange(numData):
