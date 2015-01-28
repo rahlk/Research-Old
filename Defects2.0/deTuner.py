@@ -14,6 +14,9 @@ from random import uniform as rand, randint as randi, choice as any
 tree = treeings()
 # set_trace()
 
+def say(l):
+  sys.stdout.write(str(l))
+
 def settings(**d): return o(
   name = "Differention Evolution",
   what = "DE tuner. Tune the predictor parameters parameters",
@@ -25,6 +28,7 @@ def settings(**d): return o(
   k = 100,
   tiny = 0.01,
   de = o(np = 5,
+       iter = 5,
        epsilon = 1.01,
        N = 20,
        f = 0.3,
@@ -78,6 +82,7 @@ class diffEvol(object):
       better = False
       for pos, l1 in enumerate(self.frontier):
         lives -= 1
+        say(lives)
         l2, l3, l4 = self.one234(l1, self.frontier)
         new = self.extrapolate(l2, l3, l4)
         if  self.dominates(new, l1):
@@ -89,8 +94,8 @@ class diffEvol(object):
         else:
           self.frontier.append(new)
           better = True
-        if better:
-          lives += 1
+      if better:
+        print(better); lives += 1
     return self.frontier
 
 
@@ -161,8 +166,11 @@ if __name__ == '__main__':
   data = explore(dir = '../Data/')[0][0]  # Only training data to tune.
   for m in [tuneRF, tuneCART]:
     t = time.time()
+    mdl = m(data)
 #   _test(data)
-    print _de(m, data)
+    tunings = _de(m, data)
+    print tunings
+    print mdl.depen(tunings)
     print time.time() - t
 #   print _de()
 #  print main()
