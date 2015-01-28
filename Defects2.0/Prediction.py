@@ -1,3 +1,4 @@
+from __future__ import division
 from pdb import set_trace
 from os import environ, getcwd
 import sys
@@ -115,7 +116,7 @@ def CART(train, test, tunings = None, smoteit = True):
     clf = DecisionTreeClassifier(max_depth = tunings[0],
                                  min_samples_split = tunings[1],
                                  min_samples_leaf = tunings[2],
-                                 max_features = tunings[3],
+                                 max_features = tunings[3] / 100,
                                  max_leaf_nodes = tunings[4])
   train_DF = formatData(train)
   test_DF = formatData(test)

@@ -50,7 +50,7 @@ def main():
   from os import walk
   dataName = [Name for _, Name, __ in walk(dir)][0]
   numData = len(dataName)  # Number of data
-  Prd = [CART, rforest]  # , adaboost, logit, knn]
+  Prd = [CART]  # , rforest]  # , adaboost, logit, knn]
   _smoteit = [True, False]
   _tuneit = [True, False]
   abcd = []
@@ -74,7 +74,7 @@ def main():
     #       print('```')
 #          for _n in xrange(0):
 #          set_trace()
-          _n = 0
+          _n = -1
           # Training data
           for _ in xrange(reps):
             train_DF = createTbl(train[_n])
@@ -141,7 +141,7 @@ if __name__ == '__main__':
 #  for p in [CART, rforest]:
 #    params = tuner(p, data[0])
 #    print (params)
-##  _CART()
-##  _logit()
-##  _adaboost()
+# #  _CART()
+# #  _logit()
+# #  _adaboost()
   main()

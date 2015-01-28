@@ -137,7 +137,7 @@ class tuneCART(object):
     return [(1, 50)  # max_depth
           , (2, 20)  # min_samples_split
           , (1, 20)  # min_samples_leaf
-          , (1, 17)  # max features
+          , (1, 100)  # max features
           , (2, 1e3)]  # max_leaf_nodes
 
 def _test(data):
