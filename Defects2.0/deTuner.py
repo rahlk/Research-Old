@@ -102,8 +102,8 @@ class tuneRF(object):
   # Tune RF
   def __init__(self, data):
     self.data = data
-    self.train = createTbl([data[0]])
-    self.test = createTbl([data[1]])
+    self.train = createTbl(data[:-1])
+    self.test = createTbl([data[-1]])
 #   set_trace()
   def depen(self, rows):
     mod = rforest(self.train, self.test
@@ -123,8 +123,8 @@ class tuneCART(object):
   # Tune CART
   def __init__(self, data):
     self.data = data
-    self.train = createTbl([data[0]])
-    self.test = createTbl([data[1]])
+    self.train = createTbl(data[:-1])
+    self.test = createTbl([data[-1]])
 
   def depen(self, rows):
     mod = CART(self.train, self.test
@@ -162,7 +162,7 @@ def tuner(model, data):
 
 if __name__ == '__main__':
   from timeit import time
-  data = explore(dir = '../Data/')[0][4]  # Only training data to tune.
+  data = explore(dir = '../Data/')[0][-1]  # Only training data to tune.
   for m in [tuneRF, tuneCART]:
     t = time.time()
     mdl = m(data)

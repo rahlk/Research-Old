@@ -74,14 +74,13 @@ def main():
     #       print('```')
 #          for _n in xrange(0):
 #          set_trace()
-          _n = 1
+          _n = -1
           # Training data
           for _ in xrange(reps):
             train_DF = createTbl(train[_n])
 #            set_trace()
             # Testing data
             test_df = createTbl(test[_n])
-
             # Tune?
             tunedParams = None if not t else params
             # Find and apply contrast sets
