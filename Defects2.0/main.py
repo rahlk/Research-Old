@@ -50,9 +50,10 @@ def main():
   from os import walk
   dataName = [Name for _, Name, __ in walk(dir)][0]
   numData = len(dataName)  # Number of data
-  Prd = [CART, rforest]  # , adaboost, logit, knn]
-  _smoteit = [True, False]
-  _tuneit = [True, False]
+  Prd = [CART]  # , rforest]  # , adaboost, logit, knn]
+  _smoteit = [True]  # , False]
+  _tuneit = [True]  # , False]
+  cd = {}
   abcd = []
   res = {}
   for n in xrange(numData):
@@ -102,8 +103,10 @@ def main():
                       smoteit = _smote)
             after1 = [0 if a == 0 else 1 for a in after]
 
+
 #             write('.')
 #             write('Training: '); [write(l + ', ') for l in train[_n]]; print('\n')
+            cd.append(showoff(dataName[n], before, after))
 #             write('Test: '); [write(l) for l in test[_n]],
             out = _Abcd(before = actual1, after = before1)
 #             print (out[-1])
@@ -116,6 +119,8 @@ def main():
               else out.insert(0, p.__doc__ + '(raw, Naive)')
               abcd[1].append(out)
       print()
+
+      print(cd)
       res.update({p.__doc__:(abcd[0][0:reps],
                            abcd[0][reps:] ,
                            abcd[1][0:reps],
