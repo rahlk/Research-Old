@@ -52,8 +52,8 @@ def main():
   numData = len(dataName)  # Number of data
   Prd = [CART]  # , rforest]  # , adaboost, logit, knn]
   _smoteit = [True]  # , False]
-  _tuneit = [True]  # , False]
-  cd = {}
+  _tuneit = [False]  # , False]
+  cd = []
   abcd = []
   res = {}
   for n in xrange(numData):
@@ -106,7 +106,7 @@ def main():
 
 #             write('.')
 #             write('Training: '); [write(l + ', ') for l in train[_n]]; print('\n')
-            cd.append(showoff(dataName[n], before, after))
+            cd.append(showoff(dataName[n], before1, after1))
 #             write('Test: '); [write(l) for l in test[_n]],
             out = _Abcd(before = actual1, after = before1)
 #             print (out[-1])
@@ -119,15 +119,15 @@ def main():
               else out.insert(0, p.__doc__ + '(raw, Naive)')
               abcd[1].append(out)
       print()
-
-      print(cd)
-      res.update({p.__doc__:(abcd[0][0:reps],
-                           abcd[0][reps:] ,
-                           abcd[1][0:reps],
-                           abcd[1][reps:] ,
-                           )})
+#       cd.update({p.__doc__:sorted(cd)})
+#       res.update({p.__doc__:(abcd[0][0:reps],
+#                            abcd[0][reps:] ,
+#                            abcd[1][0:reps],
+#                            abcd[1][reps:] ,
+#                            )})
     print('```')
-    printsk(res)
+    print(cd)
+#     printsk(res)
     print('```')
 
           # sk.rdivDemo(stat)
