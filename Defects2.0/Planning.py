@@ -24,6 +24,7 @@ from cliffsDelta import *
 from contrastset import *
 from dectree import *
 from hist import *
+from smote import *
 import makeAmodel as mam
 from methods1 import *
 import numpy as np
@@ -36,7 +37,7 @@ import sk
 #===============================================================================
 
 
-def treatments(train = None, test = None, verbose = True):
+def treatments(train = None, test = None, verbose = True, smoteit = False):
 
   def remember(node):
    key = node.f.name
@@ -64,6 +65,7 @@ def treatments(train = None, test = None, verbose = True):
 
   # Training data
   train_DF = createTbl(train)
+  if smoteit: train_DF = SMOTE(data = train_DF)
   # Testing data
   test_DF = createTbl(test)
 
