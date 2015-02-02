@@ -54,6 +54,7 @@ def treatments(train = None, test = None, verbose = True, smoteit = False):
 
   def compare(node, test):
     leaves = [n for n in test.kids] if len(test.kids) else [test]
+#     set_trace()
     for k in leaves:
       return objectiveScores(k) < objectiveScores(node), [objectiveScores(k),
                                                          objectiveScores(node)]
@@ -65,7 +66,8 @@ def treatments(train = None, test = None, verbose = True, smoteit = False):
 
   # Training data
   train_DF = createTbl(train)
-  if smoteit: train_DF = SMOTE(data = train_DF, atleast = 100, atmost = 500)
+  set_trace()
+  if smoteit: train_DF = SMOTE(data = train_DF, atleast = 50, atmost = 100)
   # Testing data
   test_DF = createTbl(test)
 
@@ -85,6 +87,7 @@ def treatments(train = None, test = None, verbose = True, smoteit = False):
     loc = drop(tC, myTree)
     # Reach the tree top
     newNode = loc;
+    set_trace()
     branches = [];
     while newNode.lvl >= 0:
       newNode = newNode.up;
@@ -121,10 +124,14 @@ def planningTest():
   dir = '../Data'
   one, two = explore(dir)
   # Training data
-  train_DF = createTbl(one[0])
+  train_DF = createTbl(one[1])
   # Test data
-  test_df = createTbl(two[0])
-  
+  test_df = createTbl(two[1])
+  newTab = treatments(train = one[1],
+                      test = two[1],
+                      verbose = True,
+                      smoteit = True)
 
-if __name__ = 'main':
-  
+
+if __name__ == '__main__':
+  planningTest()
