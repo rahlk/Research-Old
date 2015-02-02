@@ -77,7 +77,7 @@ def rforest(train, test, tunings = None, smoteit = True):
   # Apply random forest classifier to predict the number of bugs.
   if smoteit: train = SMOTE(train)
   if not tunings:
-    clf = RandomForestClassifier()
+    clf = RandomForestClassifier(n_estimators = 100)
   else:
     clf = RandomForestClassifier(n_estimators = int(tunings[0]),
                                  max_features = tunings[1] / 100,
