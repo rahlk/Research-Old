@@ -53,7 +53,7 @@ def treatments(train = None, test = None, verbose = True, smoteit = False):
    return np.mean([k for k in obj]), [k for k in obj]
 
   def compare(node, test):
-    leaves = [n for n in test.kids] if len(test.kids) > 0 else [test]
+    leaves = [n for n in test.kids] if len(test.kids) else [test]
     for k in leaves:
       return objectiveScores(k) < objectiveScores(node), [objectiveScores(k),
                                                          objectiveScores(node)]
@@ -65,7 +65,7 @@ def treatments(train = None, test = None, verbose = True, smoteit = False):
 
   # Training data
   train_DF = createTbl(train)
-  if smoteit: train_DF = SMOTE(data = train_DF)
+  if smoteit: train_DF = SMOTE(data = train_DF, atleast = 100, atmost = 500)
   # Testing data
   test_DF = createTbl(test)
 
@@ -117,3 +117,14 @@ def treatments(train = None, test = None, verbose = True, smoteit = False):
 #  saveImg(bugs(test_df), num_bins = 50, fname = 'bugsBefore', ext = '.jpg')
 #  set_trace()
 
+def planningTest():
+  dir = '../Data'
+  one, two = explore(dir)
+  # Training data
+  train_DF = createTbl(one[0])
+  # Test data
+  test_df = createTbl(two[0])
+  
+
+if __name__ = 'main':
+  

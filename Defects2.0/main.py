@@ -75,7 +75,7 @@ def main():
     #       print('```')
 #          for _n in xrange(0):
 #          set_trace()
-          _n = -1
+          _n = 1
           # Training data
           for _ in xrange(reps):
             train_DF = createTbl(train[_n])
@@ -86,7 +86,7 @@ def main():
             tunedParams = None if not t else params
             # Find and apply contrast sets
             newTab = treatments(train = train[_n],
-                                test = test[_n], verbose = False)
+                                test = test[_n], verbose = False, smoteit = True)
 
 
             # Actual bugs
@@ -107,8 +107,10 @@ def main():
 #             write('.')
 #             write('Training: '); [write(l + ', ') for l in train[_n]]; print('\n')
             cd.append(showoff(dataName[n], before1, after1))
+            print(showoff(dataName[n], before1, after1))
 #             write('Test: '); [write(l) for l in test[_n]],
             out = _Abcd(before = actual1, after = before1)
+            print('Prediction accuracy (g)  %.2d' % out[-1])
 #             print (out[-1])
             if _smote:
               out.insert(0, p.__doc__ + '(s, Tuned)  ') if t \
@@ -126,7 +128,7 @@ def main():
 #                            abcd[1][reps:] ,
 #                            )})
     print('```')
-    print(cd)
+#     print(cd)
 #     printsk(res)
     print('```')
 
