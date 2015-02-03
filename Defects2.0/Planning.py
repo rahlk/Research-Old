@@ -63,7 +63,16 @@ def treatments(train = None, test = None, verbose = True, smoteit = False):
     for i in xrange(len(test_DF.headers)):
       keys.update({test_DF.headers[i].name[1:]:i})
     return keys
-
+  
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # New Methods - 02/03/2015
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  
+  def leaves(node):
+    L = []
+    for 
+  def score(node):
+    
   # Training data
   train_DF = createTbl(train)
   # if smoteit: train_DF = SMOTE(data = train_DF, atleast = 50, atmost = 100)
@@ -84,11 +93,16 @@ def treatments(train = None, test = None, verbose = True, smoteit = False):
   for tC in testCase:
     newRow = tC;
     loc = drop(tC, myTree)
-    # Reach the tree top
     newNode = loc;
-    set_trace()
+    if newNode.lvl > 0:
+    # Go up one Level
+      _up = newNode.up
+    # look at the kids
+      _kids = _up.kids
+
+      set_trace()
     branches = [];
-    while newNode.lvl >= 0:
+    while newNode.lvl > 0:
       newNode = newNode.up;
       branches.append(newNode);
     # A dict of contrast sets

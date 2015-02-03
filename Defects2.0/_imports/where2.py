@@ -27,7 +27,7 @@ sys.path.insert(0, '/Users/rkrsn/git/axe/axe/')
 
 """
 
-## Dimensionality Reduction with Fastmp
+## Dimensionality Reduction with Fastmap
 
 Project data in N dimensions down to a single dimension connecting
 twp distant points. Divide that data at the median of those projects.
@@ -41,8 +41,8 @@ def pairs(lst):
 
 def somepairs(m, data):
   reps = 10; cmax = -10e32;
-  for _ in xrange(reps):
-    one = any(data);
+  for one in data:
+    # one = any(data);
     two = furthest(m, one, data)
     three = furthest(m, two, data)
     c = dist(m, two, three) + 1e-5
