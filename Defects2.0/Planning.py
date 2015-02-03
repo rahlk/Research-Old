@@ -32,9 +32,9 @@ import pandas as pd
 import sk
 
 
-#===============================================================================
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # PLANNING PHASE: 1. Decision Trees, 2. Contrast Sets
-#===============================================================================
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 def treatments(train = None, test = None, verbose = True, smoteit = False):
@@ -70,7 +70,8 @@ def treatments(train = None, test = None, verbose = True, smoteit = False):
   
   def leaves(node):
     L = []
-    for 
+    if node.kids
+    for l in node
   def score(node):
     
   # Training data
