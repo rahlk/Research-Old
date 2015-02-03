@@ -66,11 +66,10 @@ def treatments(train = None, test = None, verbose = True, smoteit = False):
 
   # Training data
   train_DF = createTbl(train)
-  set_trace()
-  if smoteit: train_DF = SMOTE(data = train_DF, atleast = 50, atmost = 100)
+  # if smoteit: train_DF = SMOTE(data = train_DF, atleast = 50, atmost = 100)
   # Testing data
   test_DF = createTbl(test)
-
+#   set_trace()
   # Decision Tree
 
   t = discreteNums(train_DF, map(lambda x: x.cells, train_DF._rows))
@@ -121,16 +120,18 @@ def treatments(train = None, test = None, verbose = True, smoteit = False):
 #  set_trace()
 
 def planningTest():
+  # Test contrast sets
+  n = 1
   dir = '../Data'
   one, two = explore(dir)
   # Training data
-  train_DF = createTbl(one[1])
+  train_DF = createTbl(one[n])
   # Test data
-  test_df = createTbl(two[1])
-  newTab = treatments(train = one[1],
-                      test = two[1],
+  test_df = createTbl(two[n])
+  newTab = treatments(train = [one[n][0]],
+                      test = [one[n][1]],
                       verbose = True,
-                      smoteit = True)
+                      smoteit = False)
 
 
 if __name__ == '__main__':
