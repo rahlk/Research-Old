@@ -108,7 +108,6 @@ def treatments(train = None, test = None, verbose = True, smoteit = False):
       _up = newNode.up
     # look at the kids
       _kids = _up.kids
-
       set_trace()
     branches = [];
     while newNode.lvl > 0:
