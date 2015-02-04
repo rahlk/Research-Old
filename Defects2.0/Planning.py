@@ -70,10 +70,18 @@ def treatments(train = None, test = None, verbose = True, smoteit = False):
   
   def leaves(node):
     L = []
-    if node.kids
-    for l in node
+    if node.kids:
+     for l in node.kids: 
+       L.extend(leaves(node.kids))
+       return L
+    else:
+      return L.extend(node)
+      return L
+  
   def score(node):
-    
+    pass
+
+
   # Training data
   train_DF = createTbl(train)
   # if smoteit: train_DF = SMOTE(data = train_DF, atleast = 50, atmost = 100)
