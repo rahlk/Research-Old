@@ -1,4 +1,4 @@
-from __future__ import print_function
+from __future__ import print_function, division
 from os import environ, getcwd
 import sys
 
@@ -51,7 +51,7 @@ def main():
   dataName = [Name for _, Name, __ in walk(dir)][0]
   numData = len(dataName)  # Number of data
   Prd = [CART]  # , rforest]  # , adaboost, logit, knn]
-  _smoteit = [True]  # , False]
+  _smoteit = [False]  # , False]
   _tuneit = [False]  # , False]
   cd = []
   abcd = []
@@ -62,7 +62,7 @@ def main():
     print('##', dataName[n])
     for p in Prd:
 #       print(p.__doc__)
-      params = tuner(p, data[0])
+      # params = tuner(p, data[0])
 #       print(params)
       train = [dat[0] for dat in withinClass(data[n])]
       test = [dat[1] for dat in withinClass(data[n])]
@@ -75,7 +75,7 @@ def main():
     #       print('```')
 #          for _n in xrange(0):
 #          set_trace()
-          _n = 1
+          _n = -1
           # Training data
           for _ in xrange(reps):
             train_DF = createTbl(train[_n])
@@ -83,7 +83,8 @@ def main():
             # Testing data
             test_df = createTbl(test[_n])
             # Tune?
-            tunedParams = None if not t else params
+            tunedParams = None
+#             tunedParams = None if not t else params
             # Find and apply contrast sets
             newTab = treatments(train = train[_n],
                                 test = test[_n], verbose = False, smoteit = True)
@@ -102,15 +103,16 @@ def main():
                       tunings = tunedParams,
                       smoteit = _smote)
             after1 = [0 if a == 0 else 1 for a in after]
-
+#           %  set_trace()
 
 #             write('.')
 #             write('Training: '); [write(l + ', ') for l in train[_n]]; print('\n')
-            cd.append(showoff(dataName[n], before1, after1))
-            print(showoff(dataName[n], before1, after1))
+#             cd.append(showoff(dataName[n], actual1, after1))
+#             print(showoff(dataName[n], actual1, after1))
 #             write('Test: '); [write(l) for l in test[_n]],
             out = _Abcd(before = actual1, after = before1)
-            print('Prediction accuracy (g)  %.2d' % out[-1])
+            print('Win Ratio : %0.2d' % (sum(after1) / sum(actual1)))
+#             %print('Prediction accuracy (g)  %.2d' % out[-1])
 #             print (out[-1])
             if _smote:
               out.insert(0, p.__doc__ + '(s, Tuned)  ') if t \
