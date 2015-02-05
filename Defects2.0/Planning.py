@@ -81,7 +81,9 @@ def treatments(train = None, test = None, verbose = True, smoteit = False):
   def score(node):
     pass
 
-
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  # Main
+  #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Training data
   train_DF = createTbl(train)
   # if smoteit: train_DF = SMOTE(data = train_DF, atleast = 50, atmost = 100)
@@ -108,6 +110,7 @@ def treatments(train = None, test = None, verbose = True, smoteit = False):
       _up = newNode.up
     # look at the kids
       _kids = _up.kids
+      _leaves = leaves(_kids)
       set_trace()
     branches = [];
     while newNode.lvl > 0:
