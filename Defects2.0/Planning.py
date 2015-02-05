@@ -63,21 +63,21 @@ def treatments(train = None, test = None, verbose = True, smoteit = False):
     for i in xrange(len(test_DF.headers)):
       keys.update({test_DF.headers[i].name[1:]:i})
     return keys
-  
+
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # New Methods - 02/03/2015
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  
+
   def leaves(node):
     L = []
     if node.kids:
-     for l in node.kids: 
+     for l in node.kids:
        L.extend(leaves(node.kids))
        return L
     else:
       return L.extend(node)
       return L
-  
+
   def score(node):
     pass
 
@@ -110,7 +110,7 @@ def treatments(train = None, test = None, verbose = True, smoteit = False):
       _up = newNode.up
     # look at the kids
       _kids = _up.kids
-      _leaves = leaves(_kids)
+      _leaves = [leaves(_k) for _k in _kids]
       set_trace()
     branches = [];
     while newNode.lvl > 0:
@@ -155,7 +155,7 @@ def planningTest():
   test_df = createTbl(two[n])
   newTab = treatments(train = [one[n][0]],
                       test = [one[n][1]],
-                      verbose = True,
+                      verbose = False,
                       smoteit = False)
 
 
