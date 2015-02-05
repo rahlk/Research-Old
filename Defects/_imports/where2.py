@@ -39,6 +39,18 @@ def pairs(lst):
     for i in lst[0:]:
       yield last, i
 
+def allpairs(m, data):
+  reps = 10; cmax = -10e32;
+  for _ in xrange(reps):
+    one = any(data);
+    two = furthest(m, one, data)
+    three = furthest(m, two, data)
+    c = dist(m, two, three) + 1e-5
+    if c >= cmax:
+      cmax = c;
+      east, west = two, three
+  return west, east
+
 def somepairs(m, data):
   reps = 10; cmax = -10e32;
   for _ in xrange(reps):
