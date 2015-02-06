@@ -105,13 +105,14 @@ def treatments(train = None, test = None, verbose = True, smoteit = False):
     newRow = tC;
     loc = drop(tC, myTree)
     newNode = loc;
-#     if newNode.lvl > 0:
-#     # Go up one Level
-#       _up = newNode.up
-#     # look at the kids
-#       _kids = _up.kids
-#       _leaves = [leaves(_k) for _k in _kids]
-#       set_trace()
+    set_trace()
+    if newNode.lvl > 0:
+    # Go up one Level
+      _up = newNode.up
+    # look at the kids
+      _kids = _up.kids
+      _leaves = [leaves(_k) for _k in _kids]
+      set_trace()
     branches = [];
     while newNode.lvl > 0:
       newNode = newNode.up;
