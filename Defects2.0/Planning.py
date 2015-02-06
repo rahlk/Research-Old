@@ -86,14 +86,18 @@ def treatments(train = None, test = None, verbose = True, smoteit = False):
   #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   # Training data
   train_DF = createTbl(train)
+  print('Done')
   # if smoteit: train_DF = SMOTE(data = train_DF, atleast = 50, atmost = 100)
   # Testing data
   test_DF = createTbl(test)
+  print('Done')
 #   set_trace()
   # Decision Tree
 
   t = discreteNums(train_DF, map(lambda x: x.cells, train_DF._rows))
+  print('Done')
   myTree = tdiv(t)
+  print('Done')
   if verbose: showTdiv(myTree)
 
   # Testing data
